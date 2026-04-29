@@ -511,14 +511,33 @@
     // Belt-and-suspenders: lock the menu button to the viewport via inline styles.
     // This neutralises any stylesheet override or ancestor transform that could
     // turn position:fixed into position:absolute behavior.
-    Object.assign(button.style, {
-      position: "fixed",
-      top: "max(0.85rem, env(safe-area-inset-top, 0px))",
-      right: "max(1rem, env(safe-area-inset-right, 0px))",
-      left: "auto",
-      bottom: "auto",
-      zIndex: "5500"
-    });
+    // setProperty with 'important' is required because styles.css declares
+    // top/right/z-index with !important, which would silently win over a plain
+    // inline style. Using `important` priority on the inline declaration lets us
+    // override the stylesheet's !important from JS.
+    const lockMenuButton = () => {
+      button.style.setProperty("position", "fixed", "important");
+      button.style.setProperty("top", "max(0.7rem, env(safe-area-inset-top, 0px))", "important");
+      // Match the CSS centering calc so on viewports wider than 112rem the button
+      // hugs the .site-shell content edge instead of floating in the side margin.
+      button.style.setProperty("right", "max(0.85rem, calc((100vw - min(100vw, 112rem)) / 2 + 0.85rem))", "important");
+      button.style.setProperty("left", "auto", "important");
+      button.style.setProperty("bottom", "auto", "important");
+      button.style.setProperty("z-index", "5500", "important");
+    };
+    lockMenuButton();
+    // Resize-only safety net (rAF-throttled). Scroll can't affect inline styles
+    // once they're set with !important priority, so a scroll listener would just
+    // burn CPU re-writing constants on every frame.
+    let lockFrame = 0;
+    const reLock = () => {
+      if (lockFrame) return;
+      lockFrame = requestAnimationFrame(() => {
+        lockFrame = 0;
+        lockMenuButton();
+      });
+    };
+    window.addEventListener("resize", reLock, { passive: true });
 
     if (!curtain.querySelector(".menu-burn")) {
       const burn = document.createElement("div");

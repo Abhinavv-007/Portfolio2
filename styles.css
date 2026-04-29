@@ -1,26 +1,5 @@
-@font-face {
-  font-family: "Canopee";
-  src: url("assets/fonts/Canopee.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Domaine";
-  src: url("assets/fonts/DomaineDispCondMedium.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Domaine";
-  src: url("assets/fonts/DomaineDispCond-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
+/* Display font is now Playfair Display (Google Fonts) — loaded via <link> in HTML.
+   The legacy Canopee / Domaine condensed faces had a malformed G and O. */
 
 :root {
   --paper: #d6ccbd;
@@ -36,7 +15,7 @@
   --blue: #253f54;
   --green: #46513c;
   --paper-shadow: 0 28px 70px rgba(26, 25, 22, 0.22);
-  --display: "Domaine", "Canopee", Georgia, serif;
+  --display: "Playfair Display", "Cormorant Garamond", Georgia, "Times New Roman", serif;
   --body: Georgia, "Times New Roman", serif;
   --mono: "Courier New", Courier, monospace;
   --ease: cubic-bezier(0.19, 1, 0.22, 1);
@@ -138,14 +117,22 @@ textarea {
   gap: 1rem;
   padding: 2rem;
   color: var(--ink);
+  /* Charred corners + ember bloom on the paper itself, layered above the kraft tint */
   background:
+    radial-gradient(circle at 96% 4%, rgba(255, 200, 110, 0.72) 0%, rgba(209, 90, 53, 0.55) 8%, rgba(26, 25, 22, 0.55) 18%, rgba(26, 25, 22, 0.0) 32%),
+    radial-gradient(circle at 4% 96%, rgba(255, 188, 88, 0.55) 0%, rgba(163, 49, 40, 0.5) 9%, rgba(26, 25, 22, 0.45) 18%, rgba(26, 25, 22, 0.0) 30%),
+    radial-gradient(circle at 4% 4%, rgba(26, 25, 22, 0.40) 0%, rgba(26, 25, 22, 0.12) 9%, transparent 18%),
+    radial-gradient(circle at 96% 96%, rgba(26, 25, 22, 0.40) 0%, rgba(26, 25, 22, 0.12) 9%, transparent 18%),
     linear-gradient(180deg, rgba(255, 248, 226, 0.45), rgba(214, 204, 189, 0)),
     var(--paper);
-  box-shadow: 0 42px 90px rgba(0, 0, 0, 0.58);
+  box-shadow:
+    0 42px 90px rgba(0, 0, 0, 0.58),
+    0 0 4rem rgba(209, 90, 53, 0.18);
   transform: translateY(-64vh) rotate(7deg) scale(0.62);
   animation: paperEntry 1180ms var(--ease) forwards;
 }
 
+/* Top + bottom torn ember edges */
 .intro-paper::before,
 .intro-paper::after {
   content: "";
@@ -160,9 +147,8 @@ textarea {
     radial-gradient(2rem 0.9rem at 49% 0, transparent 54%, rgba(209, 90, 53, 0.78) 56%, transparent 74%),
     radial-gradient(1.35rem 0.7rem at 70% 0, transparent 54%, rgba(26, 25, 22, 0.72) 56%, transparent 72%),
     radial-gradient(1.8rem 0.8rem at 91% 0, transparent 54%, rgba(163, 49, 40, 0.75) 56%, transparent 72%);
-  filter: blur(0.1px) drop-shadow(0 0 8px rgba(209, 90, 53, 0.42));
-  opacity: 0.82;
-  animation: burnFlicker 760ms steps(2, end) infinite;
+  opacity: 0.85;
+  animation: burnFlicker 760ms steps(2, end) 6;
 }
 
 .intro-paper::before {
@@ -319,9 +305,11 @@ textarea {
   justify-self: center;
   min-width: 0;
   max-width: 100%;
-  font-family: "Canopee", var(--display);
+  font-family: var(--display);
+  font-weight: 900;
   font-size: clamp(3rem, 6vw, 5rem);
   line-height: 0.86;
+  letter-spacing: -0.01em;
   text-align: center;
   text-transform: uppercase;
 }
@@ -3665,7 +3653,7 @@ body.menu-open .menu-button:hover {
 }
 .case-by-the-numbers strong {
   display: block;
-  font-family: "Canopee", var(--display);
+  font-family: var(--display);
   font-size: clamp(2.4rem, 5vw, 3.4rem);
   line-height: 0.95;
   color: var(--red);
@@ -3702,7 +3690,7 @@ body.menu-open .menu-button:hover {
   margin-bottom: 0.9rem;
 }
 .case-end-card h3 {
-  font-family: "Canopee", var(--display);
+  font-family: var(--display);
   font-size: clamp(1.8rem, 3.6vw, 2.6rem);
   line-height: 1.05;
   text-align: center;
@@ -3814,73 +3802,6 @@ body.menu-open .menu-button:hover {
 .work-detail-card:focus-within .detail-copy h2 {
   color: var(--red);
   transform: translateX(0.15rem);
-}
-
-/* =========================================================
-   Burning-card hover — every project / detail card chars on hover
-   ========================================================= */
-.work-detail-card,
-.project-card {
-  position: relative;
-  isolation: isolate;
-}
-
-/* Charred corner ember + scorch overlay. Pure CSS, GPU-friendly: opacity + transform. */
-.work-detail-card::before,
-.project-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 96% 6%, rgba(255, 188, 88, 0.85) 0%, rgba(209, 90, 53, 0.55) 18%, rgba(26, 25, 22, 0.0) 36%),
-    radial-gradient(circle at 4% 94%, rgba(255, 188, 88, 0.55) 0%, rgba(163, 49, 40, 0.42) 12%, rgba(26, 25, 22, 0.0) 28%),
-    /* charred edge band along top + right (looks like burnt paper) */
-    linear-gradient(170deg, rgba(26, 25, 22, 0.55) 0%, rgba(26, 25, 22, 0.18) 6%, transparent 14%),
-    linear-gradient(260deg, rgba(26, 25, 22, 0.45) 0%, rgba(26, 25, 22, 0.12) 5%, transparent 12%);
-  opacity: 0;
-  transition: opacity 420ms ease;
-  z-index: 2;
-  mix-blend-mode: multiply;
-}
-.work-detail-card::after,
-.project-card::after {
-  content: "";
-  position: absolute;
-  top: -0.25rem;
-  right: -0.25rem;
-  width: 2.4rem;
-  height: 2.4rem;
-  pointer-events: none;
-  background: radial-gradient(circle at 80% 20%,
-    rgba(255, 220, 130, 0.95) 0%,
-    rgba(255, 188, 88, 0.85) 18%,
-    rgba(209, 90, 53, 0.65) 38%,
-    rgba(163, 49, 40, 0.0) 65%);
-  opacity: 0;
-  transform: scale(0.6);
-  transform-origin: 80% 20%;
-  transition: opacity 380ms ease, transform 520ms var(--ease);
-  z-index: 3;
-  border-top-right-radius: 50%;
-}
-.work-detail-card:hover::before,
-.work-detail-card:focus-within::before,
-.project-card:hover::before,
-.project-card:focus-within::before {
-  opacity: 1;
-}
-.work-detail-card:hover::after,
-.work-detail-card:focus-within::after,
-.project-card:hover::after,
-.project-card:focus-within::after {
-  opacity: 1;
-  transform: scale(1.4);
-  animation: cardEmberFlicker 1.6s steps(2, end) 3;
-}
-@keyframes cardEmberFlicker {
-  0%, 100% { filter: none; }
-  50%      { filter: brightness(1.18); }
 }
 
 /* Tag pills: bolder hover (ember underline + slight scale) */
