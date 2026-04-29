@@ -3884,41 +3884,6 @@ body.menu-open .menu-button:hover {
   letter-spacing: 0;
 }
 
-/* Reveal animation: ensure content is visible by default and animates in.
-   Existing IntersectionObserver toggles .reveal.in. Speed it up a touch. */
-.reveal {
-  opacity: 0;
-  transform: translateY(14px);
-  transition: opacity 480ms var(--ease), transform 480ms var(--ease);
-  will-change: opacity, transform;
-}
-.reveal.in,
-.reveal.is-visible {
-  opacity: 1;
-  transform: none;
-}
-
-/* Section banner ember underline draws in on scroll */
-.section-banner {
-  position: relative;
-}
-.section-banner::after {
-  content: "";
-  position: absolute;
-  left: 2.5rem;
-  right: 2.5rem;
-  bottom: -2px;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--red), transparent);
-  transform: scaleX(0);
-  transform-origin: 50% 50%;
-  transition: transform 720ms var(--ease);
-}
-.section-banner.in::after,
-.section-banner.is-visible::after {
-  transform: scaleX(1);
-}
-
 /* Page-level helper: gentle hero kicker fade so it reads as breaking news */
 .page-lede .section-kicker {
   position: relative;
