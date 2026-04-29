@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Contact Abhinav Raj for AI product builds, full-stack web systems, portfolio work, and collaborations.">
+  <title>Contact - The Digital Journal</title>
+  <link rel="preload" href="assets/fonts/Canopee.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/DomaineDispCondMedium.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="icon" href="assets/logo-transparent.png">
+  <link rel="stylesheet" href="styles.css?v=case-study-1">
+</head>
+<body data-page="contact">
+  <div class="grain" aria-hidden="true"></div>
+
+  <div class="intro" aria-hidden="true">
+    <div class="intro-paper">
+      <div class="intro-bar"></div>
+      <div class="intro-title">Get In Touch</div>
+      <div class="intro-line"></div>
+    </div>
+  </div>
+
+  <div class="menu-curtain" id="menuCurtain" aria-hidden="true">
+    <button class="menu-close" type="button" data-menu-close aria-label="Close navigation">
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="menu-panel" aria-label="Full screen navigation">
+      <a class="hover-cut" href="index.html" data-menu-close><span>Index</span></a>
+      <a class="hover-cut" href="work.html" data-menu-close><span>Work</span></a>
+      <a class="hover-cut" href="about.html" data-menu-close><span>About</span></a>
+      <a class="hover-cut" href="contact.html" data-menu-close><span>Contact</span></a>
+      <div class="menu-socials" data-socials></div>
+    </nav>
+  </div>
+
+  <button class="menu-button" type="button" id="menuButton" aria-label="Open navigation" aria-expanded="false">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <main class="site-shell">
+    <header class="topline" aria-label="Current time">
+      <div id="clock">IST</div>
+    </header>
+
+    <nav class="masthead" aria-label="Primary navigation">
+      <a class="brand-logo" href="index.html" aria-label="Home">
+        <img src="assets/logo-transparent.png" alt="">
+      </a>
+      <a class="journal-name" href="index.html">The Digital Journal</a>
+      <a class="masthead-contact hover-cut" href="contact.html"><span>Let's build<br>something real</span></a>
+    </nav>
+
+    <div class="folio-strip" aria-hidden="true">
+      <span class="folio-section">Classifieds</span>
+      <span class="volume-mark">Vol. 1 &middot; Contact</span>
+      <span class="folio-page">Correspondence</span>
+    </div>
+
+    <div class="section-banner">Open for Business &middot; Collaborations Welcome</div>
+
+    <section class="contact-page" aria-labelledby="contactTitle">
+      <div class="contact-hero">
+        <div>
+          <div class="kicker">Correspondence Desk</div>
+          <h1 id="contactTitle">Need a helping hand?</h1>
+          <p class="deck">Send the brief, the messy idea, or the half-built thing. I will help turn it into something sharp enough to ship.</p>
+          <div class="byline">By <strong>Abhinav Raj</strong> &middot; Replying within 24 hours</div>
+        </div>
+        <img class="stamp-image contact-stamp" src="assets/Untitled design (2).png" alt="Abhinav Raj builder stamp">
+      </div>
+
+      <div class="contact-columns">
+        <article class="contact-column reveal">
+          <div class="section-kicker">Email</div>
+          <a class="email-link hover-cut" href="mailto:hello@abhnv.in"><span>hello@abhnv.in</span></a>
+          <p>Open to collaborations worldwide, freelance work, product builds, and full-time opportunities.</p>
+        </article>
+        <article class="contact-column reveal">
+          <div class="section-kicker">Socials</div>
+          <div class="footer-socials contact-socials" data-socials></div>
+        </article>
+        <article class="contact-column contact-form-column reveal">
+          <div class="section-kicker">Quick Note</div>
+          <form class="contact-form" id="contactForm" data-resend-ready>
+            <label>
+              <span>Name</span>
+              <input type="text" name="name" autocomplete="name" placeholder="Your name">
+            </label>
+            <label>
+              <span>Email</span>
+              <input type="email" name="email" autocomplete="email" placeholder="you@example.com">
+            </label>
+            <label>
+              <span>Message</span>
+              <textarea name="message" rows="5" placeholder="Tell me what we are building"></textarea>
+            </label>
+            <button type="submit">Open Mail Draft</button>
+          </form>
+        </article>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="marquee" data-marquee></div>
+      <div class="footer-row">
+        <a class="hover-cut" href="index.html"><span>Index</span></a>
+        <a class="hover-cut" href="work.html"><span>All Work</span></a>
+      </div>
+    </footer>
+  </main>
+
+  <script src="data.js?v=case-study-1"></script>
+  <script src="app.js?v=case-study-1"></script>
+</body>
+</html>

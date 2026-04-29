@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="About Abhinav Raj, an AI builder and full-stack developer creating editorial web experiences and intelligent product systems.">
+  <title>About - The Digital Journal</title>
+  <link rel="preload" href="assets/fonts/Canopee.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/DomaineDispCondMedium.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="icon" href="assets/logo-transparent.png">
+  <link rel="stylesheet" href="styles.css?v=case-study-1">
+</head>
+<body data-page="about">
+  <div class="grain" aria-hidden="true"></div>
+
+  <div class="intro" aria-hidden="true">
+    <div class="intro-paper">
+      <div class="intro-bar"></div>
+      <div class="intro-title">Builder Notes</div>
+      <div class="intro-line"></div>
+    </div>
+  </div>
+
+  <div class="menu-curtain" id="menuCurtain" aria-hidden="true">
+    <button class="menu-close" type="button" data-menu-close aria-label="Close navigation">
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="menu-panel" aria-label="Full screen navigation">
+      <a class="hover-cut" href="index.html" data-menu-close><span>Index</span></a>
+      <a class="hover-cut" href="work.html" data-menu-close><span>Work</span></a>
+      <a class="hover-cut" href="about.html" data-menu-close><span>About</span></a>
+      <a class="hover-cut" href="contact.html" data-menu-close><span>Contact</span></a>
+      <div class="menu-socials" data-socials></div>
+    </nav>
+  </div>
+
+  <button class="menu-button" type="button" id="menuButton" aria-label="Open navigation" aria-expanded="false">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <main class="site-shell">
+    <header class="topline" aria-label="Current time">
+      <div id="clock">IST</div>
+    </header>
+
+    <nav class="masthead" aria-label="Primary navigation">
+      <a class="brand-logo" href="index.html" aria-label="Home">
+        <img src="assets/logo-transparent.png" alt="">
+      </a>
+      <a class="journal-name" href="index.html">The Digital Journal</a>
+      <a class="masthead-contact hover-cut" href="contact.html"><span>Let's build<br>something real</span></a>
+    </nav>
+
+    <div class="folio-strip" aria-hidden="true">
+      <span class="folio-section">Editorial</span>
+      <span class="volume-mark">Vol. 1 &middot; Profile</span>
+      <span class="folio-page">About</span>
+    </div>
+
+    <div class="section-banner">Builder Notes &middot; From the Editor</div>
+
+    <section class="about-page" aria-labelledby="aboutPageTitle">
+      <div class="about-cover">
+        <figure class="newspaper-cutting reveal">
+          <img src="assets/avatar-star-newspaper.png" alt="Editorial portrait of Abhinav Raj">
+          <figcaption class="editorial-caption"><span class="caption-number">Fig. 1</span> Editor-in-Chief, The Digital Journal</figcaption>
+        </figure>
+        <div class="about-headline reveal">
+          <div class="kicker">Field Report</div>
+          <h1 id="aboutPageTitle">About Me</h1>
+          <p>I mix code with curiosity, AI with intention, and design with clarity. I like building products that feel useful before they feel loud.</p>
+          <div class="byline">By <strong>Abhinav Raj</strong> &middot; Product Engineer</div>
+        </div>
+        <img class="stamp-image about-stamp reveal" src="assets/Untitled design (2).png" alt="Abhinav Raj builder stamp">
+      </div>
+
+      <div class="builder-grid about-grid">
+        <div class="side-label">Builder</div>
+        <article class="about-copy reveal">
+          <div class="section-kicker">Field Notes</div>
+          <h2>Build fast.<br>Think clearly.<br>Ship with taste.</h2>
+          <p>I build web products, AI workflows, research pages, and product interfaces that turn vague ideas into working systems. The sweet spot is engineering, product thinking, and editorial-grade web design.</p>
+          <a class="text-link hover-cut" href="work.html"><span>See the work</span></a>
+        </article>
+        <article class="notes-panel reveal">
+          <div class="section-kicker">Project Notes</div>
+          <div data-notes-list></div>
+        </article>
+        <article class="scratch-panel reveal">
+          <div class="section-kicker">Thoughts in Progress</div>
+          <ul>
+            <li>Agentic tools</li>
+            <li>Privacy by design</li>
+            <li>Interfaces with restraint</li>
+            <li>Human first AI</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="marquee" data-marquee></div>
+      <div class="footer-row">
+        <a class="hover-cut" href="work.html"><span>All Work</span></a>
+        <a class="hover-cut" href="contact.html"><span>Email Me</span></a>
+      </div>
+    </footer>
+  </main>
+
+  <script src="data.js?v=case-study-1"></script>
+  <script src="app.js?v=case-study-1"></script>
+</body>
+</html>
