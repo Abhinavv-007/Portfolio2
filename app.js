@@ -518,7 +518,9 @@
     const lockMenuButton = () => {
       button.style.setProperty("position", "fixed", "important");
       button.style.setProperty("top", "max(0.7rem, env(safe-area-inset-top, 0px))", "important");
-      button.style.setProperty("right", "max(0.85rem, env(safe-area-inset-right, 0px))", "important");
+      // Match the CSS centering calc so on viewports wider than 112rem the button
+      // hugs the .site-shell content edge instead of floating in the side margin.
+      button.style.setProperty("right", "max(0.85rem, calc((100vw - min(100vw, 112rem)) / 2 + 0.85rem))", "important");
       button.style.setProperty("left", "auto", "important");
       button.style.setProperty("bottom", "auto", "important");
       button.style.setProperty("z-index", "5500", "important");
