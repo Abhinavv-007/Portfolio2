@@ -3653,7 +3653,7 @@ body.menu-open .menu-button:hover {
 }
 .case-by-the-numbers strong {
   display: block;
-  font-family: "Canopee", var(--display);
+  font-family: var(--display);
   font-size: clamp(2.4rem, 5vw, 3.4rem);
   line-height: 0.95;
   color: var(--red);
@@ -3690,7 +3690,7 @@ body.menu-open .menu-button:hover {
   margin-bottom: 0.9rem;
 }
 .case-end-card h3 {
-  font-family: "Canopee", var(--display);
+  font-family: var(--display);
   font-size: clamp(1.8rem, 3.6vw, 2.6rem);
   line-height: 1.05;
   text-align: center;

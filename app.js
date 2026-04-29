@@ -511,15 +511,17 @@
     // Belt-and-suspenders: lock the menu button to the viewport via inline styles.
     // This neutralises any stylesheet override or ancestor transform that could
     // turn position:fixed into position:absolute behavior.
+    // setProperty with 'important' is required because styles.css declares
+    // top/right/z-index with !important, which would silently win over a plain
+    // inline style. Using `important` priority on the inline declaration lets us
+    // override the stylesheet's !important from JS.
     const lockMenuButton = () => {
-      Object.assign(button.style, {
-        position: "fixed",
-        top: "max(0.7rem, env(safe-area-inset-top, 0px))",
-        right: "max(0.85rem, env(safe-area-inset-right, 0px))",
-        left: "auto",
-        bottom: "auto",
-        zIndex: "5500"
-      });
+      button.style.setProperty("position", "fixed", "important");
+      button.style.setProperty("top", "max(0.7rem, env(safe-area-inset-top, 0px))", "important");
+      button.style.setProperty("right", "max(0.85rem, env(safe-area-inset-right, 0px))", "important");
+      button.style.setProperty("left", "auto", "important");
+      button.style.setProperty("bottom", "auto", "important");
+      button.style.setProperty("z-index", "5500", "important");
     };
     lockMenuButton();
     // Paranoid: re-assert on every scroll + resize so even if some other code or
