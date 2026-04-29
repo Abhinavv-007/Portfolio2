@@ -3540,7 +3540,15 @@ body.menu-open .menu-button:hover {
     transform: translateY(-0.35rem) rotate(-45deg);
   }
   .menu-panel > a {
-    padding: 0.05rem 0.2rem;
+    padding: 0.05rem 0.2rem 0.05rem 2.6rem; /* keep gutter for numeral + ember rule on mobile */
+  }
+  .menu-panel > a::before {
+    left: 0.2rem;
+    font-size: 0.7rem;
+  }
+  .menu-panel > a::after {
+    left: 1.25rem;
+    width: 0.9rem;
   }
 }
 
