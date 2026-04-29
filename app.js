@@ -511,14 +511,21 @@
     // Belt-and-suspenders: lock the menu button to the viewport via inline styles.
     // This neutralises any stylesheet override or ancestor transform that could
     // turn position:fixed into position:absolute behavior.
-    Object.assign(button.style, {
-      position: "fixed",
-      top: "max(0.85rem, env(safe-area-inset-top, 0px))",
-      right: "max(1rem, env(safe-area-inset-right, 0px))",
-      left: "auto",
-      bottom: "auto",
-      zIndex: "5500"
-    });
+    const lockMenuButton = () => {
+      Object.assign(button.style, {
+        position: "fixed",
+        top: "max(0.7rem, env(safe-area-inset-top, 0px))",
+        right: "max(0.85rem, env(safe-area-inset-right, 0px))",
+        left: "auto",
+        bottom: "auto",
+        zIndex: "5500"
+      });
+    };
+    lockMenuButton();
+    // Paranoid: re-assert on every scroll + resize so even if some other code or
+    // browser quirk tries to shift the button, it snaps back to top-right.
+    window.addEventListener("scroll", lockMenuButton, { passive: true });
+    window.addEventListener("resize", lockMenuButton, { passive: true });
 
     if (!curtain.querySelector(".menu-burn")) {
       const burn = document.createElement("div");
