@@ -526,10 +526,18 @@
       button.style.setProperty("z-index", "5500", "important");
     };
     lockMenuButton();
-    // Paranoid: re-assert on every scroll + resize so even if some other code or
-    // browser quirk tries to shift the button, it snaps back to top-right.
-    window.addEventListener("scroll", lockMenuButton, { passive: true });
-    window.addEventListener("resize", lockMenuButton, { passive: true });
+    // Resize-only safety net (rAF-throttled). Scroll can't affect inline styles
+    // once they're set with !important priority, so a scroll listener would just
+    // burn CPU re-writing constants on every frame.
+    let lockFrame = 0;
+    const reLock = () => {
+      if (lockFrame) return;
+      lockFrame = requestAnimationFrame(() => {
+        lockFrame = 0;
+        lockMenuButton();
+      });
+    };
+    window.addEventListener("resize", reLock, { passive: true });
 
     if (!curtain.querySelector(".menu-burn")) {
       const burn = document.createElement("div");
