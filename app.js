@@ -436,6 +436,25 @@
     if (button.parentElement !== document.body) {
       document.body.appendChild(button);
     }
+
+    button.classList.add("menu-toggle");
+    button.setAttribute("aria-controls", "menuCurtain");
+
+    if (!curtain.querySelector(".menu-burn")) {
+      const burn = document.createElement("div");
+      burn.className = "menu-burn";
+      burn.setAttribute("aria-hidden", "true");
+      burn.innerHTML = `
+        <div class="menu-burn-paper">
+          <div class="menu-burn-edge menu-burn-edge--top"></div>
+          <div class="menu-burn-edge menu-burn-edge--bottom"></div>
+          <div class="menu-burn-grain"></div>
+        </div>
+        <div class="menu-burn-ember" aria-hidden="true"></div>
+      `;
+      curtain.insertBefore(burn, curtain.firstChild);
+    }
+
     const currentPage = document.body.dataset.page;
     const base = getBasePrefix();
 
@@ -455,17 +474,146 @@
       });
     }
 
-    const setMenu = (isOpen) => {
-      curtain.classList.toggle("active", isOpen);
-      curtain.setAttribute("aria-hidden", String(!isOpen));
-      button.setAttribute("aria-expanded", String(isOpen));
-      document.body.classList.toggle("menu-open", isOpen);
+    let isOpen = false;
+    const setMenu = (open) => {
+      isOpen = open;
+      curtain.classList.toggle("active", open);
+      curtain.classList.toggle("closing", !open);
+      curtain.setAttribute("aria-hidden", String(!open));
+      button.setAttribute("aria-expanded", String(open));
+      button.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
+      document.body.classList.toggle("menu-open", open);
+      if (!open) {
+        window.setTimeout(() => curtain.classList.remove("closing"), 720);
+      }
     };
 
-    button.addEventListener("click", () => setMenu(true));
-    $$("[data-menu-close]").forEach((el) => el.addEventListener("click", () => setMenu(false)));
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      setMenu(!isOpen);
+    });
+    $$("[data-menu-close]").forEach((el) => {
+      if (el === button) return;
+      el.addEventListener("click", () => setMenu(false));
+    });
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") setMenu(false);
+      if (event.key === "Escape" && isOpen) setMenu(false);
+    });
+  }
+
+  function setupScrollProgress() {
+    const bar = document.createElement("div");
+    bar.className = "scroll-progress";
+    bar.setAttribute("aria-hidden", "true");
+    document.body.appendChild(bar);
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const doc = document.documentElement;
+      const max = (doc.scrollHeight - doc.clientHeight) || 1;
+      const ratio = Math.min(1, Math.max(0, window.scrollY / max));
+      bar.style.transform = `scaleX(${ratio})`;
+    };
+    const onScroll = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+  }
+
+  function setupCursor() {
+    if (window.matchMedia("(hover: none), (pointer: coarse)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const dot = document.createElement("div");
+    dot.className = "ink-cursor ink-cursor--dot";
+    const ring = document.createElement("div");
+    ring.className = "ink-cursor ink-cursor--ring";
+    document.body.appendChild(dot);
+    document.body.appendChild(ring);
+
+    let dx = 0, dy = 0, rx = 0, ry = 0, tx = 0, ty = 0;
+    const lerp = (a, b, t) => a + (b - a) * t;
+
+    window.addEventListener("pointermove", (event) => {
+      tx = event.clientX;
+      ty = event.clientY;
+      dx = tx;
+      dy = ty;
+      dot.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
+    }, { passive: true });
+
+    const tick = () => {
+      rx = lerp(rx, tx, 0.18);
+      ry = lerp(ry, ty, 0.18);
+      ring.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
+      window.requestAnimationFrame(tick);
+    };
+    window.requestAnimationFrame(tick);
+
+    const setHover = (on) => ring.classList.toggle("is-hover", on);
+    const interactiveSelector = 'a, button, [role="button"], input, textarea, .project-card, [data-rail-prev], [data-rail-next]';
+    document.addEventListener("pointerover", (event) => {
+      if (event.target.closest(interactiveSelector)) setHover(true);
+    });
+    document.addEventListener("pointerout", (event) => {
+      if (event.target.closest(interactiveSelector)) setHover(false);
+    });
+    document.addEventListener("pointerdown", () => ring.classList.add("is-down"));
+    document.addEventListener("pointerup", () => ring.classList.remove("is-down"));
+    document.addEventListener("mouseleave", () => {
+      dot.style.opacity = "0";
+      ring.style.opacity = "0";
+    });
+    document.addEventListener("mouseenter", () => {
+      dot.style.opacity = "";
+      ring.style.opacity = "";
+    });
+  }
+
+  function setupHeroSplit() {
+    const heading = $(".hero-word h1");
+    if (!heading || heading.dataset.split === "true") return;
+    const text = heading.textContent || "";
+    heading.textContent = "";
+    heading.dataset.split = "true";
+    const words = text.split(/(\s+)/);
+    let charIndex = 0;
+    words.forEach((word) => {
+      if (/^\s+$/.test(word)) {
+        heading.appendChild(document.createTextNode(word));
+        return;
+      }
+      const wordSpan = document.createElement("span");
+      wordSpan.className = "hero-letter-word";
+      Array.from(word).forEach((ch) => {
+        const span = document.createElement("span");
+        span.className = "hero-letter";
+        span.style.setProperty("--letter-delay", `${charIndex * 38}ms`);
+        span.textContent = ch;
+        wordSpan.appendChild(span);
+        charIndex += 1;
+      });
+      heading.appendChild(wordSpan);
+    });
+  }
+
+  function setupMagneticButtons() {
+    if (window.matchMedia("(hover: none), (pointer: coarse)").matches) return;
+    const targets = $$("[data-rail-prev], [data-rail-next], .card-visit, .contact-form button[type=submit]");
+    targets.forEach((target) => {
+      target.addEventListener("pointermove", (event) => {
+        const rect = target.getBoundingClientRect();
+        const mx = event.clientX - rect.left - rect.width / 2;
+        const my = event.clientY - rect.top - rect.height / 2;
+        target.style.setProperty("--mx", `${mx * 0.18}px`);
+        target.style.setProperty("--my", `${my * 0.22}px`);
+      });
+      target.addEventListener("pointerleave", () => {
+        target.style.setProperty("--mx", `0px`);
+        target.style.setProperty("--my", `0px`);
+      });
     });
   }
 
@@ -595,4 +743,8 @@
   setupIntro();
   setupNavTransitions();
   setupContactForm();
+  setupScrollProgress();
+  setupHeroSplit();
+  setupMagneticButtons();
+  setupCursor();
 })();
