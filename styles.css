@@ -40,9 +40,9 @@
   --body: Georgia, "Times New Roman", serif;
   --mono: "Courier New", Courier, monospace;
   --ease: cubic-bezier(0.19, 1, 0.22, 1);
-  --menu-control-size: 3.45rem;
-  --menu-control-top: 0.8rem;
-  --menu-control-right: max(2.5rem, calc((100vw - min(100vw, 112rem)) / 2 + 2.5rem));
+  --menu-control-size: 2.55rem;
+  --menu-control-top: 0.7rem;
+  --menu-control-right: max(0.85rem, calc((100vw - min(100vw, 112rem)) / 2 + 0.85rem));
 }
 
 *,
@@ -338,18 +338,20 @@ textarea {
 .menu-button {
   position: fixed !important;
   top: calc(env(safe-area-inset-top, 0px) + 0.85rem) !important;
-  right: max(1rem, calc((100vw - min(100vw, 112rem)) / 2 + 2.5rem)) !important;
+  right: max(0.85rem, calc((100vw - min(100vw, 112rem)) / 2 + 0.85rem)) !important;
   z-index: 5000;
   width: var(--menu-control-size);
   height: var(--menu-control-size);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 0.38rem;
-  border: 1px solid var(--rule-strong);
-  padding: 0.48rem;
-  background: rgba(234, 223, 206, 0.92);
-  box-shadow: 0 0.5rem 1.3rem rgba(26, 25, 22, 0.12);
+  gap: 0.32rem;
+  border: 1px solid rgba(26, 25, 22, 0.32);
+  padding: 0.42rem;
+  background: rgba(245, 240, 226, 0.55);
+  -webkit-backdrop-filter: blur(8px) saturate(1.05);
+  backdrop-filter: blur(8px) saturate(1.05);
+  box-shadow: 0 0.25rem 0.65rem rgba(26, 25, 22, 0.08);
   cursor: pointer;
   transform: translate3d(0, 0, 0);
 }
@@ -2104,9 +2106,9 @@ textarea {
 
 @media (max-width: 860px) {
   :root {
-    --menu-control-size: 3rem;
-    --menu-control-top: 0.6rem;
-    --menu-control-right: 1rem;
+    --menu-control-size: 2.4rem;
+    --menu-control-top: 0.55rem;
+    --menu-control-right: 0.75rem;
   }
 
   .topline,
@@ -2303,9 +2305,9 @@ textarea {
 
 @media (max-width: 520px) {
   :root {
-    --menu-control-size: 2.9rem;
-    --menu-control-top: 0.5rem;
-    --menu-control-right: 0.9rem;
+    --menu-control-size: 2.3rem;
+    --menu-control-top: 0.45rem;
+    --menu-control-right: 0.65rem;
   }
 
   .topline {
@@ -2928,7 +2930,7 @@ textarea {
 .menu-button:hover,
 .menu-button:focus-visible {
   transform: rotate(-1.5deg);
-  background: rgba(234, 223, 206, 1);
+  background: rgba(245, 240, 226, 0.85);
   outline: none;
 }
 
@@ -3039,28 +3041,22 @@ body.menu-open .menu-button:hover {
     radial-gradient(circle at 88% 88%, rgba(37, 63, 84, 0.07), transparent 22rem),
     linear-gradient(180deg, rgba(255, 248, 226, 0.55), rgba(214, 204, 189, 0)),
     var(--paper);
-  -webkit-mask-image: radial-gradient(
-    circle at 50% 50%,
-    transparent calc(var(--burn) - 6%),
-    rgba(0, 0, 0, 0.35) calc(var(--burn) - 1%),
-    rgba(0, 0, 0, 0.85) var(--burn),
-    #000 calc(var(--burn) + 14%)
-  );
-  mask-image: radial-gradient(
-    circle at 50% 50%,
-    transparent calc(var(--burn) - 6%),
-    rgba(0, 0, 0, 0.35) calc(var(--burn) - 1%),
-    rgba(0, 0, 0, 0.85) var(--burn),
-    #000 calc(var(--burn) + 14%)
-  );
-  -webkit-mask-mode: alpha;
-  mask-mode: alpha;
-  /* fallback for browsers without @property: simple opacity */
-  transition: opacity 880ms ease;
+  /* GPU-friendly reveal: paper layer is burnt away by shrinking a clip-path circle.
+     Default (closed) state covers the whole viewport; .active shrinks to nothing,
+     revealing the dark .menu-curtain underneath. Replaces the prior mask-image
+     animation which repainted the entire viewport every frame. */
+  clip-path: circle(150% at 50% 50%);
+  transition: clip-path 520ms cubic-bezier(0.42, 0.08, 0.55, 1.0);
+  opacity: 1;
 }
 
-.menu-curtain .menu-burn-paper { opacity: 1; }
-.menu-curtain.closing .menu-burn-paper { opacity: 0; }
+.menu-curtain.active .menu-burn-paper {
+  clip-path: circle(0% at 50% 50%);
+}
+.menu-curtain.closing .menu-burn-paper {
+  clip-path: circle(150% at 50% 50%);
+  transition: clip-path 360ms cubic-bezier(0.45, 0, 0.55, 1);
+}
 
 /* Torn ember edges (top + bottom) — reuses intro burnFlicker */
 .menu-burn-edge {
@@ -3076,9 +3072,8 @@ body.menu-open .menu-button:hover {
     radial-gradient(1.35rem 0.7rem at 70% 0, transparent 54%, rgba(26, 25, 22, 0.7) 56%, transparent 72%),
     radial-gradient(1.8rem 0.8rem at 86% 0, transparent 54%, rgba(163, 49, 40, 0.78) 56%, transparent 72%),
     radial-gradient(1.55rem 0.75rem at 96% 0, transparent 54%, rgba(26, 25, 22, 0.78) 56%, transparent 72%);
-  filter: blur(0.1px) drop-shadow(0 0 8px rgba(209, 90, 53, 0.45));
   opacity: 0.85;
-  animation: burnFlicker 720ms steps(2, end) infinite;
+  animation: burnFlicker 720ms steps(2, end) 4;
   pointer-events: none;
 }
 
@@ -3096,50 +3091,31 @@ body.menu-open .menu-button:hover {
   pointer-events: none;
 }
 
-/* Ember ring tracking the burn front */
+/* Ember ring — replaced expensive --burn-tracked radial-gradient with a cheap
+   single-shot pulse so it doesn't paint the entire viewport every frame. */
 .menu-burn-ember {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background:
-    radial-gradient(
-      circle at 50% 50%,
-      rgba(209, 90, 53, 0) 0%,
-      rgba(209, 90, 53, 0) calc(var(--burn) - 8%),
-      rgba(209, 90, 53, 0.55) calc(var(--burn) - 2%),
-      rgba(255, 188, 88, 0.85) var(--burn),
-      rgba(209, 90, 53, 0.45) calc(var(--burn) + 4%),
-      rgba(209, 90, 53, 0) calc(var(--burn) + 12%)
-    );
-  filter: blur(2px) drop-shadow(0 0 14px rgba(209, 90, 53, 0.6));
-  mix-blend-mode: screen;
-  opacity: 0.95;
+  background: radial-gradient(circle at 50% 50%,
+    rgba(255, 188, 88, 0.0) 0%,
+    rgba(255, 188, 88, 0.0) 38%,
+    rgba(255, 188, 88, 0.48) 50%,
+    rgba(209, 90, 53, 0.30) 62%,
+    rgba(209, 90, 53, 0.0) 78%);
+  opacity: 0;
+  transform: scale(0.05);
+  will-change: transform, opacity;
 }
 
-@keyframes emberPulse {
-  50% {
-    filter: blur(3px) drop-shadow(0 0 22px rgba(255, 188, 88, 0.78));
-    opacity: 0.78;
-  }
+.menu-curtain.active .menu-burn-ember {
+  animation: emberSweep 520ms cubic-bezier(0.42, 0.08, 0.55, 1.0) forwards;
 }
 
-/* Drive --burn during open — tightened so the menu reveals quickly */
-.menu-curtain.active {
-  animation: burnExpand 540ms cubic-bezier(0.42, 0.08, 0.55, 1.0) 30ms forwards;
-}
-
-@keyframes burnExpand {
-  0%   { --burn: 0%; }
-  100% { --burn: 175%; }
-}
-
-.menu-curtain.closing {
-  animation: burnCollapse 360ms cubic-bezier(0.45, 0, 0.55, 1) forwards;
-}
-
-@keyframes burnCollapse {
-  0%   { --burn: 175%; }
-  100% { --burn: 0%; }
+@keyframes emberSweep {
+  0%   { opacity: 0; transform: scale(0.05); }
+  35%  { opacity: 1; transform: scale(0.7); }
+  100% { opacity: 0; transform: scale(1.6); }
 }
 
 /* ---- Menu link hover (editorial: left ember rule + numeral, no strikethrough) ---- */
@@ -3794,21 +3770,13 @@ body.menu-open .menu-button:hover {
    Polish pass 3 — calmer hover, snappier nav, work polish
    ========================================================= */
 
-/* Floating ember halo so the menu button reads as elevated.
-   Wrapper hover-glow lives on the parent button via box-shadow only,
-   to avoid colliding with the existing ::before focus ring. */
-.menu-button {
-  box-shadow:
-    0 0.5rem 1.3rem rgba(26, 25, 22, 0.18),
-    0 0 0 1px rgba(255, 251, 235, 0.55) inset;
-}
+/* Compact floating menu button — restrained shadow so it reads as glassy, not heavy */
 .menu-button:hover,
 .menu-button:focus-visible,
 .menu-button.igniting {
   box-shadow:
-    0 0.6rem 1.6rem rgba(26, 25, 22, 0.22),
-    0 0 0 1px rgba(255, 188, 88, 0.5) inset,
-    0 0 1.6rem rgba(209, 90, 53, 0.45);
+    0 0.35rem 0.85rem rgba(26, 25, 22, 0.14),
+    0 0 0.9rem rgba(209, 90, 53, 0.28);
 }
 
 /* Work-detail-card: noticeable hover (kicker glow, title shift, ember underline) */
@@ -3846,6 +3814,73 @@ body.menu-open .menu-button:hover {
 .work-detail-card:focus-within .detail-copy h2 {
   color: var(--red);
   transform: translateX(0.15rem);
+}
+
+/* =========================================================
+   Burning-card hover — every project / detail card chars on hover
+   ========================================================= */
+.work-detail-card,
+.project-card {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Charred corner ember + scorch overlay. Pure CSS, GPU-friendly: opacity + transform. */
+.work-detail-card::before,
+.project-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 96% 6%, rgba(255, 188, 88, 0.85) 0%, rgba(209, 90, 53, 0.55) 18%, rgba(26, 25, 22, 0.0) 36%),
+    radial-gradient(circle at 4% 94%, rgba(255, 188, 88, 0.55) 0%, rgba(163, 49, 40, 0.42) 12%, rgba(26, 25, 22, 0.0) 28%),
+    /* charred edge band along top + right (looks like burnt paper) */
+    linear-gradient(170deg, rgba(26, 25, 22, 0.55) 0%, rgba(26, 25, 22, 0.18) 6%, transparent 14%),
+    linear-gradient(260deg, rgba(26, 25, 22, 0.45) 0%, rgba(26, 25, 22, 0.12) 5%, transparent 12%);
+  opacity: 0;
+  transition: opacity 420ms ease;
+  z-index: 2;
+  mix-blend-mode: multiply;
+}
+.work-detail-card::after,
+.project-card::after {
+  content: "";
+  position: absolute;
+  top: -0.25rem;
+  right: -0.25rem;
+  width: 2.4rem;
+  height: 2.4rem;
+  pointer-events: none;
+  background: radial-gradient(circle at 80% 20%,
+    rgba(255, 220, 130, 0.95) 0%,
+    rgba(255, 188, 88, 0.85) 18%,
+    rgba(209, 90, 53, 0.65) 38%,
+    rgba(163, 49, 40, 0.0) 65%);
+  opacity: 0;
+  transform: scale(0.6);
+  transform-origin: 80% 20%;
+  transition: opacity 380ms ease, transform 520ms var(--ease);
+  z-index: 3;
+  border-top-right-radius: 50%;
+}
+.work-detail-card:hover::before,
+.work-detail-card:focus-within::before,
+.project-card:hover::before,
+.project-card:focus-within::before {
+  opacity: 1;
+}
+.work-detail-card:hover::after,
+.work-detail-card:focus-within::after,
+.project-card:hover::after,
+.project-card:focus-within::after {
+  opacity: 1;
+  transform: scale(1.4);
+  animation: cardEmberFlicker 1.6s steps(2, end) 3;
+}
+@keyframes cardEmberFlicker {
+  0%, 100% { filter: none; }
+  50%      { filter: brightness(1.18); }
 }
 
 /* Tag pills: bolder hover (ember underline + slight scale) */
