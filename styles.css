@@ -2822,3 +2822,672 @@ textarea {
     width: 100%;
   }
 }
+
+/* ============================================================
+   UI/UX OVERHAUL — interactive polish, menu morph, paper burn
+   ============================================================ */
+
+@property --burn {
+  syntax: '<length-percentage>';
+  initial-value: 0%;
+  inherits: true;
+}
+
+/* ---- Hide legacy separate close button (replaced by morphing menu-button) ---- */
+.menu-close {
+  display: none !important;
+}
+
+/* ---- Menu button morphs hamburger <-> X ---- */
+.menu-button {
+  z-index: 5200 !important;
+  border-radius: 2px;
+  transition:
+    transform 420ms var(--ease),
+    background 360ms ease,
+    border-color 360ms ease,
+    box-shadow 360ms ease;
+  will-change: transform;
+}
+
+.menu-button::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  transition: border-color 360ms ease, transform 460ms var(--ease), opacity 360ms ease;
+  opacity: 0;
+  transform: scale(0.94);
+  pointer-events: none;
+}
+
+.menu-button:hover,
+.menu-button:focus-visible {
+  transform: rotate(-1.5deg);
+  background: rgba(234, 223, 206, 1);
+  outline: none;
+}
+
+.menu-button:hover::before,
+.menu-button:focus-visible::before {
+  border-color: var(--rule-strong);
+  opacity: 1;
+  transform: scale(1.02);
+}
+
+/* keep span hover overrides idle (we no longer want the static color shift) */
+.menu-button:hover span:nth-child(1),
+.menu-button:focus-visible span:nth-child(1),
+.menu-button:hover span:nth-child(3),
+.menu-button:focus-visible span:nth-child(3) {
+  background: var(--ink);
+}
+
+.menu-button span {
+  position: relative;
+  transform-origin: 50% 50%;
+  transition:
+    transform 520ms cubic-bezier(0.7, 0, 0.2, 1),
+    opacity 280ms ease 0ms,
+    background 320ms ease,
+    width 420ms var(--ease);
+}
+
+/* Open state: morph to X */
+body.menu-open .menu-button {
+  background: rgba(26, 25, 22, 0.0);
+  border-color: rgba(234, 223, 206, 0.55);
+  box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.35);
+}
+
+body.menu-open .menu-button span {
+  background: var(--paper);
+}
+
+body.menu-open .menu-button span:nth-child(1) {
+  /* span gap is 0.38rem + span height 2px ≈ 0.505rem between center lines */
+  transform: translateY(0.505rem) rotate(45deg);
+}
+
+body.menu-open .menu-button span:nth-child(2) {
+  transform: scaleX(0.05);
+  opacity: 0;
+  transition:
+    transform 220ms cubic-bezier(0.7, 0, 0.2, 1),
+    opacity 180ms ease;
+}
+
+body.menu-open .menu-button span:nth-child(3) {
+  transform: translateY(-0.505rem) rotate(-45deg);
+}
+
+body.menu-open .menu-button:hover span:nth-child(1),
+body.menu-open .menu-button:focus-visible span:nth-child(1) {
+  background: var(--paper-light);
+}
+
+body.menu-open .menu-button:hover span:nth-child(3),
+body.menu-open .menu-button:focus-visible span:nth-child(3) {
+  background: var(--paper-light);
+}
+
+body.menu-open .menu-button:hover {
+  transform: rotate(8deg);
+}
+
+/* ---- Menu curtain — keep its own bg subtle while burn does the reveal ---- */
+.menu-curtain {
+  --burn: 0%;
+  transition: opacity 420ms ease, transform 720ms var(--ease), visibility 420ms;
+}
+
+.menu-curtain.active {
+  /* allow burn animation to be primary opener */
+  transition: opacity 220ms ease, transform 720ms var(--ease), visibility 220ms;
+}
+
+/* ---- Paper-burn reveal layer ---- */
+.menu-burn {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 320ms ease 480ms;
+}
+
+.menu-curtain.active .menu-burn {
+  opacity: 1;
+  transition: opacity 200ms ease 0ms;
+}
+
+.menu-curtain.closing .menu-burn {
+  opacity: 0;
+  transition: opacity 360ms ease 60ms;
+}
+
+.menu-burn-paper {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(180deg, rgba(26, 25, 22, 0.06) 0, rgba(26, 25, 22, 0.06) 1px, transparent 1px, transparent 5px),
+    radial-gradient(circle at 14% 8%, rgba(163, 49, 40, 0.08), transparent 24rem),
+    radial-gradient(circle at 88% 88%, rgba(37, 63, 84, 0.07), transparent 22rem),
+    linear-gradient(180deg, rgba(255, 248, 226, 0.55), rgba(214, 204, 189, 0)),
+    var(--paper);
+  -webkit-mask-image: radial-gradient(
+    circle at 50% 50%,
+    transparent calc(var(--burn) - 6%),
+    rgba(0, 0, 0, 0.35) calc(var(--burn) - 1%),
+    rgba(0, 0, 0, 0.85) var(--burn),
+    #000 calc(var(--burn) + 14%)
+  );
+  mask-image: radial-gradient(
+    circle at 50% 50%,
+    transparent calc(var(--burn) - 6%),
+    rgba(0, 0, 0, 0.35) calc(var(--burn) - 1%),
+    rgba(0, 0, 0, 0.85) var(--burn),
+    #000 calc(var(--burn) + 14%)
+  );
+  -webkit-mask-mode: alpha;
+  mask-mode: alpha;
+  /* fallback for browsers without @property: simple opacity */
+  transition: opacity 880ms ease;
+}
+
+.menu-curtain .menu-burn-paper { opacity: 1; }
+.menu-curtain.closing .menu-burn-paper { opacity: 0; }
+
+/* Torn ember edges (top + bottom) — reuses intro burnFlicker */
+.menu-burn-edge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1.1rem;
+  background:
+    radial-gradient(1.2rem 0.7rem at 4% 0, transparent 54%, rgba(26, 25, 22, 0.78) 56%, transparent 70%),
+    radial-gradient(1.8rem 0.85rem at 17% 0, transparent 54%, rgba(163, 49, 40, 0.85) 56%, transparent 72%),
+    radial-gradient(1.5rem 0.75rem at 31% 0, transparent 54%, rgba(26, 25, 22, 0.7) 56%, transparent 72%),
+    radial-gradient(2rem 0.9rem at 50% 0, transparent 54%, rgba(209, 90, 53, 0.82) 56%, transparent 74%),
+    radial-gradient(1.35rem 0.7rem at 70% 0, transparent 54%, rgba(26, 25, 22, 0.7) 56%, transparent 72%),
+    radial-gradient(1.8rem 0.8rem at 86% 0, transparent 54%, rgba(163, 49, 40, 0.78) 56%, transparent 72%),
+    radial-gradient(1.55rem 0.75rem at 96% 0, transparent 54%, rgba(26, 25, 22, 0.78) 56%, transparent 72%);
+  filter: blur(0.1px) drop-shadow(0 0 8px rgba(209, 90, 53, 0.45));
+  opacity: 0.85;
+  animation: burnFlicker 720ms steps(2, end) infinite;
+  pointer-events: none;
+}
+
+.menu-burn-edge--top { top: -0.2rem; }
+.menu-burn-edge--bottom { bottom: -0.2rem; transform: rotate(180deg); }
+
+/* Subtle paper grain inside the burn layer */
+.menu-burn-grain {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+  opacity: 0.16;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+/* Ember ring tracking the burn front */
+.menu-burn-ember {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(209, 90, 53, 0) 0%,
+      rgba(209, 90, 53, 0) calc(var(--burn) - 8%),
+      rgba(209, 90, 53, 0.55) calc(var(--burn) - 2%),
+      rgba(255, 188, 88, 0.85) var(--burn),
+      rgba(209, 90, 53, 0.45) calc(var(--burn) + 4%),
+      rgba(209, 90, 53, 0) calc(var(--burn) + 12%)
+    );
+  filter: blur(2px) drop-shadow(0 0 14px rgba(209, 90, 53, 0.6));
+  mix-blend-mode: screen;
+  opacity: 0.95;
+  animation: emberPulse 540ms steps(2, end) infinite;
+}
+
+@keyframes emberPulse {
+  50% {
+    filter: blur(3px) drop-shadow(0 0 22px rgba(255, 188, 88, 0.78));
+    opacity: 0.78;
+  }
+}
+
+/* Drive --burn during open */
+.menu-curtain.active {
+  animation: burnExpand 1100ms cubic-bezier(0.42, 0.08, 0.55, 1.0) 60ms forwards;
+}
+
+@keyframes burnExpand {
+  0%   { --burn: 0%; }
+  100% { --burn: 175%; }
+}
+
+.menu-curtain.closing {
+  animation: burnCollapse 620ms cubic-bezier(0.45, 0, 0.55, 1) forwards;
+}
+
+@keyframes burnCollapse {
+  0%   { --burn: 175%; }
+  100% { --burn: 0%; }
+}
+
+/* ---- Menu link hover paper tear ---- */
+.menu-panel > a {
+  position: relative;
+  padding: 0.1rem 0.4rem;
+  letter-spacing: -0.01em;
+  transition: color 260ms ease, transform 480ms var(--ease), letter-spacing 480ms var(--ease);
+}
+
+.menu-panel > a > span {
+  position: relative;
+  display: inline-block;
+}
+
+.menu-panel > a > span::before {
+  content: "";
+  position: absolute;
+  left: -0.2rem;
+  right: -0.2rem;
+  bottom: 0.18em;
+  height: 0.14em;
+  background:
+    radial-gradient(0.6em 0.18em at 0% 50%, transparent 50%, rgba(255, 188, 88, 0.85) 52%, transparent 70%),
+    linear-gradient(90deg, rgba(255, 188, 88, 0.85), rgba(209, 90, 53, 0.85), rgba(163, 49, 40, 0.85));
+  filter: drop-shadow(0 0 6px rgba(209, 90, 53, 0.85));
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 580ms var(--ease);
+  pointer-events: none;
+}
+
+.menu-panel > a:hover,
+.menu-panel > a:focus-visible {
+  letter-spacing: 0.01em;
+  transform: translateX(0.4rem);
+}
+
+.menu-panel > a:hover > span::before,
+.menu-panel > a:focus-visible > span::before {
+  transform: scaleX(1);
+}
+
+.menu-curtain .menu-socials a {
+  position: relative;
+  transition: color 280ms ease, transform 320ms var(--ease);
+}
+
+.menu-curtain .menu-socials a:hover,
+.menu-curtain .menu-socials a:focus-visible {
+  color: var(--red-hot);
+  transform: translateY(-2px);
+}
+
+/* ---- Hover-cut underline draw-in (fixes disabled rule and adds animation) ---- */
+.hover-cut {
+  position: relative;
+}
+.hover-cut > span::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.1em;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 480ms var(--ease);
+}
+.hover-cut:hover > span::after,
+.hover-cut:focus-visible > span::after {
+  transform: scaleX(1);
+}
+.hover-cut > span {
+  display: inline-block;
+  transition: transform 360ms var(--ease);
+}
+.hover-cut:hover > span,
+.hover-cut:focus-visible > span {
+  transform: translateY(-1px);
+}
+
+/* The menu links already provide their own underline, so cancel the generic one inside */
+.menu-panel > a > span::after {
+  display: none !important;
+}
+
+/* ---- Hero letter stagger ---- */
+.hero-word h1 {
+  perspective: 800px;
+}
+
+.hero-letter-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.hero-letter {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.6em) rotate(2deg);
+  animation: heroLetterIn 720ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  animation-delay: var(--letter-delay, 0ms);
+  will-change: transform, opacity;
+}
+
+@keyframes heroLetterIn {
+  0% { opacity: 0; transform: translateY(0.6em) rotate(2deg); }
+  60% { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0) rotate(0); }
+}
+
+/* ---- Project card image zoom + tilt ---- */
+.project-card {
+  transform-style: preserve-3d;
+  perspective: 900px;
+}
+.project-card .project-image img {
+  transition: transform 700ms var(--ease), filter 600ms ease;
+}
+.project-card:hover .project-image img,
+.project-card:focus-within .project-image img {
+  transform: scale(1.06) rotate(-0.5deg);
+  filter: contrast(1.04) saturate(1.05);
+}
+.project-card:hover header img,
+.project-card:focus-within header img {
+  transform: rotate(-6deg) scale(1.05);
+  transition: transform 520ms var(--ease);
+}
+.project-card:hover footer span,
+.project-card:focus-within footer span {
+  transform: rotate(8deg);
+  transition: transform 480ms var(--ease);
+}
+
+.card-visit {
+  position: relative;
+  overflow: hidden;
+  transform: translate(var(--mx, 0), var(--my, 0));
+}
+.card-visit::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.25) 50%, transparent 70%);
+  transform: translateX(-110%);
+  transition: transform 720ms var(--ease);
+  pointer-events: none;
+}
+.card-visit:hover::before,
+.card-visit:focus-visible::before {
+  transform: translateX(110%);
+}
+
+/* ---- Drag arrows micro-bounce ---- */
+.drag-arrows button {
+  transform: translate(var(--mx, 0), var(--my, 0));
+  transition: transform 220ms var(--ease), background 260ms ease, color 260ms ease, border-color 260ms ease;
+}
+.drag-arrows button:active {
+  transform: scale(0.92) translate(var(--mx, 0), var(--my, 0));
+}
+.drag-arrows button:hover {
+  background: rgba(163, 49, 40, 0.12);
+  color: var(--ink);
+  border-color: var(--rule-strong);
+}
+
+/* ---- Stamp gentle bob ---- */
+@media (prefers-reduced-motion: no-preference) {
+  .stamp-image {
+    animation: stampBob 7.2s ease-in-out infinite;
+  }
+  @keyframes stampBob {
+    0%, 100% { transform: rotate(-7deg) translateY(0); }
+    50%      { transform: rotate(-5deg) translateY(-3px); }
+  }
+  .about-stamp,
+  .contact-stamp {
+    animation-name: stampBobUp;
+  }
+  @keyframes stampBobUp {
+    0%, 100% { transform: rotate(0) translateY(0); }
+    50%      { transform: rotate(2deg) translateY(-3px); }
+  }
+}
+
+/* ---- Brand logo: gentle pulse halo ---- */
+.brand-logo {
+  position: relative;
+  overflow: visible;
+}
+.brand-logo::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border: 1px dashed transparent;
+  border-radius: 2px;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.92) rotate(-2deg);
+  transition: opacity 360ms ease, transform 540ms var(--ease), border-color 360ms ease;
+}
+.brand-logo:hover::after,
+.brand-logo:focus-visible::after {
+  opacity: 1;
+  border-color: var(--rule-strong);
+  transform: scale(1.04) rotate(2deg);
+}
+
+/* ---- Section banner subtle marquee shimmer ---- */
+.section-banner {
+  position: relative;
+  overflow: hidden;
+}
+.section-banner::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -25%;
+  width: 25%;
+  background: linear-gradient(120deg, transparent, rgba(255, 248, 226, 0.4), transparent);
+  transform: skewX(-18deg);
+  animation: shimmerSweep 6.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes shimmerSweep {
+  0%, 70% { transform: translateX(0) skewX(-18deg); }
+  100% { transform: translateX(540%) skewX(-18deg); }
+}
+
+/* ---- Folio / topline gentle entrance after intro ---- */
+@media (prefers-reduced-motion: no-preference) {
+  body.loaded .topline,
+  body.loaded .masthead,
+  body.loaded .folio-strip,
+  body.loaded .section-banner,
+  body.loaded .hero,
+  body.loaded .hero-subline,
+  body.loaded .work-strip,
+  body.loaded .page-lede {
+    animation: shellRise 720ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  body.loaded .masthead { animation-delay: 60ms; }
+  body.loaded .folio-strip { animation-delay: 120ms; }
+  body.loaded .section-banner { animation-delay: 160ms; }
+  body.loaded .hero { animation-delay: 220ms; }
+  body.loaded .hero-subline { animation-delay: 320ms; }
+  body.loaded .work-strip { animation-delay: 380ms; }
+  body.loaded .page-lede { animation-delay: 200ms; }
+}
+@keyframes shellRise {
+  from { opacity: 0; transform: translateY(0.9rem); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Scroll progress bar (ember themed) ---- */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 4900;
+  background: linear-gradient(90deg, var(--red), var(--red-hot), #f0a86a);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  pointer-events: none;
+  box-shadow: 0 0 10px rgba(209, 90, 53, 0.55);
+  will-change: transform;
+}
+
+/* ---- Custom ink cursor (desktop only via JS) ---- */
+.ink-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9000;
+  transition: opacity 260ms ease, transform 220ms var(--ease), width 320ms var(--ease), height 320ms var(--ease), border-color 320ms ease;
+  margin-left: -0.3rem;
+  margin-top: -0.3rem;
+  mix-blend-mode: difference;
+}
+.ink-cursor--dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--paper-light);
+}
+.ink-cursor--ring {
+  width: 1.85rem;
+  height: 1.85rem;
+  margin-left: -0.95rem;
+  margin-top: -0.95rem;
+  border-radius: 50%;
+  border: 1px solid var(--paper-light);
+}
+.ink-cursor--ring.is-hover {
+  width: 2.6rem;
+  height: 2.6rem;
+  margin-left: -1.3rem;
+  margin-top: -1.3rem;
+  border-color: var(--red-hot);
+  background: rgba(209, 90, 53, 0.08);
+}
+.ink-cursor--ring.is-down {
+  transform: translate3d(var(--rx, 0), var(--ry, 0), 0) scale(0.78);
+}
+@media (hover: none), (pointer: coarse) {
+  .ink-cursor { display: none; }
+}
+
+/* ---- Form elements: subtle paper-line focus ---- */
+.contact-form input,
+.contact-form textarea {
+  transition: border-color 320ms ease, background 320ms ease, transform 320ms var(--ease), box-shadow 320ms ease;
+}
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-color: var(--red);
+  background: rgba(234, 223, 206, 0.5);
+  box-shadow: 0 0 0 2px rgba(163, 49, 40, 0.18), 0 6px 14px rgba(26, 25, 22, 0.08);
+  transform: translateY(-1px);
+}
+.contact-form button[type="submit"] {
+  position: relative;
+  overflow: hidden;
+  transform: translate(var(--mx, 0), var(--my, 0));
+  transition: transform 220ms var(--ease), background 320ms ease, color 320ms ease, box-shadow 320ms ease;
+}
+.contact-form button[type="submit"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 28%, rgba(234, 223, 206, 0.28) 50%, transparent 72%);
+  transform: translateX(-110%);
+  transition: transform 760ms var(--ease);
+  pointer-events: none;
+}
+.contact-form button[type="submit"]:hover::before,
+.contact-form button[type="submit"]:focus-visible::before {
+  transform: translateX(110%);
+}
+.contact-form button[type="submit"]:active {
+  transform: scale(0.97) translate(var(--mx, 0), var(--my, 0));
+}
+
+/* ---- Marquee gentle vignette ---- */
+.marquee {
+  position: relative;
+}
+.marquee::before,
+.marquee::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3rem;
+  z-index: 2;
+  pointer-events: none;
+}
+.marquee::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--paper), transparent);
+}
+.marquee::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--paper), transparent);
+}
+
+/* ---- Reveal: respect reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .hero-letter {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .menu-burn { display: none !important; }
+}
+
+/* ---- Mobile tweaks for menu morph + burn ---- */
+@media (max-width: 860px) {
+  body.menu-open .menu-button span:nth-child(1) {
+    transform: translateY(0.35rem) rotate(45deg);
+  }
+  body.menu-open .menu-button span:nth-child(3) {
+    transform: translateY(-0.35rem) rotate(-45deg);
+  }
+  .menu-panel > a {
+    padding: 0.05rem 0.2rem;
+  }
+}
+
+/* ---- Z-index sanity: keep overlays above grain ---- */
+.menu-curtain { z-index: 4500; }
+.menu-button  { z-index: 5200; }
+.scroll-progress { z-index: 4400; }
