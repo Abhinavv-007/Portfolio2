@@ -2971,8 +2971,8 @@ body.menu-open .menu-button span {
 }
 
 body.menu-open .menu-button span:nth-child(1) {
-  /* span gap is 0.38rem + span height 2px ≈ 0.505rem between center lines */
-  transform: translateY(0.505rem) rotate(45deg);
+  /* span gap is 0.32rem + span height 2px (≈ 0.125rem) ≈ 0.445rem between center lines */
+  transform: translateY(0.445rem) rotate(45deg);
 }
 
 body.menu-open .menu-button span:nth-child(2) {
@@ -2984,7 +2984,7 @@ body.menu-open .menu-button span:nth-child(2) {
 }
 
 body.menu-open .menu-button span:nth-child(3) {
-  transform: translateY(-0.505rem) rotate(-45deg);
+  transform: translateY(-0.445rem) rotate(-45deg);
 }
 
 body.menu-open .menu-button:hover span:nth-child(1),
