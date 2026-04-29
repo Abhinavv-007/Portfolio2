@@ -210,7 +210,9 @@
     ` : "";
 
     const pageNum = studyIndex + 1;
-    const pullQuoteText = study.deepDive ? study.deepDive[0].slice(0, 140) + "…" : study.lead[0].slice(0, 140) + "…";
+    const extras = (window.CASE_STUDY_EXTRAS && window.CASE_STUDY_EXTRAS[study.slug]) || {};
+    const pullQuoteText = extras.pullQuote
+      || (study.deepDive ? study.deepDive[0].slice(0, 140) + "…" : study.lead[0].slice(0, 140) + "…");
     const diagramNodes = [
       ...(study.blueprint.modules || []).slice(0, 4),
       ...(study.stack || []).slice(0, 3)
@@ -268,6 +270,24 @@
           <p>${esc(pullQuoteText)}</p>
           <div class="attribution">&mdash; From the ${esc(study.label)} file</div>
         </aside>
+
+        ${extras.vision ? `
+        <section class="case-section case-vision reveal" aria-label="Founder vision">
+          <div class="case-section-label">Founder Vision</div>
+          <div class="case-vision-copy">
+            <p class="dropcap">${esc(extras.vision)}</p>
+            ${extras.longTerm ? `<p class="long-term">${esc(extras.longTerm)}</p>` : ""}
+            ${(extras.differentiators && extras.differentiators.length) ? `
+              <div class="case-differentiators" aria-label="What makes it different">
+                <h4>What it is — and what it isn't</h4>
+                <ul>
+                  ${extras.differentiators.map((item) => `<li>${esc(item)}</li>`).join("")}
+                </ul>
+              </div>
+            ` : ""}
+          </div>
+        </section>
+        ` : ""}
 
         ${study.deepDive ? `
         <section class="case-section case-deep-dive reveal" aria-label="Deep dive">
@@ -397,6 +417,20 @@
           </div>
         </section>
 
+        ${(extras.lessons && extras.lessons.length) ? `
+        <section class="case-section case-lessons reveal" aria-label="Lessons learned">
+          <div class="case-section-label">Lessons Learned</div>
+          <div class="case-lessons-grid">
+            ${extras.lessons.map((lesson) => `
+              <article class="case-lesson">
+                <div class="lesson-cat">${esc(lesson.category)}</div>
+                <p>${esc(lesson.body)}</p>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+        ` : ""}
+
         <section class="case-end-card reveal" aria-label="End card">
           <h3>${esc(study.headline)}</h3>
           <div class="end-card-cta">
@@ -473,6 +507,18 @@
 
     button.classList.add("menu-toggle");
     button.setAttribute("aria-controls", "menuCurtain");
+
+    // Belt-and-suspenders: lock the menu button to the viewport via inline styles.
+    // This neutralises any stylesheet override or ancestor transform that could
+    // turn position:fixed into position:absolute behavior.
+    Object.assign(button.style, {
+      position: "fixed",
+      top: "max(0.85rem, env(safe-area-inset-top, 0px))",
+      right: "max(1rem, env(safe-area-inset-right, 0px))",
+      left: "auto",
+      bottom: "auto",
+      zIndex: "5500"
+    });
 
     if (!curtain.querySelector(".menu-burn")) {
       const burn = document.createElement("div");
