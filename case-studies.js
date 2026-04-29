@@ -12,23 +12,23 @@ window.CASE_STUDIES = [
     accent: "#9f7a36",
     stack: ["Svelte", "Cloudflare Workers", "WebRTC", "D1", "KV", "Kotlin", "SwiftUI"],
     heroImage: {
-      src: "assets/case-studies/clex/workspace.png",
+      src: "assets/case-studies/clex/workspace.webp",
       alt: "CLEX workspace newspaper poster",
       caption: "The workspace wedge: files stay on device while the user prepares and sends them."
     },
     supportingImages: [
       {
-        src: "assets/case-studies/clex/chain.png",
+        src: "assets/case-studies/clex/chain.webp",
         alt: "CLEX chain explorer newspaper poster",
         caption: "The Chain turns transfer metadata into public proof without exposing the payload."
       },
       {
-        src: "assets/case-studies/clex/vault.png",
+        src: "assets/case-studies/clex/vault.webp",
         alt: "CLEX vault newspaper poster",
         caption: "The Vault is the retention layer: encrypted notes, secret links, and timed relay."
       },
       {
-        src: "assets/case-studies/clex/share-anywhere.png",
+        src: "assets/case-studies/clex/share-anywhere.webp",
         alt: "CLEX share modes newspaper poster",
         caption: "Direct, local, and encrypted relay paths keep sharing useful in real networks."
       }
@@ -79,23 +79,23 @@ window.CASE_STUDIES = [
     accent: "#34546a",
     stack: ["Express", "Vercel", "Firebase", "React", "NVIDIA NIM", "OpenAI", "Anthropic", "Gemini"],
     heroImage: {
-      src: "assets/case-studies/clex-ai/overview.png",
+      src: "assets/case-studies/clex-ai/overview.webp",
       alt: "CLEX AI overview newspaper poster",
       caption: "One dashboard for model routing, usage, keys, and OpenAI-compatible requests."
     },
     supportingImages: [
       {
-        src: "assets/case-studies/clex-ai/routing-layer.png",
+        src: "assets/case-studies/clex-ai/routing-layer.webp",
         alt: "CLEX AI routing layer newspaper poster",
         caption: "The routing layer translates one API shape into provider-specific execution."
       },
       {
-        src: "assets/case-studies/clex-ai/api-playground.png",
+        src: "assets/case-studies/clex-ai/api-playground.webp",
         alt: "CLEX AI API playground newspaper poster",
         caption: "The playground validates prompts, streaming, latency, and response shape in one place."
       },
       {
-        src: "assets/case-studies/clex-ai/model-catalog.png",
+        src: "assets/case-studies/clex-ai/model-catalog.webp",
         alt: "CLEX AI model catalog newspaper poster",
         caption: "The model catalog makes provider choice visible without forcing SDK rewrites."
       }
@@ -146,23 +146,23 @@ window.CASE_STUDIES = [
     accent: "#5b6a48",
     stack: ["Next.js", "React", "Flutter", "Riverpod", "Hive", "Workers AI", "Firebase", "Gmail API"],
     heroImage: {
-      src: "assets/case-studies/driped/dashboard.png",
+      src: "assets/case-studies/driped/dashboard.webp",
       alt: "DRIPED dashboard newspaper poster",
       caption: "The command dashboard: subscriptions, renewal forecast, spend analytics, and savings opportunities."
     },
     supportingImages: [
       {
-        src: "assets/case-studies/driped/receipt-pipeline.png",
+        src: "assets/case-studies/driped/receipt-pipeline.webp",
         alt: "DRIPED receipt pipeline newspaper poster",
         caption: "The receipt pipeline parses inbox evidence first, then uses AI only for low-confidence cases."
       },
       {
-        src: "assets/case-studies/driped/mobile-command.png",
+        src: "assets/case-studies/driped/mobile-command.webp",
         alt: "DRIPED mobile command center newspaper poster",
         caption: "The Android surface keeps scanning, renewals, analytics, and savings visible on the go."
       },
       {
-        src: "assets/case-studies/driped/analytics-forecast.png",
+        src: "assets/case-studies/driped/analytics-forecast.webp",
         alt: "DRIPED analytics and forecast newspaper poster",
         caption: "The analytics board turns category spend, renewal timing, and savings opportunities into a simple control surface."
       }
@@ -213,23 +213,23 @@ window.CASE_STUDIES = [
     accent: "#ee3f2c",
     stack: ["Next.js", "React", "Tailwind", "Framer Motion", "Prisma", "D1", "Firebase", "Gemini"],
     heroImage: {
-      src: "assets/case-studies/trgt/f1-intelligence.png",
+      src: "assets/case-studies/trgt/f1-intelligence.webp",
       alt: "TRGT F1 intelligence platform newspaper poster",
       caption: "The full platform promise: telemetry, race deck, prediction lock, performance index, and AI insight."
     },
     supportingImages: [
       {
-        src: "assets/case-studies/trgt/grid-report.png",
+        src: "assets/case-studies/trgt/grid-report.webp",
         alt: "TRGT grid report newspaper poster",
         caption: "The race intelligence system unifies feed data, prediction locking, AI notes, and snapshot fallback."
       },
       {
-        src: "assets/case-studies/trgt/predict-race.png",
+        src: "assets/case-studies/trgt/predict-race.webp",
         alt: "TRGT predict the race newspaper poster",
         caption: "The game layer turns podium locks, badges, scoring, and leaderboards into a repeatable weekend loop."
       },
       {
-        src: "assets/case-studies/trgt/circuit-intelligence.png",
+        src: "assets/case-studies/trgt/circuit-intelligence.webp",
         alt: "TRGT circuit intelligence newspaper poster",
         caption: "Circuit context gives predictions a sharper race-weekend memory: weather, DRS, tyre wear, and strategy."
       }
@@ -280,23 +280,23 @@ window.CASE_STUDIES = [
     accent: "#775d3c",
     stack: ["Cloudflare Pages", "Workers", "D1", "KV", "Email Routing", "Firebase", "Resend", "Turnstile"],
     heroImage: {
-      src: "assets/case-studies/modih-mail/temporary-inbox.png",
+      src: "assets/case-studies/modih-mail/temporary-inbox.webp",
       alt: "MODIH temporary inbox newspaper poster",
       caption: "The temporary inbox is the main promise: fast, private, OTP-aware, and disposable by design."
     },
     supportingImages: [
       {
-        src: "assets/case-studies/modih-mail/mail-routing.png",
+        src: "assets/case-studies/modih-mail/mail-routing.webp",
         alt: "MODIH mail routing stack newspaper poster",
         caption: "The mail routing stack: Cloudflare Email Routing, Workers, D1, KV, and Pages as one edge-native system."
       },
       {
-        src: "assets/case-studies/modih-mail/otp-inbox.png",
+        src: "assets/case-studies/modih-mail/otp-inbox.webp",
         alt: "MODIH OTP inbox newspaper poster",
         caption: "OTP extraction is treated as a first-class inbox workflow instead of a buried message detail."
       },
       {
-        src: "assets/case-studies/modih-mail/developer-mailroom.png",
+        src: "assets/case-studies/modih-mail/developer-mailroom.webp",
         alt: "MODIH developer mailroom newspaper poster",
         caption: "The developer mailroom exposes inbox creation, message access, testing flows, and API key management."
       }

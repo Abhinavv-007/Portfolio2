@@ -354,6 +354,31 @@
           <div class="impact-strip">
             ${study.impact.map((item) => `<span>${esc(item)}</span>`).join("")}
           </div>
+          ${(() => {
+            const numericRe = /\b(\d[\d.,]*(?:\s*[-\u2013\u2014]\s*\d[\d.,]*)?(?:\s*(?:ms|MB|GB|KB|x|×|%|\+))?)\b/i;
+            const candidates = study.impact
+              .map((item) => {
+                const match = String(item).match(numericRe);
+                if (!match) return null;
+                return {
+                  headline: match[1].trim(),
+                  label: String(item).replace(match[1], "").trim().replace(/^[-\u2013\u2014\s]+/, "")
+                };
+              })
+              .filter(Boolean)
+              .slice(0, 4);
+            if (candidates.length < 2) return "";
+            return `
+              <div class="case-by-the-numbers" aria-label="By the numbers">
+                ${candidates.map((c) => `
+                  <article>
+                    <strong>${esc(c.headline)}</strong>
+                    <span>${esc(c.label || "Outcome")}</span>
+                  </article>
+                `).join("")}
+              </div>
+            `;
+          })()}
         </section>
 
         <section class="case-section case-closing reveal" aria-label="Closing column">
@@ -369,6 +394,15 @@
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-2.15c-3.2.7-3.88-1.36-3.88-1.36-.52-1.34-1.28-1.7-1.28-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.17 1.18A11 11 0 0 1 12 6.02c.98 0 1.95.13 2.87.39 2.2-1.49 3.16-1.18 3.16-1.18.63 1.58.23 2.75.11 3.04.74.81 1.19 1.83 1.19 3.09 0 4.42-2.69 5.39-5.25 5.68.42.36.79 1.07.79 2.16v3.15c0 .31.21.67.8.56A11.52 11.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
               </a>
             </div>
+          </div>
+        </section>
+
+        <section class="case-end-card reveal" aria-label="End card">
+          <h3>${esc(study.headline)}</h3>
+          <div class="end-card-cta">
+            <a href="${study.liveUrl}" ${linkAttrs(study.liveUrl)}>Visit ${esc(study.title)}</a>
+            ${study.repoUrl ? `<a href="${study.repoUrl}" ${linkAttrs(study.repoUrl)}>Source on GitHub</a>` : ""}
+            <a href="../../contact.html">Talk to Abhinav</a>
           </div>
         </section>
 
@@ -474,7 +508,14 @@
       });
     }
 
+    // Tag each menu link with an editorial numeral (01, 02 ...)
+    $$(".menu-panel > a").forEach((link, idx) => {
+      const n = String(idx + 1).padStart(2, "0");
+      link.setAttribute("data-num", n);
+    });
+
     let isOpen = false;
+    let igniteTimer = 0;
     const setMenu = (open) => {
       isOpen = open;
       curtain.classList.toggle("active", open);
@@ -483,8 +524,12 @@
       button.setAttribute("aria-expanded", String(open));
       button.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
       document.body.classList.toggle("menu-open", open);
+      // "Ignite" the paper square: short-lived burn pseudo on the button itself.
+      if (igniteTimer) window.clearTimeout(igniteTimer);
+      button.classList.add("igniting");
+      igniteTimer = window.setTimeout(() => button.classList.remove("igniting"), 620);
       if (!open) {
-        window.setTimeout(() => curtain.classList.remove("closing"), 720);
+        window.setTimeout(() => curtain.classList.remove("closing"), 520);
       }
     };
 
@@ -521,55 +566,6 @@
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
-  }
-
-  function setupCursor() {
-    if (window.matchMedia("(hover: none), (pointer: coarse)").matches) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const dot = document.createElement("div");
-    dot.className = "ink-cursor ink-cursor--dot";
-    const ring = document.createElement("div");
-    ring.className = "ink-cursor ink-cursor--ring";
-    document.body.appendChild(dot);
-    document.body.appendChild(ring);
-
-    let dx = 0, dy = 0, rx = 0, ry = 0, tx = 0, ty = 0;
-    const lerp = (a, b, t) => a + (b - a) * t;
-
-    window.addEventListener("pointermove", (event) => {
-      tx = event.clientX;
-      ty = event.clientY;
-      dx = tx;
-      dy = ty;
-      dot.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
-    }, { passive: true });
-
-    const tick = () => {
-      rx = lerp(rx, tx, 0.18);
-      ry = lerp(ry, ty, 0.18);
-      ring.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
-      window.requestAnimationFrame(tick);
-    };
-    window.requestAnimationFrame(tick);
-
-    const setHover = (on) => ring.classList.toggle("is-hover", on);
-    const interactiveSelector = 'a, button, [role="button"], input, textarea, .project-card, [data-rail-prev], [data-rail-next]';
-    document.addEventListener("pointerover", (event) => {
-      if (event.target.closest(interactiveSelector)) setHover(true);
-    });
-    document.addEventListener("pointerout", (event) => {
-      if (event.target.closest(interactiveSelector)) setHover(false);
-    });
-    document.addEventListener("pointerdown", () => ring.classList.add("is-down"));
-    document.addEventListener("pointerup", () => ring.classList.remove("is-down"));
-    document.addEventListener("mouseleave", () => {
-      dot.style.opacity = "0";
-      ring.style.opacity = "0";
-    });
-    document.addEventListener("mouseenter", () => {
-      dot.style.opacity = "";
-      ring.style.opacity = "";
-    });
   }
 
   function setupHeroSplit() {
@@ -714,8 +710,21 @@
     const form = $("#contactForm");
     if (!form) return;
 
+    const submit = form.querySelector('button[type="submit"]');
+    let burnTimer = 0;
+    const igniteSubmit = () => {
+      if (!submit) return;
+      submit.classList.remove("is-burning");
+      // Force reflow so the animation restarts on each click.
+      void submit.offsetWidth;
+      submit.classList.add("is-burning");
+      if (burnTimer) window.clearTimeout(burnTimer);
+      burnTimer = window.setTimeout(() => submit.classList.remove("is-burning"), 760);
+    };
+
     form.addEventListener("submit", (event) => {
       event.preventDefault();
+      igniteSubmit();
       const formData = new FormData(form);
       const name = formData.get("name") || "Portfolio visitor";
       const email = formData.get("email") || "";
@@ -727,7 +736,10 @@
         "",
         message
       ].filter(Boolean).join("\n"));
-      window.location.href = `mailto:${data.profile.email}?subject=${subject}&body=${body}`;
+      // Slight delay so the burn animation is visible before the mail client takes focus.
+      window.setTimeout(() => {
+        window.location.href = `mailto:${data.profile.email}?subject=${subject}&body=${body}`;
+      }, 280);
     });
   }
 
@@ -746,5 +758,4 @@
   setupScrollProgress();
   setupHeroSplit();
   setupMagneticButtons();
-  setupCursor();
 })();

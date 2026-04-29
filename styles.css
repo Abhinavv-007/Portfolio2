@@ -241,12 +241,38 @@ textarea {
   min-height: 2.7rem;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start; /* clock to the left so it doesn't collide with the fixed menu button */
+  padding-right: calc(var(--menu-control-size) + 1.4rem);
   border-bottom: 1px solid var(--rule-strong);
   font-family: var(--mono);
   font-size: 0.76rem;
   text-transform: uppercase;
   letter-spacing: 0;
+}
+
+#clock {
+  position: relative;
+  padding: 0.18rem 0.55rem;
+  border: 1px solid var(--rule);
+  background: rgba(255, 251, 235, 0.55);
+  letter-spacing: 0.06em;
+}
+
+#clock::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 0.45rem;
+  border-radius: 50%;
+  background: var(--red, #a33128);
+  box-shadow: 0 0 6px rgba(209, 90, 53, 0.65);
+  animation: clockBlink 1.6s steps(2, end) infinite;
+  vertical-align: 0.05em;
+}
+
+@keyframes clockBlink {
+  50% { opacity: 0.35; }
 }
 
 .masthead {
@@ -2842,12 +2868,49 @@ textarea {
 .menu-button {
   z-index: 5200 !important;
   border-radius: 2px;
+  overflow: hidden;
+  isolation: isolate;
   transition:
-    transform 420ms var(--ease),
-    background 360ms ease,
-    border-color 360ms ease,
-    box-shadow 360ms ease;
+    transform 320ms var(--ease),
+    background 260ms ease,
+    border-color 260ms ease,
+    box-shadow 260ms ease;
   will-change: transform;
+}
+
+/* ---- Menu button burn-in (envelope ignites on click) ---- */
+.menu-button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 188, 88, 0.95) 0%, rgba(209, 90, 53, 0.85) 30%, rgba(163, 49, 40, 0.65) 55%, rgba(26, 25, 22, 0.0) 75%);
+  mix-blend-mode: screen;
+  filter: blur(0.6px);
+  z-index: 1;
+  transition: opacity 220ms ease;
+}
+
+.menu-button.igniting::after {
+  animation: menuButtonIgnite 620ms cubic-bezier(0.4, 0.05, 0.6, 1) forwards;
+}
+
+@keyframes menuButtonIgnite {
+  0%   { opacity: 0; transform: scale(0.6); }
+  35%  { opacity: 1; transform: scale(1.05); }
+  70%  { opacity: 0.55; transform: scale(1.45); }
+  100% { opacity: 0; transform: scale(1.85); }
+}
+
+/* Faint ember edge while igniting */
+.menu-button.igniting {
+  border-color: rgba(209, 90, 53, 0.85);
+  box-shadow:
+    0 0 0 1px rgba(255, 188, 88, 0.4) inset,
+    0 0.4rem 1.4rem rgba(209, 90, 53, 0.35);
 }
 
 .menu-button::before {
@@ -2888,10 +2951,10 @@ textarea {
   position: relative;
   transform-origin: 50% 50%;
   transition:
-    transform 520ms cubic-bezier(0.7, 0, 0.2, 1),
-    opacity 280ms ease 0ms,
-    background 320ms ease,
-    width 420ms var(--ease);
+    transform 320ms cubic-bezier(0.7, 0, 0.2, 1),
+    opacity 200ms ease 0ms,
+    background 220ms ease,
+    width 320ms var(--ease);
 }
 
 /* Open state: morph to X */
@@ -2914,8 +2977,8 @@ body.menu-open .menu-button span:nth-child(2) {
   transform: scaleX(0.05);
   opacity: 0;
   transition:
-    transform 220ms cubic-bezier(0.7, 0, 0.2, 1),
-    opacity 180ms ease;
+    transform 160ms cubic-bezier(0.7, 0, 0.2, 1),
+    opacity 120ms ease;
 }
 
 body.menu-open .menu-button span:nth-child(3) {
@@ -3061,9 +3124,9 @@ body.menu-open .menu-button:hover {
   }
 }
 
-/* Drive --burn during open */
+/* Drive --burn during open — tightened so the menu reveals quickly */
 .menu-curtain.active {
-  animation: burnExpand 1100ms cubic-bezier(0.42, 0.08, 0.55, 1.0) 60ms forwards;
+  animation: burnExpand 540ms cubic-bezier(0.42, 0.08, 0.55, 1.0) 30ms forwards;
 }
 
 @keyframes burnExpand {
@@ -3072,7 +3135,7 @@ body.menu-open .menu-button:hover {
 }
 
 .menu-curtain.closing {
-  animation: burnCollapse 620ms cubic-bezier(0.45, 0, 0.55, 1) forwards;
+  animation: burnCollapse 360ms cubic-bezier(0.45, 0, 0.55, 1) forwards;
 }
 
 @keyframes burnCollapse {
@@ -3080,12 +3143,12 @@ body.menu-open .menu-button:hover {
   100% { --burn: 0%; }
 }
 
-/* ---- Menu link hover paper tear ---- */
+/* ---- Menu link hover (editorial: left ember rule + numeral, no strikethrough) ---- */
 .menu-panel > a {
   position: relative;
-  padding: 0.1rem 0.4rem;
+  padding: 0.1rem 0.4rem 0.1rem 3.2rem;
   letter-spacing: -0.01em;
-  transition: color 260ms ease, transform 480ms var(--ease), letter-spacing 480ms var(--ease);
+  transition: color 220ms ease, transform 360ms var(--ease), letter-spacing 360ms var(--ease), padding-left 360ms var(--ease);
 }
 
 .menu-panel > a > span {
@@ -3093,32 +3156,64 @@ body.menu-open .menu-button:hover {
   display: inline-block;
 }
 
-.menu-panel > a > span::before {
+/* The numeral rendered in the gutter */
+.menu-panel > a::before {
+  content: attr(data-num);
+  position: absolute;
+  left: 0.4rem;
+  top: 50%;
+  transform: translateY(-50%) translateX(-0.2rem);
+  font-family: var(--mono, monospace);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: rgba(234, 223, 206, 0.45);
+  opacity: 0;
+  transition: opacity 260ms ease, transform 360ms var(--ease), color 260ms ease;
+  pointer-events: none;
+}
+
+/* The ember rule that sweeps in from the left edge of the link */
+.menu-panel > a::after {
   content: "";
   position: absolute;
-  left: -0.2rem;
-  right: -0.2rem;
-  bottom: 0.18em;
-  height: 0.14em;
-  background:
-    radial-gradient(0.6em 0.18em at 0% 50%, transparent 50%, rgba(255, 188, 88, 0.85) 52%, transparent 70%),
-    linear-gradient(90deg, rgba(255, 188, 88, 0.85), rgba(209, 90, 53, 0.85), rgba(163, 49, 40, 0.85));
-  filter: drop-shadow(0 0 6px rgba(209, 90, 53, 0.85));
-  transform: scaleX(0);
+  left: 1.6rem;
+  top: 50%;
+  width: 1.2rem;
+  height: 0.12em;
+  transform: translateY(-50%) scaleX(0);
   transform-origin: 0 50%;
-  transition: transform 580ms var(--ease);
+  background: linear-gradient(90deg, rgba(255, 188, 88, 0.95), rgba(209, 90, 53, 0.85));
+  filter: drop-shadow(0 0 6px rgba(209, 90, 53, 0.55));
+  transition: transform 360ms var(--ease), opacity 260ms ease;
   pointer-events: none;
+  opacity: 0;
 }
 
 .menu-panel > a:hover,
 .menu-panel > a:focus-visible {
   letter-spacing: 0.01em;
-  transform: translateX(0.4rem);
+  transform: translateX(0.5rem);
+  color: var(--paper-light);
 }
 
-.menu-panel > a:hover > span::before,
-.menu-panel > a:focus-visible > span::before {
-  transform: scaleX(1);
+.menu-panel > a:hover::before,
+.menu-panel > a:focus-visible::before {
+  opacity: 1;
+  color: rgba(255, 188, 88, 0.95);
+  transform: translateY(-50%) translateX(0);
+}
+
+.menu-panel > a:hover::after,
+.menu-panel > a:focus-visible::after {
+  transform: translateY(-50%) scaleX(1);
+  opacity: 1;
+}
+
+/* Current page numeral always visible to anchor the user */
+.menu-panel > a.is-current::before {
+  opacity: 1;
+  color: rgba(255, 188, 88, 0.85);
+  transform: translateY(-50%) translateX(0);
 }
 
 .menu-curtain .menu-socials a {
@@ -3354,46 +3449,8 @@ body.menu-open .menu-button:hover {
   will-change: transform;
 }
 
-/* ---- Custom ink cursor (desktop only via JS) ---- */
-.ink-cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 9000;
-  transition: opacity 260ms ease, transform 220ms var(--ease), width 320ms var(--ease), height 320ms var(--ease), border-color 320ms ease;
-  margin-left: -0.3rem;
-  margin-top: -0.3rem;
-  mix-blend-mode: difference;
-}
-.ink-cursor--dot {
-  width: 0.55rem;
-  height: 0.55rem;
-  border-radius: 50%;
-  background: var(--paper-light);
-}
-.ink-cursor--ring {
-  width: 1.85rem;
-  height: 1.85rem;
-  margin-left: -0.95rem;
-  margin-top: -0.95rem;
-  border-radius: 50%;
-  border: 1px solid var(--paper-light);
-}
-.ink-cursor--ring.is-hover {
-  width: 2.6rem;
-  height: 2.6rem;
-  margin-left: -1.3rem;
-  margin-top: -1.3rem;
-  border-color: var(--red-hot);
-  background: rgba(209, 90, 53, 0.08);
-}
-.ink-cursor--ring.is-down {
-  transform: translate3d(var(--rx, 0), var(--ry, 0), 0) scale(0.78);
-}
-@media (hover: none), (pointer: coarse) {
-  .ink-cursor { display: none; }
-}
+/* ---- Removed: custom ink cursor (per design feedback) ---- */
+.ink-cursor, .ink-cursor--dot, .ink-cursor--ring { display: none !important; }
 
 /* ---- Form elements: subtle paper-line focus ---- */
 .contact-form input,
@@ -3483,7 +3540,15 @@ body.menu-open .menu-button:hover {
     transform: translateY(-0.35rem) rotate(-45deg);
   }
   .menu-panel > a {
-    padding: 0.05rem 0.2rem;
+    padding: 0.05rem 0.2rem 0.05rem 2.6rem; /* keep gutter for numeral + ember rule on mobile */
+  }
+  .menu-panel > a::before {
+    left: 0.2rem;
+    font-size: 0.7rem;
+  }
+  .menu-panel > a::after {
+    left: 1.25rem;
+    width: 0.9rem;
   }
 }
 
@@ -3491,3 +3556,239 @@ body.menu-open .menu-button:hover {
 .menu-curtain { z-index: 4500; }
 .menu-button  { z-index: 5200; }
 .scroll-progress { z-index: 4400; }
+
+/* =========================================================
+   Polish pass 2 — tag hover, magazine flourishes, contact burn
+   ========================================================= */
+
+/* Editorial tags ignite gently on hover */
+.tag-row span {
+  position: relative;
+  cursor: default;
+  transition: transform 320ms var(--ease), color 260ms ease, background 260ms ease, border-color 260ms ease, letter-spacing 320ms var(--ease);
+}
+.tag-row span::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border: 1px solid transparent;
+  pointer-events: none;
+  transition: border-color 280ms ease, transform 320ms var(--ease);
+  transform: scale(0.96);
+}
+.tag-row span:hover,
+.tag-row span:focus-visible {
+  transform: translateY(-1px);
+  letter-spacing: 0.06em;
+  background: rgba(255, 188, 88, 0.18);
+  border-color: var(--red);
+  color: var(--red, #a33128);
+}
+.tag-row span:hover::after {
+  border-color: rgba(209, 90, 53, 0.55);
+  transform: scale(1);
+}
+
+/* Detail card poster: subtle vignette + zoom on hover */
+.work-detail-card .detail-poster {
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
+.work-detail-card .detail-poster::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(120% 90% at 50% 50%, rgba(26, 25, 22, 0) 60%, rgba(26, 25, 22, 0.18) 100%);
+  opacity: 0;
+  transition: opacity 360ms ease;
+}
+.work-detail-card:hover .detail-poster::after,
+.work-detail-card:focus-within .detail-poster::after {
+  opacity: 1;
+}
+
+/* Card visit ember underline already exists; add slight magnetic lift */
+.card-visit {
+  transition: transform 320ms var(--ease), background 320ms ease, color 320ms ease, box-shadow 320ms ease;
+}
+.card-visit:hover,
+.card-visit:focus-visible {
+  transform: translateY(-2px) translate(var(--mx, 0), var(--my, 0));
+  box-shadow: 0 0.5rem 1.4rem rgba(26, 25, 22, 0.22);
+}
+
+/* Project card poster: parallax tilt on hover */
+.project-card .project-image {
+  overflow: hidden;
+  position: relative;
+}
+.project-card .project-image::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 188, 88, 0.0), rgba(209, 90, 53, 0.12));
+  opacity: 0;
+  transition: opacity 360ms ease;
+  pointer-events: none;
+  z-index: 1;
+}
+.project-card:hover .project-image::before,
+.project-card:focus-within .project-image::before {
+  opacity: 1;
+}
+
+/* Stack chips on case study */
+.case-stack span {
+  transition: transform 280ms var(--ease), background 240ms ease, color 240ms ease, border-color 240ms ease, letter-spacing 320ms var(--ease);
+}
+.case-stack span:hover {
+  transform: translateY(-2px) rotate(-1deg);
+  letter-spacing: 0.06em;
+  background: var(--red);
+  color: var(--paper);
+  border-color: var(--red);
+}
+
+/* Pull quote: ember accent rule that breathes when in view */
+.pull-quote {
+  position: relative;
+}
+.pull-quote::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 3px;
+  background: linear-gradient(180deg, rgba(255, 188, 88, 0.85), rgba(209, 90, 53, 0.85), rgba(163, 49, 40, 0.85));
+  filter: drop-shadow(0 0 6px rgba(209, 90, 53, 0.5));
+  border-radius: 2px;
+  animation: pullQuotePulse 3.4s ease-in-out infinite;
+}
+@keyframes pullQuotePulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; filter: drop-shadow(0 0 10px rgba(255, 188, 88, 0.85)); }
+}
+
+/* By-the-numbers magazine callout */
+.case-by-the-numbers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: 0;
+  border-top: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  margin: 2.5rem 0 0;
+  grid-column: 1 / -1; /* span both columns of the parent .case-section grid */
+}
+.case-by-the-numbers article {
+  padding: 1.6rem 1.2rem 1.4rem;
+  border-right: 1px solid var(--rule);
+  position: relative;
+}
+.case-by-the-numbers article:last-child {
+  border-right: 0;
+}
+.case-by-the-numbers strong {
+  display: block;
+  font-family: "Canopee", var(--display);
+  font-size: clamp(2.4rem, 5vw, 3.4rem);
+  line-height: 0.95;
+  color: var(--red);
+  letter-spacing: -0.02em;
+}
+.case-by-the-numbers span {
+  display: block;
+  margin-top: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* End card / closing kicker */
+.case-end-card {
+  margin-top: 2.5rem;
+  padding: 2rem 1.6rem;
+  border: 2px solid var(--ink);
+  background:
+    repeating-linear-gradient(180deg, rgba(26, 25, 22, 0.04) 0, rgba(26, 25, 22, 0.04) 1px, transparent 1px, transparent 6px),
+    rgba(255, 251, 235, 0.55);
+  position: relative;
+  overflow: hidden;
+}
+.case-end-card::before {
+  content: "—30—";
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.4em;
+  color: var(--red);
+  text-align: center;
+  margin-bottom: 0.9rem;
+}
+.case-end-card h3 {
+  font-family: "Canopee", var(--display);
+  font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+  line-height: 1.05;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+.case-end-card .end-card-cta {
+  margin-top: 1.4rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  justify-content: center;
+}
+.case-end-card .end-card-cta a {
+  min-height: 2.4rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--ink);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform 280ms var(--ease), background 280ms ease, color 280ms ease;
+}
+.case-end-card .end-card-cta a:first-child {
+  background: var(--ink);
+  color: var(--paper);
+}
+.case-end-card .end-card-cta a:hover,
+.case-end-card .end-card-cta a:focus-visible {
+  transform: translateY(-2px);
+  background: var(--red);
+  color: var(--paper);
+  border-color: var(--red);
+}
+
+/* ---- Contact form submit: paper-burn ignite on click ---- */
+.contact-form button[type="submit"] {
+  isolation: isolate;
+}
+.contact-form button[type="submit"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 188, 88, 0.95) 0%, rgba(209, 90, 53, 0.85) 30%, rgba(163, 49, 40, 0.6) 55%, rgba(26, 25, 22, 0) 75%);
+  mix-blend-mode: screen;
+  opacity: 0;
+  transform: scale(0.55);
+  transition: opacity 220ms ease;
+  z-index: 2;
+}
+.contact-form button[type="submit"]:active::after,
+.contact-form button[type="submit"].is-burning::after {
+  animation: contactButtonIgnite 720ms cubic-bezier(0.4, 0.05, 0.6, 1) forwards;
+}
+@keyframes contactButtonIgnite {
+  0%   { opacity: 0; transform: scale(0.5); }
+  35%  { opacity: 1; transform: scale(1.04); }
+  70%  { opacity: 0.6; transform: scale(1.5); }
+  100% { opacity: 0; transform: scale(2.0); }
+}
