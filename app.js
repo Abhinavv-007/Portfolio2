@@ -51,7 +51,7 @@
     const caseUrl = project.caseStudyUrl || project.url;
     const liveUrl = project.liveUrl || project.url;
     const card = document.createElement("article");
-    card.className = "work-detail-card reveal";
+    card.className = `work-detail-card work-${project.slug || "item"} reveal`;
     card.style.setProperty("--delay", `${index * 60}ms`);
     card.innerHTML = `
       <div class="work-detail-main">
@@ -501,43 +501,14 @@
     const button = $("#menuButton");
     const curtain = $("#menuCurtain");
     if (!button || !curtain) return;
-    if (button.parentElement !== document.body) {
-      document.body.appendChild(button);
+
+    const masthead = $(".masthead");
+    if (masthead && button.parentElement !== masthead) {
+      masthead.appendChild(button);
     }
 
     button.classList.add("menu-toggle");
     button.setAttribute("aria-controls", "menuCurtain");
-
-    // Belt-and-suspenders: lock the menu button to the viewport via inline styles.
-    // This neutralises any stylesheet override or ancestor transform that could
-    // turn position:fixed into position:absolute behavior.
-    // setProperty with 'important' is required because styles.css declares
-    // top/right/z-index with !important, which would silently win over a plain
-    // inline style. Using `important` priority on the inline declaration lets us
-    // override the stylesheet's !important from JS.
-    const lockMenuButton = () => {
-      button.style.setProperty("position", "fixed", "important");
-      button.style.setProperty("top", "max(0.7rem, env(safe-area-inset-top, 0px))", "important");
-      // Match the CSS centering calc so on viewports wider than 112rem the button
-      // hugs the .site-shell content edge instead of floating in the side margin.
-      button.style.setProperty("right", "max(0.85rem, calc((100vw - min(100vw, 112rem)) / 2 + 0.85rem))", "important");
-      button.style.setProperty("left", "auto", "important");
-      button.style.setProperty("bottom", "auto", "important");
-      button.style.setProperty("z-index", "5500", "important");
-    };
-    lockMenuButton();
-    // Resize-only safety net (rAF-throttled). Scroll can't affect inline styles
-    // once they're set with !important priority, so a scroll listener would just
-    // burn CPU re-writing constants on every frame.
-    let lockFrame = 0;
-    const reLock = () => {
-      if (lockFrame) return;
-      lockFrame = requestAnimationFrame(() => {
-        lockFrame = 0;
-        lockMenuButton();
-      });
-    };
-    window.addEventListener("resize", reLock, { passive: true });
 
     if (!curtain.querySelector(".menu-burn")) {
       const burn = document.createElement("div");
@@ -579,15 +550,27 @@
       link.setAttribute("data-num", n);
     });
 
+    const closeButton = $(".menu-close", curtain);
+    const syncCloseTarget = () => {
+      if (!closeButton) return;
+      const rect = button.getBoundingClientRect();
+      curtain.style.setProperty("--menu-close-x", `${rect.left}px`);
+      curtain.style.setProperty("--menu-close-y", `${rect.top}px`);
+      curtain.style.setProperty("--menu-close-w", `${rect.width}px`);
+      curtain.style.setProperty("--menu-close-h", `${rect.height}px`);
+    };
+
     let isOpen = false;
     let igniteTimer = 0;
     const setMenu = (open) => {
+      if (open) syncCloseTarget();
       isOpen = open;
       curtain.classList.toggle("active", open);
       curtain.classList.toggle("closing", !open);
       curtain.setAttribute("aria-hidden", String(!open));
       button.setAttribute("aria-expanded", String(open));
       button.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
+      button.classList.toggle("is-open", open);
       document.body.classList.toggle("menu-open", open);
       // "Ignite" the paper square: short-lived burn pseudo on the button itself.
       if (igniteTimer) window.clearTimeout(igniteTimer);
@@ -606,6 +589,9 @@
       if (el === button) return;
       el.addEventListener("click", () => setMenu(false));
     });
+    window.addEventListener("resize", () => {
+      if (isOpen) syncCloseTarget();
+    }, { passive: true });
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && isOpen) setMenu(false);
     });
@@ -738,13 +724,27 @@
   function setupClock() {
     const clock = $("#clock");
     if (!clock) return;
+    if (!clock.nextElementSibling || !clock.nextElementSibling.classList.contains("topline-meta")) {
+      const meta = document.createElement("div");
+      meta.className = "topline-meta";
+      meta.textContent = "Desk / Live";
+      clock.insertAdjacentElement("afterend", meta);
+    }
     const update = () => {
-      clock.textContent = new Intl.DateTimeFormat("en-IN", {
+      const now = new Date();
+      const date = new Intl.DateTimeFormat("en-IN", {
+        timeZone: "Asia/Kolkata",
+        weekday: "short",
+        day: "2-digit",
+        month: "short"
+      }).format(now);
+      const time = new Intl.DateTimeFormat("en-IN", {
         timeZone: "Asia/Kolkata",
         hour: "2-digit",
         minute: "2-digit",
         hour12: true
-      }).format(new Date());
+      }).format(now);
+      clock.textContent = `${date} / ${time} IST`;
     };
     update();
     setInterval(update, 30000);
@@ -753,11 +753,19 @@
   function setupIntro() {
     const intro = $(".intro");
     if (!intro) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.body.classList.add("loaded", "intro-complete");
+      intro.remove();
+      return;
+    }
     window.setTimeout(() => {
       intro.classList.add("done");
       document.body.classList.add("loaded");
-    }, 1050);
-    window.setTimeout(() => intro.remove(), 1900);
+    }, 1720);
+    window.setTimeout(() => {
+      document.body.classList.add("intro-complete");
+      intro.remove();
+    }, 2650);
   }
 
   function setupNavTransitions() {
