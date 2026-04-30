@@ -117,6 +117,170 @@ window.PORTFOLIO = {
       tags: ["Research", "Civic Tech", "Trust"]
     }
   ],
+  certifications: [
+    {
+      title: "Gemini Certified Educator",
+      issuer: "Google for Education",
+      url: "https://edu.google.accredible.com/f4ac1b13-b273-4d5a-b99a-4dc08c3b1f24",
+      tags: ["AI", "Education"]
+    },
+    {
+      title: "Cryptography I",
+      issuer: "Stanford University",
+      url: "https://coursera.org/verify/68X34EAOUTGZ",
+      tags: ["Cryptography", "Security"]
+    },
+    {
+      title: "Entrepreneurship",
+      issuer: "Wharton Online",
+      url: "https://coursera.org/verify/specialization/9ZVCVEY4IL0A",
+      tags: ["Specialization", "Business"]
+    },
+    {
+      title: "Introduction to Augmented Reality and ARCore",
+      issuer: "Google",
+      url: "https://coursera.org/verify/RZRMAXMZ6JF0",
+      tags: ["AR", "Mobile"]
+    },
+    {
+      title: "Decentralized Finance (DeFi): The Future of Finance",
+      issuer: "Duke University",
+      url: "https://coursera.org/verify/specialization/QCJKZ0828MR9",
+      tags: ["Specialization", "Web3", "Finance"]
+    },
+    {
+      title: "Introduction to Psychology",
+      issuer: "Yale University",
+      url: "https://coursera.org/verify/T5LFR8551QNE",
+      tags: ["Humanities"]
+    },
+    {
+      title: "Blockchain Basics",
+      issuer: "University at Buffalo",
+      url: "https://coursera.org/verify/YRQDRYVTPE6T",
+      tags: ["Web3", "Blockchain"]
+    },
+    {
+      title: "Introduction to Applied Cryptography",
+      issuer: "University of London",
+      url: "https://coursera.org/verify/HYQB0ZG2VEAC",
+      tags: ["Cryptography", "Security"]
+    },
+    {
+      title: "AI Foundations for Everyone",
+      issuer: "IBM",
+      url: "https://coursera.org/verify/specialization/HLLF7L2BHM8E",
+      tags: ["Specialization", "AI"]
+    },
+    {
+      title: "Global Diplomacy: The United Nations in the World",
+      issuer: "University of London",
+      url: "https://coursera.org/verify/6866MOD89SQ3",
+      tags: ["Humanities", "Policy"]
+    },
+    {
+      title: "Financial Markets",
+      issuer: "Yale University",
+      url: "https://coursera.org/verify/16N19GG1SQRJ",
+      tags: ["Finance"]
+    },
+    {
+      title: "Generative AI Fundamentals",
+      issuer: "IBM",
+      url: "https://coursera.org/verify/specialization/5Z7BSFCR8TZ3",
+      tags: ["Specialization", "AI", "Generative"]
+    },
+    {
+      title: "Google Cybersecurity",
+      issuer: "Google",
+      url: "https://coursera.org/verify/professional-cert/AOHLGIZVO0HM",
+      tags: ["Professional Cert", "Cybersecurity"]
+    },
+    {
+      title: "Deep-dive into ChatGPT and other AI tools",
+      issuer: "Newton School of Technology",
+      url: "https://my.newtonschool.co/course/yubnkx5qb3s7/certificate/3hppu3jaatch/verify/",
+      tags: ["AI", "Productivity"]
+    },
+    {
+      title: "CS50's Introduction to Artificial Intelligence with Python",
+      issuer: "Harvard University",
+      url: "https://cs50.harvard.edu/certificates/b2a3a725-fafe-4a0e-bb10-7e7f55433bc7",
+      tags: ["AI", "Python"]
+    },
+    {
+      title: "Intro to AI",
+      issuer: "Newton School of Technology",
+      url: "https://my.newtonschool.co/course/yubnkx5qb3s7/certificate/744iiktw86iz/verify/",
+      tags: ["AI"]
+    },
+    {
+      title: "Cybersecurity Fundamentals",
+      issuer: "IBM",
+      url: "https://www.credly.com/badges/20def4c9-8b04-4fa0-ac5f-30e42802f0b0",
+      tags: ["Cybersecurity"]
+    },
+    {
+      title: "CS50's Introduction to Programming with Python",
+      issuer: "Harvard University",
+      url: "https://cs50.harvard.edu/certificates/f45543c6-4430-4399-b015-e4f0a19118dc",
+      tags: ["Programming", "Python"]
+    },
+    {
+      title: "CS50x: Introduction to Computer Science",
+      issuer: "Harvard University",
+      url: "https://cs50.harvard.edu/certificates/62867486-5c48-4ef8-8c93-c01c59f27dca",
+      tags: ["Computer Science"]
+    },
+    {
+      title: "Ethics of AI",
+      issuer: "University of Helsinki",
+      url: "https://certificates.mooc.fi/validate/lassvl2cm4",
+      tags: ["AI", "Ethics"]
+    },
+    {
+      title: "Elements of AI",
+      issuer: "University of Helsinki",
+      url: "https://certificates.mooc.fi/validate/v3u4c9jcesr",
+      tags: ["AI"]
+    },
+    {
+      title: "The Introduction to the Internet of Things",
+      issuer: "University of Helsinki",
+      url: "https://courses.mooc.fi/certificates/validate/vqgbszbeu79jare",
+      tags: ["IoT", "Systems"]
+    },
+    {
+      title: "AI in Society: Introduction",
+      issuer: "University of Helsinki",
+      url: "https://courses.mooc.fi/certificates/validate/vh4r8mxx7y4j3nd",
+      tags: ["AI", "Society"]
+    },
+    {
+      title: "AI in Society: AI and One Health",
+      issuer: "University of Helsinki",
+      url: "https://courses.mooc.fi/certificates/validate/k5ikuyi9xvnxffu",
+      tags: ["AI", "Society"]
+    },
+    {
+      title: "AI in Society: AI and Justice",
+      issuer: "University of Helsinki",
+      url: "https://courses.mooc.fi/certificates/validate/sgnqdw3z98dnm9a",
+      tags: ["AI", "Society"]
+    },
+    {
+      title: "AI in Society: AI and Discrimination",
+      issuer: "University of Helsinki",
+      url: "https://courses.mooc.fi/certificates/validate/2jhkpufuytud4pd",
+      tags: ["AI", "Society"]
+    },
+    {
+      title: "AI in Society: AI and Democracy",
+      issuer: "University of Helsinki",
+      url: "https://courses.mooc.fi/certificates/validate/4c6wbs6v6k7mt9g",
+      tags: ["AI", "Society"]
+    }
+  ],
   notes: [
     {
       number: "01",
