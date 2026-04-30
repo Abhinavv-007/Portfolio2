@@ -4565,83 +4565,10 @@ body.menu-open .masthead > .menu-button:focus-visible {
   }
 }
 
+
 /* =========================================================
-   Polish pass 12 — 3D card tilt, terminal section, certifications
+   Polish pass 13 — Research title fix + dedicated Certifications page
    ========================================================= */
-
-/* ---- 3D tilt for project cards & detailed work cards ---- */
-/* (Reduced-motion / coarse-pointer users are handled in JS — listeners are not attached.) */
-.project-card,
-.work-detail-card {
-  transform-style: preserve-3d;
-  will-change: transform;
-}
-
-.project-card.is-tilting,
-.work-detail-card.is-tilting {
-  transition: transform 80ms linear, box-shadow 360ms ease, background 360ms ease;
-  transform:
-    perspective(900px)
-    rotateX(var(--rx, 0deg))
-    rotateY(var(--ry, 0deg))
-    translate3d(0, -0.6rem, 0)
-    scale(1.018);
-  box-shadow:
-    0 0.45rem 0 rgba(26, 25, 22, 0.2),
-    0 1.9rem 3.4rem rgba(26, 25, 22, 0.24),
-    inset 0 0 0 1px rgba(255, 248, 226, 0.28);
-}
-
-/* Inner parallax: poster lifts further out; copy nudges back */
-.project-card .project-image,
-.work-detail-card .detail-poster {
-  transition: transform 220ms var(--ease);
-  transform-style: preserve-3d;
-}
-.project-card.is-tilting .project-image {
-  transform:
-    translate3d(var(--tx, 0px), var(--ty, 0px), 24px);
-}
-.work-detail-card.is-tilting .detail-poster {
-  transform:
-    translate3d(calc(var(--tx, 0px) * 0.8), calc(var(--ty, 0px) * 0.8), 18px);
-}
-.work-detail-card.is-tilting .detail-copy {
-  transform: translate3d(0, 0, 8px);
-}
-.project-card.is-tilting h3 {
-  transform: translate3d(0, 0, 14px);
-}
-.project-card.is-tilting header,
-.project-card.is-tilting footer {
-  transform: translate3d(0, 0, 7px);
-}
-
-/* Glare sweep that follows the pointer */
-.project-card,
-.work-detail-card {
-  --gx: 50%;
-  --gy: 50%;
-}
-.project-card.is-tilting::after,
-.work-detail-card.is-tilting::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(
-      circle at var(--gx) var(--gy),
-      rgba(255, 251, 235, 0.42),
-      rgba(255, 251, 235, 0.08) 28%,
-      transparent 55%
-    );
-  mix-blend-mode: screen;
-  opacity: 0.72;
-  transform: none;
-  transition: opacity 200ms ease;
-  z-index: 4;
-}
 
 /* ---- Research card titles ("THE GLASS BALLOT", "DATA FOR SALE")
    Goal: keep them readable and never break a single letter onto its own line. */
@@ -4662,416 +4589,212 @@ body.menu-open .masthead > .menu-button:focus-visible {
 }
 
 /* =========================================================
-   Press Console — newspaper-styled typewriter terminal
+   Certifications page — newspaper-stock cards
    ========================================================= */
-.press-terminal {
-  padding: 2.4rem 0 2.6rem;
+
+.certs-page {
   display: grid;
-  gap: 1rem;
-  perspective: 1400px;
+  gap: 1.6rem;
+  padding: 1.4rem 0 2.6rem;
 }
 
-.press-terminal-paper {
-  position: relative;
-  padding: 1.6rem 1.6rem 1.4rem;
-  background:
-    radial-gradient(circle at 12% 0%, rgba(255, 248, 226, 0.5), transparent 18rem),
-    radial-gradient(circle at 95% 100%, rgba(26, 25, 22, 0.06), transparent 16rem),
-    repeating-linear-gradient(180deg, rgba(26, 25, 22, 0.045) 0 1px, transparent 1px 6px),
-    linear-gradient(180deg, #f3e9d4, #e9dec5 60%, #d8cab0);
-  border: 1px solid var(--ink);
-  box-shadow:
-    0 0.35rem 0 rgba(26, 25, 22, 0.18),
-    0 1.4rem 2.6rem rgba(26, 25, 22, 0.18),
-    inset 0 0 0 1px rgba(255, 248, 226, 0.18);
-  clip-path: polygon(
-    0.4% 0.6%, 30% 0.2%, 60% 1%, 99.4% 0.4%,
-    99.6% 30%, 99% 60%, 99.4% 99.5%,
-    60% 99%, 30% 99.6%, 0.6% 99.2%,
-    0.2% 60%, 1% 30%
-  );
-  transform: rotate(-0.3deg);
-  transition: transform 520ms var(--ease), box-shadow 520ms ease;
+.certs-lede {
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 1.6rem;
 }
 
-.press-terminal-paper:hover {
-  transform: rotate(0deg) translateY(-0.18rem);
-  box-shadow:
-    0 0.5rem 0 rgba(26, 25, 22, 0.2),
-    0 1.8rem 3.2rem rgba(26, 25, 22, 0.22),
-    inset 0 0 0 1px rgba(255, 248, 226, 0.22);
-}
-
-/* Faux masking-tape corners */
-.press-terminal-tape {
-  position: absolute;
-  width: 4.6rem;
-  height: 1.25rem;
-  background:
-    linear-gradient(90deg, rgba(255, 251, 235, 0.7), rgba(214, 204, 189, 0.85)),
-    repeating-linear-gradient(135deg, rgba(26, 25, 22, 0.05) 0 2px, transparent 2px 5px);
-  border: 1px solid rgba(26, 25, 22, 0.18);
-  box-shadow: 0 0.18rem 0.6rem rgba(26, 25, 22, 0.16);
-  opacity: 0.9;
-  z-index: 2;
-  pointer-events: none;
-}
-.press-terminal-tape--tl { top: -0.6rem; left: 1.2rem; transform: rotate(-6deg); }
-.press-terminal-tape--tr { top: -0.6rem; right: 1.4rem; transform: rotate(5deg); }
-.press-terminal-tape--bl { bottom: -0.6rem; left: 2.2rem; transform: rotate(4deg); }
-.press-terminal-tape--br { bottom: -0.6rem; right: 1rem; transform: rotate(-7deg); }
-
-.press-terminal-mast {
+/* Stats strip */
+.certs-stats {
   display: grid;
-  gap: 0.55rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  border-top: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  padding: 0.9rem 0;
+}
+
+.certs-stat {
+  display: grid;
+  gap: 0.2rem;
   text-align: center;
-  margin-bottom: 1rem;
+  position: relative;
 }
 
-.press-terminal-rule {
-  height: 0;
-  border-top: 1px solid var(--ink);
-  border-bottom: 1px solid var(--ink);
-  padding-top: 2px;
+.certs-stat + .certs-stat {
+  border-left: 1px dashed var(--rule);
 }
 
-.press-terminal-eyebrow {
+.certs-stat-num {
+  font-family: var(--display);
+  font-size: clamp(1.8rem, 3.8vw, 2.6rem);
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.certs-stat-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* Filter row */
+.certs-toolbar {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
   gap: 0.5rem;
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: var(--ink-soft);
-}
-.press-terminal-eyebrow code {
-  background: var(--ink);
-  color: var(--paper-light);
-  padding: 0.05rem 0.32rem;
-  border-radius: 1px;
-  font-size: 0.66rem;
-}
-.press-terminal-eyebrow .press-terminal-issue {
-  color: var(--red);
-}
-
-.press-terminal-dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--ink);
-  display: inline-block;
-}
-
-.press-terminal-title {
-  margin: 0.1rem 0 0;
-  font-family: var(--display);
-  font-size: clamp(2.4rem, 5.4vw, 4.6rem);
-  line-height: 0.92;
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-}
-
-.press-terminal-deck {
-  margin: 0;
-  font-family: var(--display);
-  font-style: italic;
-  font-size: 1.04rem;
-  color: var(--ink-soft);
-}
-
-.press-terminal-meta {
-  display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
-  gap: 0.6rem 1.2rem;
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-}
-.press-terminal-meta code {
-  background: var(--ink);
-  color: var(--paper-light);
-  padding: 0.05rem 0.32rem;
-  border-radius: 1px;
-  font-size: 0.66rem;
-  letter-spacing: 0.04em;
+  padding: 0.4rem 0;
 }
 
-.press-terminal-mute {
+.certs-filter {
   appearance: none;
-  border: 1px solid var(--ink);
+  border: 1px solid var(--rule);
   background: transparent;
+  color: var(--ink);
   font-family: var(--mono);
-  font-size: 0.66rem;
-  text-transform: uppercase;
+  font-size: 0.7rem;
   letter-spacing: 0.16em;
-  padding: 0.28rem 0.6rem;
+  text-transform: uppercase;
+  padding: 0.4rem 0.85rem;
   cursor: pointer;
   transition: background 220ms ease, color 220ms ease, transform 220ms var(--ease);
 }
-.press-terminal-mute:hover,
-.press-terminal-mute:focus-visible {
+
+.certs-filter:hover {
+  background: rgba(26, 25, 22, 0.06);
+}
+
+.certs-filter.is-active {
   background: var(--ink);
-  color: var(--paper-light);
+  color: var(--paper);
   transform: translateY(-1px);
-  outline: none;
-}
-.press-terminal-mute[aria-pressed="true"] {
-  background: var(--red);
-  color: var(--paper-light);
-  border-color: var(--red);
 }
 
-/* "Paper-fed" output area */
-.press-terminal-screen {
-  margin-top: 0.8rem;
-  padding: 1rem 1.1rem;
-  min-height: 14rem;
-  max-height: 26rem;
-  overflow-y: auto;
-  font-family: "Courier New", "IBM Plex Mono", Courier, monospace;
-  font-size: 0.94rem;
-  line-height: 1.5;
-  color: var(--ink);
-  background:
-    repeating-linear-gradient(180deg, rgba(26, 25, 22, 0.03) 0 1px, transparent 1px 26px),
-    linear-gradient(180deg, #f7eeda, #ece2cb);
-  border: 1px solid rgba(26, 25, 22, 0.45);
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 248, 226, 0.4),
-    inset 0 -2.6rem 2.6rem rgba(26, 25, 22, 0.06),
-    inset 0 2.4rem 2.4rem rgba(255, 251, 235, 0.4);
-  scrollbar-width: thin;
-  scrollbar-color: rgba(26, 25, 22, 0.45) transparent;
-}
-.press-terminal-screen::-webkit-scrollbar { width: 8px; }
-.press-terminal-screen::-webkit-scrollbar-thumb {
-  background: rgba(26, 25, 22, 0.4);
-  border-radius: 4px;
-}
-
-.press-terminal-line {
-  display: block;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-.press-terminal-line + .press-terminal-line {
-  margin-top: 0.05rem;
-}
-.press-terminal-line.is-banner {
-  color: var(--red);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-}
-.press-terminal-line.is-prompt {
-  color: var(--ink);
-}
-.press-terminal-line.is-prompt .press-terminal-prompt-mark {
-  color: var(--red);
-  margin-right: 0.5em;
-}
-.press-terminal-line.is-error {
-  color: var(--red);
-}
-.press-terminal-line.is-muted {
-  color: var(--ink-soft);
-}
-.press-terminal-line a {
-  color: var(--red);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 2px;
-}
-.press-terminal-line a:hover {
-  color: var(--ink);
-  background: rgba(255, 188, 88, 0.34);
-}
-
-/* Per-character keystroke animation */
-.press-terminal-char {
-  display: inline-block;
-  opacity: 0;
-  transform: translateY(-0.25em) skewX(-3deg);
-  filter: blur(0.4px);
-  animation: keystrike 220ms cubic-bezier(0.2, 0.9, 0.2, 1) forwards;
-}
-@keyframes keystrike {
-  0%   { opacity: 0; transform: translateY(-0.32em) skewX(-3deg); filter: blur(0.6px); }
-  55%  { opacity: 1; transform: translateY(0.05em) skewX(0); filter: blur(0); }
-  100% { opacity: 1; transform: translateY(0) skewX(0); filter: blur(0); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .press-terminal-char {
-    opacity: 1;
-    transform: none;
-    filter: none;
-    animation: none;
-  }
-}
-
-/* Input row — invisible real input over the rendered "typed" line */
-.press-terminal-form {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  margin-top: 0.6rem;
-  padding: 0.4rem 0.6rem;
-  border-top: 1px dashed rgba(26, 25, 22, 0.5);
-  font-family: "Courier New", "IBM Plex Mono", Courier, monospace;
-}
-.press-terminal-prompt {
-  color: var(--red);
-  font-size: 0.92rem;
-  user-select: none;
-  white-space: nowrap;
-}
-.press-terminal-typeline {
-  position: relative;
-  flex: 1;
-  min-width: 0;
-  font-size: 0.96rem;
-  color: var(--ink);
-  white-space: pre;
-  overflow: hidden;
-}
-.press-terminal-typed {
-  white-space: pre;
-}
-.press-terminal-caret {
-  display: inline-block;
-  width: 0.55ch;
-  height: 1em;
-  margin-left: 1px;
-  background: var(--ink);
-  vertical-align: -0.12em;
-  animation: pressCaret 1100ms steps(2, jump-none) infinite;
-}
-@keyframes pressCaret {
-  50% { opacity: 0; }
-}
-
-.press-terminal-input {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  border: none;
-  padding: 0;
-  margin: 0;
-  background: transparent;
-  color: transparent;
-  caret-color: transparent;
-  font: inherit;
-  outline: none;
-}
-
-/* Subtle paper kick when a command is submitted */
-.press-terminal-paper.is-stamping {
-  animation: pressStamp 380ms cubic-bezier(0.3, 0.9, 0.3, 1.05);
-}
-@keyframes pressStamp {
-  0%   { transform: rotate(-0.3deg) translateY(0); }
-  35%  { transform: rotate(0.1deg) translateY(0.25rem); }
-  100% { transform: rotate(-0.3deg) translateY(0); }
-}
-
-/* Banner ASCII */
-.press-terminal-ascii {
-  display: block;
-  font-family: "Courier New", monospace;
-  font-size: 0.82rem;
-  line-height: 1.05;
-  color: var(--red);
-  white-space: pre;
-  margin: 0.2rem 0 0.4rem;
-}
-
-/* =========================================================
-   Certifications grid — paper cards
-   ========================================================= */
+/* Grid */
 .certs-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
-  gap: 0.9rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  gap: 1rem;
   min-width: 0;
 }
 
+.certs-grid--page {
+  gap: 1.1rem;
+}
+
+/* Card — paper stock with foil VERIFIED ribbon and shimmer sweep */
 .cert-card {
   position: relative;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  gap: 0.55rem;
-  padding: 0.95rem 1rem 0.85rem;
+  gap: 0.7rem;
+  padding: 1.05rem 1.1rem 0.95rem;
   border: 1px solid var(--rule);
   background:
-    radial-gradient(circle at 88% 8%, rgba(255, 248, 226, 0.34), transparent 6rem),
-    repeating-linear-gradient(180deg, rgba(26, 25, 22, 0.035) 0 1px, transparent 1px 7px),
-    rgba(234, 223, 206, 0.5);
-  clip-path: polygon(0.6% 1.2%, 99.2% 0.4%, 98.8% 99.2%, 1.1% 98.8%);
+    radial-gradient(circle at 86% 10%, rgba(255, 248, 226, 0.42), transparent 7rem),
+    repeating-linear-gradient(180deg, rgba(26, 25, 22, 0.03) 0 1px, transparent 1px 8px),
+    rgba(234, 223, 206, 0.55);
   box-shadow:
-    0 0.16rem 0 rgba(26, 25, 22, 0.16),
-    0 0.7rem 1.3rem rgba(26, 25, 22, 0.08),
+    0 0.18rem 0 rgba(26, 25, 22, 0.16),
+    0 0.85rem 1.5rem rgba(26, 25, 22, 0.08),
     inset 0 0 0 1px rgba(255, 248, 226, 0.18);
   text-decoration: none;
   color: inherit;
   overflow: hidden;
-  transition: transform 380ms var(--ease), box-shadow 380ms ease, background 380ms ease;
+  isolation: isolate;
+  transition:
+    transform 420ms var(--ease),
+    box-shadow 420ms ease,
+    background 420ms ease;
 }
 
+/* VERIFIED ribbon */
 .cert-card::before {
   content: "VERIFIED";
   position: absolute;
   top: 0.55rem;
-  right: -1.6rem;
+  right: -1.7rem;
   transform: rotate(28deg);
-  padding: 0.12rem 1.6rem;
+  padding: 0.16rem 1.7rem;
   background: var(--red);
-  color: var(--paper-light);
+  color: var(--paper-light, #efe7d9);
   font-family: var(--mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.18em;
-  opacity: 0.88;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  opacity: 0.92;
   pointer-events: none;
+  z-index: 2;
+  box-shadow: 0 0.12rem 0 rgba(0, 0, 0, 0.18);
+}
+
+/* Shimmer sweep that runs across the card on hover */
+.cert-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    transparent 38%,
+    rgba(255, 248, 226, 0.55) 50%,
+    transparent 62%,
+    transparent 100%
+  );
+  transform: translateX(-110%);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: transform 800ms var(--ease), opacity 320ms ease;
+  z-index: 1;
 }
 
 .cert-card:hover,
 .cert-card:focus-visible {
-  transform: translateY(-0.32rem) rotate(-0.4deg);
-  background: rgba(239, 231, 217, 0.92);
+  transform: translateY(-0.42rem) rotate(-0.4deg);
+  background: rgba(239, 231, 217, 0.94);
   box-shadow:
-    0 0.22rem 0 rgba(26, 25, 22, 0.2),
-    var(--paper-shadow);
+    0 0.28rem 0 rgba(26, 25, 22, 0.2),
+    0 1.2rem 2.4rem rgba(26, 25, 22, 0.16),
+    inset 0 0 0 1px rgba(255, 248, 226, 0.25);
   outline: none;
+}
+
+.cert-card:hover::after,
+.cert-card:focus-visible::after {
+  opacity: 1;
+  transform: translateX(110%);
 }
 
 .cert-issuer {
   font-family: var(--mono);
   font-size: 0.66rem;
   text-transform: uppercase;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   color: var(--red);
+  position: relative;
+  z-index: 2;
 }
 
 .cert-title {
   margin: 0;
   font-family: var(--display);
-  font-size: clamp(1.05rem, 1.8vw, 1.25rem);
-  line-height: 1.08;
+  font-size: clamp(1.08rem, 1.85vw, 1.32rem);
+  line-height: 1.1;
   letter-spacing: -0.01em;
+  text-wrap: balance;
+  color: var(--ink);
+  position: relative;
+  z-index: 2;
 }
 
 .cert-foot {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.5rem;
   align-items: center;
   justify-content: space-between;
   margin-top: 0.2rem;
@@ -5080,19 +4803,39 @@ body.menu-open .masthead > .menu-button:focus-visible {
   text-transform: uppercase;
   letter-spacing: 0.14em;
   color: var(--ink-soft);
+  position: relative;
+  z-index: 2;
 }
+
 .cert-foot .cert-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.3rem;
 }
+
 .cert-foot .cert-tag {
   border: 1px solid var(--rule);
-  padding: 0.12rem 0.36rem;
+  padding: 0.14rem 0.4rem;
   font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  background: rgba(255, 248, 226, 0.4);
+  transition: background 240ms ease, color 240ms ease;
 }
+
+.cert-card:hover .cert-tag {
+  background: rgba(26, 25, 22, 0.06);
+}
+
 .cert-foot .cert-verify {
   color: var(--red);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  white-space: nowrap;
+  transition: transform 240ms var(--ease);
+}
+
+.cert-card:hover .cert-verify {
+  transform: translateX(0.2rem);
 }
 
 .certs-grid.is-empty {
@@ -5104,16 +4847,28 @@ body.menu-open .masthead > .menu-button:focus-visible {
   text-align: center;
 }
 
-@media (max-width: 720px) {
-  .press-terminal-paper {
-    padding: 1.2rem 1rem 1.1rem;
-  }
-  .press-terminal-screen {
-    font-size: 0.84rem;
-    min-height: 10rem;
-  }
-  .press-terminal-form {
-    font-size: 0.84rem;
-  }
+.certs-empty {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  border: 1px dashed var(--rule);
+  padding: 1.4rem;
+  text-align: center;
 }
 
+@media (max-width: 720px) {
+  .certs-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .cert-card {
+    padding: 0.95rem 1rem 0.85rem;
+  }
+  .certs-toolbar {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 0.6rem;
+  }
+  .certs-filter {
+    flex: 0 0 auto;
+  }
+}

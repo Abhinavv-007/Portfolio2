@@ -820,531 +820,89 @@
     const grid = $("#certsGrid");
     if (!grid) return;
     const list = Array.isArray(data.certifications) ? data.certifications : [];
-    grid.classList.remove("is-empty");
+
+    const statTotal = $("#certsStatTotal");
+    const statIssuers = $("#certsStatIssuers");
+    const statTags = $("#certsStatTags");
+    const filterRow = $("#certsFilters");
+    const emptyEl = $("#certsEmpty");
+
+    if (statTotal) statTotal.textContent = String(list.length);
+    if (statIssuers) {
+      const set = new Set(list.map((c) => (c.issuer || "").trim()).filter(Boolean));
+      statIssuers.textContent = String(set.size);
+    }
+    const allTags = Array.from(
+      new Set(list.flatMap((c) => (c.tags || []).map((t) => String(t).trim()).filter(Boolean)))
+    ).sort((a, b) => a.localeCompare(b));
+    if (statTags) statTags.textContent = String(allTags.length);
+
+    const writeCards = (filterTag) => {
+      grid.classList.remove("is-empty");
+      grid.innerHTML = "";
+      const visible = filterTag === "All"
+        ? list
+        : list.filter((c) => (c.tags || []).map((t) => String(t)).includes(filterTag));
+      if (!visible.length) {
+        if (emptyEl) emptyEl.hidden = false;
+        return;
+      }
+      if (emptyEl) emptyEl.hidden = true;
+      visible.forEach((cert, index) => {
+        const tags = (cert.tags || []).slice(0, 3);
+        const card = document.createElement("a");
+        card.className = "cert-card reveal is-revealed";
+        card.style.setProperty("--delay", `${index * 24}ms`);
+        if (cert.url) {
+          card.href = cert.url;
+          card.target = "_blank";
+          card.rel = "noopener";
+        }
+        card.innerHTML = `
+          <div class="cert-issuer">${esc(cert.issuer || "")}${cert.year ? ` &middot; ${esc(cert.year)}` : ""}</div>
+          <h3 class="cert-title">${esc(cert.title || "Untitled certification")}</h3>
+          <div class="cert-foot">
+            <div class="cert-tags">
+              ${tags.map((t) => `<span class="cert-tag">${esc(t)}</span>`).join("")}
+            </div>
+            <span class="cert-verify">${cert.url ? "Verify ↗" : ""}</span>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    };
+
     if (!list.length) {
       grid.classList.add("is-empty");
       grid.textContent = "Certifications will be reprinted here once links are filed.";
       return;
     }
-    grid.innerHTML = "";
-    list.forEach((cert, index) => {
-      const tags = (cert.tags || []).slice(0, 3);
-      const card = document.createElement("a");
-      card.className = "cert-card reveal";
-      card.style.setProperty("--delay", `${index * 28}ms`);
-      if (cert.url) {
-        card.href = cert.url;
-        card.target = "_blank";
-        card.rel = "noopener";
-      }
-      card.innerHTML = `
-        <div class="cert-issuer">${esc(cert.issuer || "")}${cert.year ? ` &middot; ${esc(cert.year)}` : ""}</div>
-        <h3 class="cert-title">${esc(cert.title || "Untitled certification")}</h3>
-        <div class="cert-foot">
-          <div class="cert-tags">
-            ${tags.map((t) => `<span class="cert-tag">${esc(t)}</span>`).join("")}
-          </div>
-          <span class="cert-verify">${cert.url ? "Verify →" : ""}</span>
-        </div>
-      `;
-      grid.appendChild(card);
-    });
-  }
 
-  function setupCardTilt() {
-    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    const MAX_TILT = 14; // degrees
-    const cards = $$(".project-card, .work-detail-card");
-
-    cards.forEach((card) => {
-      let frame = 0;
-      let rect = null;
-
-      const updateRect = () => { rect = card.getBoundingClientRect(); };
-
-      const onMove = (event) => {
-        if (!rect) updateRect();
-        const r = rect;
-        const px = (event.clientX - r.left) / r.width;
-        const py = (event.clientY - r.top) / r.height;
-        const ry = (px - 0.5) * 2 * MAX_TILT;
-        const rx = (0.5 - py) * 2 * MAX_TILT;
-        // Parallax depth offset for inner layers (in px).
-        const tx = (px - 0.5) * 24;
-        const ty = (py - 0.5) * 24;
-
-        if (frame) cancelAnimationFrame(frame);
-        frame = requestAnimationFrame(() => {
-          card.style.setProperty("--rx", `${rx.toFixed(2)}deg`);
-          card.style.setProperty("--ry", `${ry.toFixed(2)}deg`);
-          card.style.setProperty("--tx", `${tx.toFixed(2)}px`);
-          card.style.setProperty("--ty", `${ty.toFixed(2)}px`);
-          card.style.setProperty("--gx", `${(px * 100).toFixed(1)}%`);
-          card.style.setProperty("--gy", `${(py * 100).toFixed(1)}%`);
+    if (filterRow) {
+      filterRow.innerHTML = "";
+      const tagsForFilter = ["All", ...allTags];
+      tagsForFilter.forEach((tag, i) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "certs-filter" + (i === 0 ? " is-active" : "");
+        btn.dataset.filter = tag;
+        btn.setAttribute("role", "tab");
+        btn.setAttribute("aria-selected", i === 0 ? "true" : "false");
+        btn.textContent = tag;
+        btn.addEventListener("click", () => {
+          $$(".certs-filter", filterRow).forEach((b) => {
+            b.classList.remove("is-active");
+            b.setAttribute("aria-selected", "false");
+          });
+          btn.classList.add("is-active");
+          btn.setAttribute("aria-selected", "true");
+          writeCards(tag);
         });
-      };
-
-      const onEnter = () => {
-        updateRect();
-        card.classList.add("is-tilting");
-      };
-      const onLeave = () => {
-        card.classList.remove("is-tilting");
-        if (frame) cancelAnimationFrame(frame);
-        card.style.setProperty("--rx", "0deg");
-        card.style.setProperty("--ry", "0deg");
-        card.style.setProperty("--tx", "0px");
-        card.style.setProperty("--ty", "0px");
-      };
-
-      card.addEventListener("pointerenter", onEnter);
-      card.addEventListener("pointermove", onMove);
-      card.addEventListener("pointerleave", onLeave);
-    });
-  }
-
-  /* =========================================================
-     Press Console — newspaper-styled typewriter terminal
-     ========================================================= */
-  function setupPressTerminal() {
-    const root = $("#pressTerminal");
-    if (!root) return;
-
-    const screen = $("#pressTerminalScreen", root);
-    const form = $("#pressTerminalForm", root);
-    const input = $("#pressTerminalInput", root);
-    const typed = $("#pressTerminalTyped", root);
-    const muteBtn = $("#pressTerminalMute", root);
-    const paper = $(".press-terminal-paper", root);
-    if (!screen || !form || !input || !typed) return;
-
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const profile = data.profile || {};
-    const projects = data.projects || [];
-    const research = data.researchPapers || [];
-    const certifications = data.certifications || [];
-    const socials = data.socials || [];
-
-    let muted = false;
-    let audioCtx = null;
-    const ensureAudio = () => {
-      if (muted) return null;
-      if (!audioCtx) {
-        const Ctx = window.AudioContext || window.webkitAudioContext;
-        if (!Ctx) return null;
-        audioCtx = new Ctx();
-      }
-      if (audioCtx.state === "suspended") audioCtx.resume();
-      return audioCtx;
-    };
-
-    const click = (variant = "key") => {
-      const ctx = ensureAudio();
-      if (!ctx) return;
-      const now = ctx.currentTime;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const filter = ctx.createBiquadFilter();
-      filter.type = "bandpass";
-      if (variant === "key") {
-        osc.type = "square";
-        osc.frequency.value = 1600 + Math.random() * 700;
-        filter.frequency.value = 1800;
-        filter.Q.value = 6;
-        gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.exponentialRampToValueAtTime(0.06, now + 0.005);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.045);
-        osc.start(now);
-        osc.stop(now + 0.06);
-      } else if (variant === "return") {
-        osc.type = "triangle";
-        osc.frequency.setValueAtTime(420, now);
-        osc.frequency.exponentialRampToValueAtTime(180, now + 0.16);
-        filter.frequency.value = 800;
-        filter.Q.value = 2;
-        gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.exponentialRampToValueAtTime(0.12, now + 0.01);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
-        osc.start(now);
-        osc.stop(now + 0.24);
-      } else if (variant === "bell") {
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(1180, now);
-        osc.frequency.exponentialRampToValueAtTime(820, now + 0.4);
-        filter.frequency.value = 1500;
-        filter.Q.value = 2;
-        gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.exponentialRampToValueAtTime(0.09, now + 0.01);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
-        osc.start(now);
-        osc.stop(now + 0.6);
-      } else if (variant === "back") {
-        osc.type = "square";
-        osc.frequency.value = 320;
-        filter.frequency.value = 600;
-        filter.Q.value = 4;
-        gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.exponentialRampToValueAtTime(0.04, now + 0.005);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
-        osc.start(now);
-        osc.stop(now + 0.07);
-      }
-      osc.connect(filter).connect(gain).connect(ctx.destination);
-    };
-
-    const escapeHtml = esc;
-    const renderChars = (text) => {
-      // Each character is wrapped in a span so CSS can run the keystrike animation.
-      let out = "";
-      for (let i = 0; i < text.length; i++) {
-        const ch = text[i];
-        const safe = ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[ch]) || ch;
-        const display = ch === " " ? "&nbsp;" : safe;
-        out += `<span class="press-terminal-char" style="animation-delay:${(i * 12)}ms">${display}</span>`;
-      }
-      return out;
-    };
-
-    const writeLine = (text, opts = {}) => {
-      const div = document.createElement("div");
-      div.className = "press-terminal-line";
-      if (opts.tone) div.classList.add(`is-${opts.tone}`);
-      if (opts.html) {
-        div.innerHTML = opts.html;
-      } else if (opts.animate !== false && !reduced) {
-        div.innerHTML = renderChars(text || "");
-      } else {
-        div.textContent = text || "";
-      }
-      screen.appendChild(div);
-      screen.scrollTop = screen.scrollHeight;
-      return div;
-    };
-
-    const writePromptLine = (cmd) => {
-      const div = document.createElement("div");
-      div.className = "press-terminal-line is-prompt";
-      div.innerHTML = `<span class="press-terminal-prompt-mark">abhnv@journal:~$</span><span>${escapeHtml(cmd)}</span>`;
-      screen.appendChild(div);
-      screen.scrollTop = screen.scrollHeight;
-    };
-
-    const writeBlock = (lines, opts = {}) => {
-      lines.forEach((line) => {
-        if (typeof line === "string") writeLine(line, opts);
-        else writeLine(line.text || "", { ...opts, ...line });
+        filterRow.appendChild(btn);
       });
-    };
-
-    const ascii = [
-      "    ____  ___    ____  __ _____   __                              __",
-      "   / __ \\/   |  / __ \\/  // /   | / /  ____ ___  ___  ____  ___ _/ /",
-      "  / /_/ / /| | / /_/ /  // / /| |/ /  / __ `__ \\/ _ \\/ __ \\/ _ `/ / ",
-      " / _, _/ ___ |/ _, _/  // / ___ / /__/ / / / / /  __/ / / / _, /_/  ",
-      "/_/ |_/_/  |_/_/ |_/__//_/_/  |_\\____/_/ /_/ /_/\\___/_/ /_/\\_,_(_)  "
-    ];
-
-    const banner = () => {
-      const div = document.createElement("div");
-      div.className = "press-terminal-line is-banner";
-      const pre = document.createElement("pre");
-      pre.className = "press-terminal-ascii";
-      pre.textContent = ascii.join("\n");
-      div.appendChild(pre);
-      screen.appendChild(div);
-      writeLine(`${profile.name || "Abhinav Raj"} · The Digital Journal · Press Console v1.0`, { tone: "muted", animate: false });
-      writeLine("Type `help` to see all commands. Try `about`, `projects`, `certs`, or `contact`.", { tone: "muted", animate: false });
-      writeLine("", { animate: false });
-      screen.scrollTop = screen.scrollHeight;
-    };
-
-    const helpRows = [
-      ["help", "list every command on this teletype"],
-      ["about", "short bio of the operator"],
-      ["whoami", "the byline behind this paper"],
-      ["projects [slug]", "list shipped products, or print one"],
-      ["research", "list research papers"],
-      ["certs", "list issued certifications"],
-      ["skills", "stack and toolchain"],
-      ["social", "social channels and links"],
-      ["contact", "open a mail draft to the editor"],
-      ["resume", "open the live resume site"],
-      ["date", "prints the current desk time (IST)"],
-      ["echo <text>", "the press echoes back"],
-      ["sudo <cmd>", "you cannot afford the privilege"],
-      ["theme", "flip the press into night-edition (ink mode)"],
-      ["banner", "reprint the masthead"],
-      ["clear", "wipe the page and start fresh"]
-    ];
-
-    const projectMap = new Map(projects.map((p) => [String(p.slug || p.title || "").toLowerCase(), p]));
-
-    const printProject = (project) => {
-      writeLine(`▣ ${project.title}`, { tone: "banner", animate: false });
-      writeLine(`  ${project.label || ""}`, { tone: "muted", animate: false });
-      writeLine(`  ${project.description || ""}`, { animate: false });
-      const links = [];
-      if (project.liveUrl) links.push(`<a href="${escapeHtml(project.liveUrl)}" target="_blank" rel="noopener">live ↗</a>`);
-      if (project.repoUrl) links.push(`<a href="${escapeHtml(project.repoUrl)}" target="_blank" rel="noopener">repo ↗</a>`);
-      if (project.caseStudyUrl) links.push(`<a href="${escapeHtml(project.caseStudyUrl)}">case study →</a>`);
-      if (links.length) writeLine("", { html: `  ${links.join("  ·  ")}`, animate: false });
-      if (project.tags && project.tags.length) {
-        writeLine(`  tags: ${project.tags.join(", ")}`, { tone: "muted", animate: false });
-      }
-    };
-
-    const commands = {
-      help() {
-        writeLine("Available commands:", { tone: "banner", animate: false });
-        helpRows.forEach(([cmd, desc]) => {
-          writeLine(`  ${cmd.padEnd(20, " ")} ${desc}`, { animate: false });
-        });
-      },
-      about() {
-        const bio = (profile.summary || "AI builder and full-stack developer.");
-        writeLine("ABOUT THE OPERATOR", { tone: "banner", animate: false });
-        writeLine(bio, { animate: false });
-        writeLine("Open about.html for the full newspaper-cutting profile.", { tone: "muted", animate: false });
-      },
-      whoami() {
-        writeLine(profile.name || "Abhinav Raj", { tone: "banner", animate: false });
-        writeLine(`Editor & operator of ${profile.publication || "The Digital Journal"}.`, { animate: false });
-      },
-      projects(arg) {
-        if (arg) {
-          const target = projectMap.get(arg.toLowerCase());
-          if (!target) {
-            writeLine(`No file matching "${arg}". Try \`projects\` to list slugs.`, { tone: "error", animate: false });
-            return;
-          }
-          printProject(target);
-          return;
-        }
-        writeLine("FILED PRODUCTS", { tone: "banner", animate: false });
-        projects.forEach((p, i) => {
-          writeLine(`  ${String(i + 1).padStart(2, "0")}. ${p.title.padEnd(14, " ")}  ${p.type || ""}`, { animate: false });
-        });
-        writeLine("", { animate: false });
-        writeLine("Tip: try `projects clex` or `projects modih-mail`.", { tone: "muted", animate: false });
-      },
-      research() {
-        if (!research.length) {
-          writeLine("No papers filed yet.", { tone: "muted", animate: false });
-          return;
-        }
-        writeLine("RESEARCH DESK", { tone: "banner", animate: false });
-        research.forEach((r) => {
-          const link = r.url ? `<a href="${escapeHtml(r.url)}" target="_blank" rel="noopener">read ↗</a>` : "";
-          writeLine("", { html: `  ▸ <strong>${escapeHtml(r.title)}</strong> — ${escapeHtml(r.label || "")} ${link}`, animate: false });
-        });
-      },
-      certs() {
-        if (!certifications.length) {
-          writeLine("No certifications filed yet.", { tone: "muted", animate: false });
-          return;
-        }
-        writeLine(`CERTIFICATIONS (${certifications.length})`, { tone: "banner", animate: false });
-        certifications.forEach((c, i) => {
-          const num = String(i + 1).padStart(2, "0");
-          const issuer = c.issuer ? ` — ${c.issuer}` : "";
-          const link = c.url ? `<a href="${escapeHtml(c.url)}" target="_blank" rel="noopener">verify ↗</a>` : "";
-          writeLine("", { html: `  ${num}. <strong>${escapeHtml(c.title)}</strong>${escapeHtml(issuer)} ${link}`, animate: false });
-        });
-        writeLine("Or open work.html#certifications for the printed grid.", { tone: "muted", animate: false });
-      },
-      skills() {
-        const stacks = [
-          ["AI / ML", "LLM apps, prompt systems, evals, retrieval, fine-tuning"],
-          ["Frontend", "React, Next.js, TypeScript, Tailwind, shadcn, Framer Motion"],
-          ["Backend", "Node, FastAPI, Postgres, Redis, REST + websockets"],
-          ["Edge / Infra", "Cloudflare Workers, Vercel, Docker, CI"],
-          ["Mobile", "Flutter, React Native"],
-          ["Crypto / Web3", "Solidity basics, applied cryptography"],
-          ["Design", "Editorial systems, motion, type-driven UI"]
-        ];
-        writeLine("STACK", { tone: "banner", animate: false });
-        stacks.forEach(([k, v]) => writeLine(`  ${k.padEnd(14, " ")} ${v}`, { animate: false }));
-      },
-      social() {
-        if (!socials.length) {
-          writeLine("No social channels listed.", { tone: "muted", animate: false });
-          return;
-        }
-        writeLine("CHANNELS", { tone: "banner", animate: false });
-        socials.forEach((s) => {
-          writeLine("", { html: `  · <strong>${escapeHtml(s.label)}</strong> — <a href="${escapeHtml(s.url)}" target="_blank" rel="noopener">${escapeHtml(s.url)}</a>`, animate: false });
-        });
-      },
-      contact() {
-        const mail = profile.email || "hello@abhnv.in";
-        writeLine("Drafting an envelope…", { tone: "muted", animate: false });
-        writeLine("", { html: `  ✉ <a href="mailto:${escapeHtml(mail)}">${escapeHtml(mail)}</a>`, animate: false });
-        click("bell");
-      },
-      resume() {
-        writeLine("Opening live resume…", { tone: "muted", animate: false });
-        try { window.open("https://www.abhnv.in", "_blank", "noopener"); } catch (_) {}
-      },
-      date() {
-        const now = new Date();
-        const date = new Intl.DateTimeFormat("en-IN", {
-          timeZone: "Asia/Kolkata",
-          weekday: "long", day: "2-digit", month: "long", year: "numeric"
-        }).format(now);
-        const time = new Intl.DateTimeFormat("en-IN", {
-          timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true
-        }).format(now);
-        writeLine(`${date} · ${time} IST`, { animate: false });
-      },
-      echo(arg) {
-        writeLine(arg || "", { animate: false });
-      },
-      sudo() {
-        writeLine("This press has no sudo. Authority is earned, not asserted.", { tone: "error", animate: false });
-        click("bell");
-      },
-      theme() {
-        document.body.classList.toggle("press-terminal-night");
-        writeLine(document.body.classList.contains("press-terminal-night") ? "Night edition." : "Day edition.", { tone: "muted", animate: false });
-      },
-      banner() {
-        banner();
-      },
-      clear() {
-        screen.innerHTML = "";
-      },
-      ls() { return commands.projects(); },
-      cat(arg) {
-        if (!arg) {
-          writeLine("usage: cat <slug>", { tone: "error", animate: false });
-          return;
-        }
-        commands.projects(arg);
-      }
-    };
-
-    const aliases = {
-      "?" : "help",
-      "h": "help",
-      "info": "about",
-      "bio": "about",
-      "stack": "skills",
-      "tech": "skills",
-      "papers": "research",
-      "certifications": "certs",
-      "channels": "social",
-      "links": "social",
-      "mail": "contact",
-      "email": "contact",
-      "exit": "clear",
-      "cls": "clear"
-    };
-
-    const run = (raw) => {
-      const trimmed = (raw || "").trim();
-      writePromptLine(trimmed);
-      if (!trimmed) return;
-      const [head, ...rest] = trimmed.split(/\s+/);
-      const arg = rest.join(" ");
-      const key = (aliases[head.toLowerCase()] || head.toLowerCase());
-      const fn = commands[key];
-      if (typeof fn === "function") {
-        try {
-          fn(arg);
-        } catch (err) {
-          writeLine(`error: ${err && err.message ? err.message : String(err)}`, { tone: "error", animate: false });
-        }
-      } else {
-        writeLine(`command not found: ${head}. Type \`help\`.`, { tone: "error", animate: false });
-      }
-      writeLine("", { animate: false });
-    };
-
-    // History (arrow keys)
-    const history = [];
-    let historyIndex = -1;
-
-    const updateTyped = () => {
-      typed.textContent = input.value;
-    };
-
-    const focusInput = () => input.focus();
-    paper && paper.addEventListener("click", focusInput);
-    screen.addEventListener("click", focusInput);
-
-    input.addEventListener("input", (event) => {
-      updateTyped();
-      const data = event.data;
-      if (data) click("key");
-      else if (event.inputType && event.inputType.startsWith("delete")) click("back");
-    });
-
-    input.addEventListener("keydown", (event) => {
-      if (event.key === "ArrowUp") {
-        if (history.length === 0) return;
-        event.preventDefault();
-        historyIndex = Math.max(0, historyIndex - 1);
-        input.value = history[historyIndex] || "";
-        updateTyped();
-      } else if (event.key === "ArrowDown") {
-        if (history.length === 0) return;
-        event.preventDefault();
-        historyIndex = Math.min(history.length, historyIndex + 1);
-        input.value = history[historyIndex] || "";
-        updateTyped();
-      } else if (event.key === "Tab") {
-        event.preventDefault();
-        const partial = input.value.trim().toLowerCase();
-        if (!partial) return;
-        const candidates = Object.keys(commands).concat(Object.keys(aliases))
-          .filter((c) => c.startsWith(partial));
-        if (candidates.length === 1) {
-          input.value = candidates[0] + " ";
-          updateTyped();
-          click("key");
-        } else if (candidates.length > 1) {
-          writeLine(candidates.sort().join("  "), { tone: "muted", animate: false });
-        }
-      }
-    });
-
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      const value = input.value;
-      if (value.trim()) {
-        history.push(value.trim());
-        historyIndex = history.length;
-      }
-      click("return");
-      paper && paper.classList.remove("is-stamping");
-      void (paper && paper.offsetWidth);
-      paper && paper.classList.add("is-stamping");
-      input.value = "";
-      updateTyped();
-      run(value);
-    });
-
-    muteBtn && muteBtn.addEventListener("click", () => {
-      muted = !muted;
-      muteBtn.setAttribute("aria-pressed", String(muted));
-      muteBtn.textContent = muted ? "Sound: OFF" : "Sound: ON";
-    });
-
-    // Auto-focus when scrolled into view (don't hijack on first paint)
-    if ("IntersectionObserver" in window) {
-      const obs = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && document.hasFocus() && !document.activeElement.matches("input, textarea, [contenteditable]")) {
-            // Don't autofocus; just signal availability with the caret already blinking.
-          }
-        });
-      }, { threshold: 0.4 });
-      obs.observe(root);
     }
 
-    banner();
+    writeCards("All");
   }
 
   renderProjects();
@@ -1363,6 +921,4 @@
   setupScrollProgress();
   setupHeroSplit();
   setupMagneticButtons();
-  setupCardTilt();
-  setupPressTerminal();
 })();
