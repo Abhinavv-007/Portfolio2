@@ -15,11 +15,20 @@ const isEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
 export function onRequestGet(context) {
   const { env } = context;
+  const fromEmail = clean(env.CONTACT_FROM_EMAIL || DEFAULT_FROM_EMAIL, 200);
+  const fromMatch = fromEmail.match(/<([^>]+)>/);
+  const fromAddress = fromMatch ? fromMatch[1] : fromEmail;
+  const fromDomain = fromAddress.includes("@") ? fromAddress.split("@")[1] : "";
   return json({
     ok: true,
     configured: Boolean(env.RESEND_API_KEY),
+    fromEmail,
+    fromAddress,
+    fromDomain,
     toEmail: clean(env.CONTACT_TO_EMAIL || DEFAULT_TO_EMAIL, 200),
-    fromEmail: clean(env.CONTACT_FROM_EMAIL || DEFAULT_FROM_EMAIL, 200)
+    hint: env.RESEND_API_KEY
+      ? `RESEND_API_KEY is bound. If sending fails with "domain not verified", verify ${fromDomain} in Resend → Domains.`
+      : "RESEND_API_KEY is NOT bound on this deployment. Add it under Cloudflare Pages → Settings → Environment variables (Production)."
   });
 }
 
@@ -31,7 +40,10 @@ export async function onRequestPost(context) {
   const { request, env } = context;
 
   if (!env.RESEND_API_KEY) {
-    return json({ ok: false, error: "Email service is not configured." }, 500);
+    return json({
+      ok: false,
+      error: "The send service isn't configured yet. Email me directly at hello@abhinv.in for now."
+    }, 500);
   }
 
   let payload;
@@ -97,13 +109,27 @@ export async function onRequestPost(context) {
   });
 
   if (!resendResponse.ok) {
-    let error = "Could not send message right now.";
+    let detail = "";
+    let resendName = "";
     try {
       const data = await resendResponse.json();
-      error = data.message || error;
+      detail = data.message || data.error || "";
+      resendName = data.name || "";
     } catch {
-      // Resend returned a non-JSON error. Keep the public message generic.
+      // Resend returned a non-JSON error.
     }
+    // Friendlier message when the sending domain hasn't been verified in Resend.
+    const fromMatch = fromEmail.match(/<([^>]+)>/);
+    const fromAddress = fromMatch ? fromMatch[1] : fromEmail;
+    const fromDomain = fromAddress.includes("@") ? fromAddress.split("@")[1] : "";
+    const isDomainIssue =
+      /domain/i.test(detail) ||
+      /verify/i.test(detail) ||
+      resendName === "validation_error" ||
+      resendName === "invalid_from_address";
+    const error = isDomainIssue
+      ? `Send blocked: ${fromDomain || "the sending domain"} isn't verified in Resend yet. Verify it under Resend → Domains, or email me at hello@abhinv.in.`
+      : detail || "Could not send the message right now. Email hello@abhinv.in instead.";
     return json({ ok: false, error }, 502);
   }
 

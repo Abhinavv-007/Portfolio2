@@ -22,7 +22,7 @@
   --menu-control-size: 2.55rem;
   --menu-control-top: 0.7rem;
   --menu-control-right: max(0.85rem, calc((100vw - min(100vw, 112rem)) / 2 + 0.85rem));
-  --content-gutter: clamp(1.15rem, 3vw, 3rem);
+  --content-gutter: clamp(1.6rem, 3.4vw, 3rem);
 }
 
 *,
@@ -2622,7 +2622,7 @@ textarea {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.5rem 0;
+  padding: 0.5rem clamp(0.4rem, 1.4vw, 1rem);
   border-bottom: 2px solid var(--ink);
   margin-bottom: 1.25rem;
   font-family: var(--mono);
@@ -3232,10 +3232,10 @@ body.menu-open .menu-button:hover {
 }
 
 .menu-curtain.active .menu-burn-paper {
-  clip-path: circle(0% at 50% 50%);
+  clip-path: circle(0% at var(--menu-iris-x, 50%) var(--menu-iris-y, 50%));
 }
 .menu-curtain.closing .menu-burn-paper {
-  clip-path: circle(150% at 50% 50%);
+  clip-path: circle(150% at var(--menu-iris-x, 50%) var(--menu-iris-y, 50%));
   transition: clip-path 360ms cubic-bezier(0.45, 0, 0.55, 1);
 }
 
@@ -6813,4 +6813,545 @@ body.menu-open .masthead > .menu-button:focus-visible {
   .terminal-form {
     grid-template-columns: 1fr;
   }
+}
+
+/* =========================================================
+   Polish pass 15 — animations, hero deck, terminal page,
+   selected-work fix, contact form, skills, marquee retune
+   ========================================================= */
+
+/* ---- Hero / About spread on the homepage ---- */
+.profile-stats {
+  list-style: none;
+  margin: 1.4rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 1rem;
+}
+
+.profile-stats li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--rule);
+  background: rgba(255, 251, 235, 0.45);
+}
+
+.profile-stats strong {
+  font-family: var(--display);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.profile-stats span {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.profile-portrait figcaption {
+  margin-top: 0.55rem;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  text-align: center;
+}
+
+.profile-now {
+  list-style: none;
+  margin: 1.2rem 0 0;
+  padding: 1rem 1rem 0.85rem;
+  display: grid;
+  gap: 0.55rem;
+  border-top: 1px solid var(--rule-strong);
+  background:
+    repeating-linear-gradient(180deg, rgba(26, 25, 22, 0.05) 0 1px, transparent 1px 5px),
+    rgba(255, 251, 235, 0.4);
+}
+
+.profile-now li {
+  display: grid;
+  grid-template-columns: 4.6rem 1fr;
+  align-items: baseline;
+  gap: 0.65rem;
+  font-family: var(--serif, Georgia, serif);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.profile-now li > span {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--red);
+  white-space: nowrap;
+}
+
+.profile-now strong {
+  font-weight: 700;
+}
+
+.profile-cta {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 1.4rem;
+  margin-top: 1rem;
+}
+
+/* ---- Skills section on credentials.html ---- */
+.skills-page {
+  display: grid;
+  gap: 1.4rem;
+  padding-top: 1.6rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.skills-head {
+  display: grid;
+  gap: 0.4rem;
+  max-width: 56rem;
+}
+
+.skills-title {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(1.85rem, 3.4vw, 2.65rem);
+  line-height: 0.96;
+  letter-spacing: -0.005em;
+}
+
+.skills-head p {
+  margin: 0;
+  font-family: var(--serif, Georgia, serif);
+  font-size: 0.95rem;
+  color: var(--muted);
+  max-width: 48rem;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15.5rem, 1fr));
+  gap: 0.85rem;
+}
+
+.skill-group {
+  display: grid;
+  gap: 0.7rem;
+  padding: 1rem 0.95rem 0.9rem;
+  border: 1px solid var(--rule-strong);
+  background:
+    repeating-linear-gradient(180deg, rgba(26, 25, 22, 0.04) 0 1px, transparent 1px 6px),
+    rgba(255, 251, 235, 0.55);
+  box-shadow:
+    0 0.18rem 0 rgba(26, 25, 22, 0.12),
+    0 0.6rem 1.2rem rgba(26, 25, 22, 0.06);
+  transition: transform 320ms var(--ease), box-shadow 320ms ease;
+}
+
+.skill-group:hover {
+  transform: translateY(-0.18rem) rotate(-0.2deg);
+  box-shadow:
+    0 0.24rem 0 rgba(26, 25, 22, 0.18),
+    0 1rem 1.8rem rgba(26, 25, 22, 0.1);
+}
+
+.skill-group-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 0.45rem;
+}
+
+.skill-group-num {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: var(--red);
+}
+
+.skill-group-head h3 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.skill-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.45rem;
+}
+
+.skill-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.32rem 0.62rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: rgba(255, 251, 235, 0.7);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  opacity: 0;
+  transform: translateY(0.5rem);
+  transition: transform 360ms var(--ease), background 240ms ease, color 240ms ease, border-color 240ms ease, opacity 360ms var(--ease);
+  transition-delay: var(--chip-delay, 0ms);
+}
+
+.skill-group.visible .skill-chip {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.skill-chip:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper-light);
+  transform: translateY(-0.12rem);
+}
+
+.skill-dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: var(--red);
+  box-shadow: 0 0 0 2px rgba(209, 90, 53, 0.18);
+  flex: 0 0 auto;
+}
+
+.skill-chip:hover .skill-dot {
+  background: var(--paper-light);
+  box-shadow: 0 0 0 2px rgba(234, 223, 206, 0.25);
+}
+
+/* ---- Selected Work scroller — stop the corner clipping ---- */
+.project-card {
+  clip-path: none;
+}
+
+.project-image {
+  padding: 0.6rem;
+}
+
+.project-card:hover .project-image img,
+.project-card:focus-within .project-image img {
+  /* Don't scale the image inside an overflow-hidden box — caused the
+     "image getting cut off" complaint. The card itself still lifts. */
+  transform: none;
+}
+
+/* Edge fades on the rail so it's visually clear it keeps going */
+.work-strip {
+  position: relative;
+}
+
+.work-strip::before,
+.work-strip::after {
+  content: "";
+  position: absolute;
+  top: 4.4rem;
+  bottom: 1.4rem;
+  width: 2.6rem;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.work-strip::before {
+  left: var(--content-gutter);
+  background: linear-gradient(to right, rgba(214, 204, 189, 0.95), rgba(214, 204, 189, 0));
+}
+
+.work-strip::after {
+  right: var(--content-gutter);
+  background: linear-gradient(to left, rgba(214, 204, 189, 0.95), rgba(214, 204, 189, 0));
+}
+
+@media (max-width: 720px) {
+  .work-strip::before,
+  .work-strip::after {
+    display: none;
+  }
+}
+
+/* ---- Contact form — bigger Quick Note + calmer send animation ---- */
+.contact-columns--redesign {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+  gap: 1.6rem;
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .contact-columns--redesign {
+    grid-template-columns: 1fr;
+  }
+}
+
+.contact-column {
+  padding: 1.4rem 1.3rem;
+  border: 1px solid var(--rule-strong);
+  background:
+    repeating-linear-gradient(180deg, rgba(26, 25, 22, 0.045) 0 1px, transparent 1px 6px),
+    rgba(255, 251, 235, 0.6);
+}
+
+.contact-column--email {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.contact-elsewhere {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+}
+
+.contact-form-column {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.contact-form-title {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(1.85rem, 3.4vw, 2.6rem);
+  line-height: 0.95;
+}
+
+.contact-form-helper {
+  margin: 0 0 0.4rem;
+  font-family: var(--serif, Georgia, serif);
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.contact-form {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.contact-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+}
+
+@media (max-width: 560px) {
+  .contact-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.contact-field {
+  display: grid;
+  gap: 0.32rem;
+}
+
+.contact-field > span {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.contact-form input[type="text"],
+.contact-form input[type="email"],
+.contact-form textarea {
+  width: 100%;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--rule-strong);
+  background: rgba(255, 251, 235, 0.95);
+  font-family: var(--serif, Georgia, serif);
+  font-size: 1rem;
+  color: var(--ink);
+  transition: border-color 220ms ease, background 220ms ease, box-shadow 220ms ease;
+}
+
+.contact-form textarea {
+  min-height: 12rem;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-color: var(--ink);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(209, 90, 53, 0.12);
+}
+
+.form-honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.contact-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.9rem 1.2rem;
+  margin-top: 0.4rem;
+}
+
+.contact-send-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.85rem 1.3rem;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper-light);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 220ms var(--ease), background 220ms ease, color 220ms ease;
+}
+
+.contact-send-button:hover,
+.contact-send-button:focus-visible {
+  background: var(--red);
+  color: var(--paper-light);
+  outline: none;
+  transform: translateY(-0.12rem);
+}
+
+.contact-send-button[disabled] {
+  cursor: progress;
+  opacity: 0.85;
+  transform: none;
+}
+
+.contact-send-button::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+  background: var(--red);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 320ms var(--ease);
+}
+
+.contact-send-button:hover::after,
+.contact-send-button:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.contact-send-button.is-pulsing {
+  animation: contactSendPulse 480ms cubic-bezier(0.45, 0.05, 0.4, 1) both;
+}
+
+@keyframes contactSendPulse {
+  0%   { transform: translateY(0) scale(1); }
+  35%  { transform: translateY(-0.08rem) scale(0.965); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+.contact-send-arrow {
+  display: inline-block;
+  transition: transform 320ms var(--ease);
+}
+
+.contact-send-button:hover .contact-send-arrow,
+.contact-send-button:focus-visible .contact-send-arrow {
+  transform: translateX(0.3rem);
+}
+
+.contact-form-status {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  min-height: 1.2rem;
+  color: var(--muted);
+  flex: 1 1 14rem;
+}
+
+.contact-form-status[data-state="pending"] { color: var(--ink); }
+.contact-form-status[data-state="success"] { color: #2f6d3f; }
+.contact-form-status[data-state="error"]   { color: var(--red); }
+
+/* ---- Marquee retune (slower, less cluttered, separator pills) ---- */
+.marquee-track {
+  animation-duration: 38s;
+}
+
+.marquee-set {
+  gap: 1.4rem;
+  padding-right: 1.4rem;
+}
+
+.marquee strong,
+.marquee a {
+  padding: 0.1rem 0.55rem;
+}
+
+.marquee i {
+  font-style: normal;
+  opacity: 0.7;
+}
+
+/* ---- Terminal-as-page tweaks ---- */
+.terminal-section--page {
+  margin-top: 0.6rem;
+}
+
+/* ---- Page-headline aside (used on contact's "I have two") ---- */
+.page-headline-aside {
+  font-style: italic;
+  color: var(--red);
+}
+
+/* ---- Reduced motion: keep things snappy and direct ---- */
+@media (prefers-reduced-motion: reduce) {
+  .menu-curtain.active .menu-burn-paper,
+  .menu-curtain.closing .menu-burn-paper {
+    transition: none;
+  }
+  .skill-chip,
+  .reveal {
+    transition: none;
+  }
+  .contact-send-button.is-pulsing {
+    animation: none;
+  }
+}
+
+/* ---- Page-headline title: tighter italic aside ---- */
+.page-headline--contact .page-headline-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.6rem 1rem;
 }

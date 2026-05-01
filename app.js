@@ -510,20 +510,25 @@
   }
 
   function renderMarquees() {
+    const phrases = Array.isArray(data.marquee) && data.marquee.length
+      ? data.marquee
+      : ["Need a hand? I have two — email me at hello@abhinv.in"];
+    const sep = '<i aria-hidden="true">&nbsp;&nbsp;✕&nbsp;&nbsp;</i>';
     $$("[data-marquee]").forEach((target) => {
-      const message = "Need a helping hand? Email me. I have two.";
+      const renderSet = (linkFirst) => {
+        return phrases.map((phrase, i) => {
+          const safe = esc(phrase);
+          if (i === 0 && linkFirst) {
+            return `<a href="mailto:${data.profile.email}">${safe}</a>${sep}`;
+          }
+          const tail = i < phrases.length - 1 ? sep : "";
+          return `<span>${safe}</span>${tail}`;
+        }).join("");
+      };
       target.innerHTML = `
         <div class="marquee-track">
-          <div class="marquee-set">
-            <a href="mailto:${data.profile.email}">${message}</a>
-            <span>${message}</span>
-            <span>${message}</span>
-          </div>
-          <div class="marquee-set" aria-hidden="true">
-            <span>${message}</span>
-            <span>${message}</span>
-            <span>${message}</span>
-          </div>
+          <div class="marquee-set">${renderSet(true)}</div>
+          <div class="marquee-set" aria-hidden="true">${renderSet(false)}</div>
         </div>
       `;
     });
@@ -569,12 +574,16 @@
 
     const closeButton = $(".menu-close", curtain);
     const syncCloseTarget = () => {
-      if (!closeButton) return;
       const rect = button.getBoundingClientRect();
       curtain.style.setProperty("--menu-close-x", `${rect.left}px`);
       curtain.style.setProperty("--menu-close-y", `${rect.top}px`);
       curtain.style.setProperty("--menu-close-w", `${rect.width}px`);
       curtain.style.setProperty("--menu-close-h", `${rect.height}px`);
+      // Iris reveal origin sits at the centre of the menu button.
+      const cx = ((rect.left + rect.width / 2) / window.innerWidth) * 100;
+      const cy = ((rect.top + rect.height / 2) / window.innerHeight) * 100;
+      curtain.style.setProperty("--menu-iris-x", `${cx.toFixed(2)}%`);
+      curtain.style.setProperty("--menu-iris-y", `${cy.toFixed(2)}%`);
     };
 
     let isOpen = false;
@@ -711,11 +720,25 @@
     });
 
     rail.addEventListener("wheel", (event) => {
+      // Horizontal trackpad swipe: route deltaX into the rail.
       const isHorizontalSwipe = Math.abs(event.deltaX) > Math.abs(event.deltaY);
+      // Vertical wheel + shift: classic horizontal-scroll modifier.
       const isShiftScroll = event.shiftKey && Math.abs(event.deltaY) > 0;
-      if (!isHorizontalSwipe && !isShiftScroll) return;
+      // Vertical mouse wheel over the rail: only convert to horizontal
+      // when the rail still has room to scroll, so the page can take over
+      // at the ends.
+      const canScrollRailX =
+        (event.deltaY > 0 && rail.scrollLeft < rail.scrollWidth - rail.clientWidth - 1) ||
+        (event.deltaY < 0 && rail.scrollLeft > 0);
+      const isVerticalWheel =
+        !isHorizontalSwipe &&
+        !isShiftScroll &&
+        Math.abs(event.deltaY) > 0 &&
+        canScrollRailX;
+      if (!isHorizontalSwipe && !isShiftScroll && !isVerticalWheel) return;
       event.preventDefault();
-      rail.scrollLeft += isHorizontalSwipe ? event.deltaX : event.deltaY;
+      const delta = isHorizontalSwipe ? event.deltaX : event.deltaY;
+      rail.scrollLeft += delta;
     }, { passive: false });
 
     $("[data-rail-prev]")?.addEventListener("click", () => rail.scrollBy({ left: -430, behavior: "smooth" }));
@@ -816,21 +839,26 @@
       creds: "credentials.html",
       cred: "credentials.html",
       contact: "contact.html",
-      c: "contact.html"
+      c: "contact.html",
+      terminal: "terminal.html",
+      t: "terminal.html",
+      desk: "terminal.html"
     };
+
+    const skillsLines = (() => {
+      const groups = Array.isArray(data.skills) ? data.skills : [];
+      if (!groups.length) {
+        return ["Core stack: HTML, CSS, JavaScript, Cloudflare, APIs, AI workflows."];
+      }
+      return groups.map((g) => `${g.group}: ${(g.items || []).join(", ")}`);
+    })();
 
     const messages = {
       help: [
-        "Available files: about, work, credentials, contact, terminal.",
-        "Shortcuts: w opens work, c opens contact, email opens mail, socials prints links, clear resets this desk."
+        "Available files: about, work, credentials, terminal, contact.",
+        "Shortcuts: w opens work, c opens contact, t opens terminal, email opens mail, socials prints links, skills lists the toolbox, clear resets this desk."
       ],
-      terminal: [
-        "You are already at the command desk.",
-        "Use it like a fast index for the portfolio."
-      ],
-      skills: [
-        "Core stack: HTML, CSS, JavaScript, Cloudflare Pages, APIs, AI workflows, and careful product interfaces."
-      ],
+      skills: skillsLines,
       socials: data.socials.map((social) => `${social.label}: ${social.url}`),
       email: [`Opening mail to ${data.profile.email}.`]
     };
@@ -923,22 +951,45 @@
     if (!form) return;
 
     const submit = form.querySelector('button[type="submit"]');
-    let burnTimer = 0;
-    const igniteSubmit = () => {
+    const submitLabel = submit?.querySelector(".contact-send-label");
+    const idleLabel = submitLabel?.textContent || submit?.textContent || "Send message";
+
+    let pulseTimer = 0;
+    const pulseSubmit = () => {
       if (!submit) return;
-      submit.classList.remove("is-burning");
+      submit.classList.remove("is-pulsing");
       // Force reflow so the animation restarts on each click.
       void submit.offsetWidth;
-      submit.classList.add("is-burning");
-      if (burnTimer) window.clearTimeout(burnTimer);
-      burnTimer = window.setTimeout(() => submit.classList.remove("is-burning"), 760);
+      submit.classList.add("is-pulsing");
+      if (pulseTimer) window.clearTimeout(pulseTimer);
+      pulseTimer = window.setTimeout(() => submit.classList.remove("is-pulsing"), 520);
     };
 
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      igniteSubmit();
-      const formData = new FormData(form);
+    const writeStatus = (text, state) => {
       const status = $("#contactFormStatus");
+      if (!status) return;
+      status.textContent = text;
+      if (state) {
+        status.dataset.state = state;
+      } else {
+        delete status.dataset.state;
+      }
+    };
+
+    const writeLabel = (text) => {
+      if (submitLabel) {
+        submitLabel.textContent = text;
+      } else if (submit) {
+        submit.textContent = text;
+      }
+    };
+
+    const isEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const formData = new FormData(form);
       const payload = {
         name: String(formData.get("name") || "").trim(),
         email: String(formData.get("email") || "").trim(),
@@ -946,43 +997,102 @@
         website: String(formData.get("website") || "").trim()
       };
 
-      if (status) {
-        status.textContent = "Sending through abhinv.in...";
-        status.dataset.state = "pending";
+      if (!payload.name || !payload.email || !payload.message) {
+        writeStatus("Add your name, email, and message — then I will reply.", "error");
+        return;
       }
-      if (submit) {
-        submit.disabled = true;
-        submit.textContent = "Sending...";
+      if (!isEmail(payload.email)) {
+        writeStatus("That email address looks off — give it another go.", "error");
+        return;
       }
 
-      window.setTimeout(async () => {
-        try {
-          const response = await fetch("/api/contact", {
-            method: "POST",
-            headers: { "content-type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-          const result = await response.json().catch(() => ({}));
-          if (!response.ok || result.ok === false) {
-            throw new Error(result.error || "Message failed. Please email me directly.");
-          }
-          form.reset();
-          if (status) {
-            status.textContent = "Sent. I will reply soon.";
-            status.dataset.state = "success";
-          }
-          if (submit) submit.textContent = "Sent";
-        } catch (error) {
-          if (status) {
-            status.textContent = error.message || "Message failed. Please email me directly.";
-            status.dataset.state = "error";
-          }
-          if (submit) submit.textContent = "Try Again";
-        } finally {
-          if (submit) submit.disabled = false;
+      pulseSubmit();
+      writeStatus("Sending through abhinv.in…", "pending");
+      if (submit) submit.disabled = true;
+      writeLabel("Sending…");
+
+      try {
+        const response = await fetch("/api/contact", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok || result.ok === false) {
+          const error = result.error || `Message failed (HTTP ${response.status}).`;
+          throw new Error(error);
         }
-      }, 260);
+        form.reset();
+        writeStatus("Sent — I will write back within 24 hours.", "success");
+        writeLabel("Sent");
+        window.setTimeout(() => writeLabel(idleLabel), 3200);
+      } catch (error) {
+        const message = error?.message ||
+          "Message failed. Email me directly at hello@abhinv.in.";
+        writeStatus(message, "error");
+        writeLabel("Try again");
+      } finally {
+        if (submit) submit.disabled = false;
+      }
     });
+  }
+
+  function renderSkills() {
+    const grid = $("#skillsGrid");
+    if (!grid) return;
+    const groups = Array.isArray(data.skills) ? data.skills : [];
+    if (!groups.length) return;
+    grid.innerHTML = groups.map((group, gi) => {
+      const chips = (group.items || []).map((skill, si) =>
+        `<li class="skill-chip" style="--chip-delay:${si * 28}ms"><span class="skill-dot" aria-hidden="true"></span>${esc(skill)}</li>`
+      ).join("");
+      return `
+        <article class="skill-group reveal" style="--delay:${gi * 80}ms">
+          <header class="skill-group-head">
+            <span class="skill-group-num">${String(gi + 1).padStart(2, "0")}</span>
+            <h3>${esc(group.group)}</h3>
+          </header>
+          <ul class="skill-list">${chips}</ul>
+        </article>
+      `;
+    }).join("");
+  }
+
+  function setupCountUp() {
+    const targets = $$(".certs-stat-num");
+    if (!targets.length) return;
+    if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        const text = (el.textContent || "0").trim();
+        const match = text.match(/^(\d+)(.*)$/);
+        if (!match) {
+          observer.unobserve(el);
+          return;
+        }
+        const target = parseInt(match[1], 10);
+        const suffix = match[2] || "";
+        if (!Number.isFinite(target) || target <= 1) {
+          observer.unobserve(el);
+          return;
+        }
+        const duration = 1100;
+        const start = performance.now();
+        const tick = (now) => {
+          const t = Math.min(1, (now - start) / duration);
+          const eased = 1 - Math.pow(1 - t, 3);
+          el.textContent = `${Math.round(eased * target)}${suffix}`;
+          if (t < 1) window.requestAnimationFrame(tick);
+        };
+        window.requestAnimationFrame(tick);
+        observer.unobserve(el);
+      });
+    }, { threshold: 0.4 });
+    targets.forEach((el) => observer.observe(el));
   }
 
   function renderCertifications() {
@@ -1084,6 +1194,7 @@
   renderSocials();
   renderMarquees();
   renderCertifications();
+  renderSkills();
   setupMenu();
   setupRail();
   setupReveal();
@@ -1094,4 +1205,5 @@
   setupContactForm();
   setupHeroSplit();
   setupMagneticButtons();
+  setupCountUp();
 })();

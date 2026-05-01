@@ -6,7 +6,31 @@ window.PORTFOLIO = {
     summary: "AI builder and full-stack developer creating sharp digital experiences through code, design, and intelligent systems."
   },
   marquee: [
-    "Need a helping hand? Email me. I have two."
+    "Need a hand? I have two — email me at hello@abhinv.in",
+    "Open for AI builds, full-stack systems, and friendly debug sessions",
+    "Replies in less time than a coffee break"
+  ],
+  skills: [
+    {
+      group: "Languages",
+      items: ["JavaScript", "TypeScript", "Python", "Dart", "HTML", "CSS", "SQL", "Bash"]
+    },
+    {
+      group: "Frameworks & Runtime",
+      items: ["React", "Next.js", "Flutter", "Node.js", "Express", "Tailwind CSS", "Vite"]
+    },
+    {
+      group: "AI & Data",
+      items: ["OpenAI / Anthropic / Gemini APIs", "LangChain", "Vector DBs", "Prompt design", "Retrieval (RAG)", "Agents & tools"]
+    },
+    {
+      group: "Cloud & DevOps",
+      items: ["Cloudflare Pages", "Cloudflare Workers", "KV / R2", "Vercel", "Resend", "GitHub Actions", "Docker"]
+    },
+    {
+      group: "Design & Tools",
+      items: ["Figma", "Photoshop", "Editorial typography", "Motion / CSS animation", "Git", "Linear / Notion"]
+    }
   ],
   socials: [
     { label: "LinkedIn", url: "https://www.linkedin.com/in/abhnv07/" },
