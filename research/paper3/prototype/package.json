@@ -1,0 +1,17 @@
+{
+  "name": "the-glass-ballot-box",
+  "private": true,
+  "version": "1.1.0",
+  "type": "module",
+  "description": "Verifiable election simulator with append-only logs and hash chain verification",
+  "scripts": {
+    "start": "wrangler dev",
+    "dev": "wrangler dev"
+  },
+  "dependencies": {
+    "hono": "^4.12.9"
+  },
+  "devDependencies": {
+    "wrangler": "^4.78.0"
+  }
+}

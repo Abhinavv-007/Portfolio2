@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Neumorphic Dashboard</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Material Symbols (replaces Lucide for standalone HTML) -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+        rel="stylesheet" />
+
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+
+    <!-- Babel for compiling JSX in the browser (Updated to Babel 7+ to support modern JS like optional chaining) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        html,
+        body,
+        #root {
+            min-height: 100%;
+            margin: 0;
+        }
+
+        /* Custom scrollbar to match the "no-scrollbar" utility */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .material-symbols-outlined {
+            vertical-align: middle;
+            line-height: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel" data-presets="env,react">
+        const { useState, useEffect, useRef } = React;
+
+        // --- ICON MAPPING SYSTEM ---
+        // Maps the Lucide icons used in the React code to Google Material Symbols
+        const Icon = ({ name, size = 24, className = '', style = {}, fill = false }) => (
+            <span
+                className={`material-symbols-outlined ${className}`}
+                style={{
+                    fontSize: size,
+                    fontVariationSettings: fill ? "'FILL' 1" : "'FILL' 0",
+                    ...style
+                }}
+            >
+                {name}
+            </span>
+        );
+
+        const CalendarIcon = (p) => <Icon name="calendar_month" {...p} />;
+        const Bell = (p) => <Icon name="notifications" {...p} />;
+        const Building2 = (p) => <Icon name="domain" {...p} />;
+        const User = (p) => <Icon name="person" {...p} />;
+        const MessageCircle = (p) => <Icon name="chat" {...p} />;
+        const ListTodo = (p) => <Icon name="format_list_bulleted" {...p} />;
+        const FileText = (p) => <Icon name="description" {...p} />;
+        const Sun = (p) => <Icon name="light_mode" {...p} />;
+        const Database = (p) => <Icon name="database" {...p} />;
+        const Download = (p) => <Icon name="download" {...p} />;
+        const CheckCircle2 = (p) => <Icon name="check_circle" {...p} />;
+        const Layers = (p) => <Icon name="layers" {...p} />;
+        const ChevronRight = (p) => <Icon name="chevron_right" {...p} />;
+        const ChevronLeft = (p) => <Icon name="chevron_left" {...p} />;
+        const Plus = (p) => <Icon name="add" {...p} />;
+        const CornerDownLeft = (p) => <Icon name="keyboard_return" {...p} />;
+        const GripVertical = (p) => <Icon name="drag_indicator" {...p} />;
+        const ChevronDown = (p) => <Icon name="expand_more" {...p} />;
+        const ChevronUp = (p) => <Icon name="expand_less" {...p} />;
+        const Mic = (p) => <Icon name="mic" {...p} />;
+        const Video = (p) => <Icon name="videocam" {...p} />;
+        const LayoutDashboard = (p) => <Icon name="space_dashboard" {...p} />;
+        const Settings = (p) => <Icon name="settings" {...p} />;
+        const Search = (p) => <Icon name="search" {...p} />;
+        const Trash2 = (p) => <Icon name="delete" {...p} />;
+        const Flag = (p) => <Icon name="flag" {...p} fill={p.fill !== "none"} />;
+        const CalendarDays = (p) => <Icon name="event" {...p} />;
+        const MoreHorizontal = (p) => <Icon name="more_horiz" {...p} />;
+        const X = (p) => <Icon name="close" {...p} />;
+        const Moon = (p) => <Icon name="dark_mode" {...p} />;
+        const ToggleLeft = (p) => <Icon name="toggle_off" {...p} />;
+        const ToggleRight = (p) => <Icon name="toggle_on" {...p} />;
+        const Clock = (p) => <Icon name="schedule" {...p} />;
+        const FolderOpen = (p) => <Icon name="folder_open" {...p} />;
+        const Folder = (p) => <Icon name="folder" {...p} />;
+        const Mail = (p) => <Icon name="mail" {...p} />;
+        const Phone = (p) => <Icon name="phone" {...p} />;
+        const MapPin = (p) => <Icon name="location_on" {...p} />;
+        const Activity = (p) => <Icon name="show_chart" {...p} />;
+        const CheckCircle = (p) => <Icon name="check_circle" {...p} />;
+        const ArrowLeft = (p) => <Icon name="arrow_back" {...p} />;
+        const Sparkles = (p) => <Icon name="auto_awesome" {...p} />;
+        const Loader2 = (p) => <Icon name="autorenew" {...p} className={`animate-spin ${p.className || ''}`} />;
+        const Key = (p) => <Icon name="key" {...p} />;
+        const Home = (p) => <Icon name="home" {...p} />;
+
+        // ASMR Icons
+        const CloudRain = (p) => <Icon name="rainy" {...p} />;
+        const BookOpen = (p) => <Icon name="menu_book" {...p} />;
+        const PenTool = (p) => <Icon name="edit" {...p} />;
+        const Flame = (p) => <Icon name="local_fire_department" {...p} />;
+        const Keyboard = (p) => <Icon name="keyboard" {...p} />;
+        const Volume2 = (p) => <Icon name="volume_up" {...p} />;
+        const VolumeX = (p) => <Icon name="volume_off" {...p} />;
+        const Play = (p) => <Icon name="play_arrow" {...p} />;
+        const Pause = (p) => <Icon name="pause" {...p} />;
+        const Music = (p) => <Icon name="music_note" {...p} />;
+
+        // --- MAIN APP COMPONENT ---
+        function App() {
+            // --- GLOBAL STATE ---
+            const [activeTab, setActiveTab] = useState('dashboard');
+            const [activePlannerTab, setActivePlannerTab] = useState('unplanned');
+            const [isDarkMode, setIsDarkMode] = useState(false);
+            const [searchQuery, setSearchQuery] = useState("");
+
+            // Gemini API Key State
+            const [userApiKey, setUserApiKey] = useState(() => localStorage.getItem('dash_api_key') || "");
+            const [showApiKeyModal, setShowApiKeyModal] = useState(() => !localStorage.getItem('dash_api_key_skipped') && !localStorage.getItem('dash_api_key'));
+
+            // User Profile State
+            const [userProfile, setUserProfile] = useState(() => {
+                const saved = localStorage.getItem('dash_user_profile');
+                if (saved) return JSON.parse(saved);
+                return { name: "Abhinav Raj", role: "Vibe Coder", email: "abhinav@lnch.in", location: "India" };
+            });
+
+            // Profile Modal State
+            const [showProfileModal, setShowProfileModal] = useState(() => !localStorage.getItem('dash_user_profile'));
+            const [profileForm, setProfileForm] = useState(userProfile);
+
+            const handleSaveProfile = () => {
+                if (!profileForm.name.trim()) return;
+                setUserProfile(profileForm);
+                localStorage.setItem('dash_user_profile', JSON.stringify(profileForm));
+                setShowProfileModal(false);
+            };
+
+            const handleSaveApiKey = () => {
+                if (userApiKey.trim()) {
+                    localStorage.setItem('dash_api_key', userApiKey);
+                }
+                setShowApiKeyModal(false);
+            };
+
+            const handleSkipApiKey = () => {
+                localStorage.setItem('dash_api_key_skipped', 'true');
+                setShowApiKeyModal(false);
+            };
+
+            // Dynamic Content States
+            const [organizations, setOrganizations] = useState(['Design Team', 'Engineering', 'Marketing', 'Executive']);
+            const [taskFolders, setTaskFolders] = useState(['Project Alpha', 'Personal Tasks', 'Design Ideas', 'Finance']);
+
+            // System Settings State
+            const [settings, setSettings] = useState({
+                notifications: true, sound: false, weeklyReport: true
+            });
+
+            // Dynamic Todos State
+            const [todos, setTodos] = useState([
+                { id: 1, text: "Design system setup", tag: "HI-1", section: "unplanned", prevSection: "unplanned", hasPattern: true, project: null, priority: true, dueDate: null, hoursLeft: null, folder: null, dismissedAlert: false },
+                { id: 2, text: "Review user flow", tag: "HI-2", section: "unplanned", prevSection: "unplanned", hasPattern: false, project: "Without Project", priority: false, dueDate: null, hoursLeft: null, folder: null, dismissedAlert: false },
+                { id: 3, text: "Client sync meeting", tag: "PL-1", section: "todos", prevSection: "todos", hasPattern: false, project: "Project Alpha", dueDate: "2026-02-23T14:00", hoursLeft: 2, folder: 'Project Alpha', dismissedAlert: false },
+                { id: 4, text: "Weekly update", tag: "SC-1", section: "scheduled", prevSection: "scheduled", hasPattern: false, project: null, dueDate: "2026-02-24T10:00", hoursLeft: 24, folder: null, dismissedAlert: false },
+                { id: 5, text: "Onboard new designer", tag: "DN-1", section: "done", prevSection: "todos", hasPattern: false, project: "Internal", completedAt: "2 hours ago", folder: 'Design Team', dismissedAlert: false }
+            ]);
+
+            const [sectionsOpen, setSectionsOpen] = useState({ unplanned: true, todos: true, scheduled: true, done: false });
+            const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+            const [time, setTime] = useState(new Date());
+
+            useEffect(() => {
+                const timer = setInterval(() => setTime(new Date()), 1000);
+                return () => clearInterval(timer);
+            }, []);
+
+            // --- ASMR AUDIO STATE & LOGIC ---
+            const [asmrState, setAsmrState] = useState({
+                isPlaying: false,
+                masterVolume: 0.5,
+                tracks: {
+                    rain: { active: false, volume: 1.0, src: 'assets/rain.mp3', label: "Rainy Weather", icon: <CloudRain size={20} /> },
+                    sunny: { active: false, volume: 1.0, src: 'assets/sunny.mp3', label: "Sunny Weather", icon: <Sun size={20} /> },
+                    pages: { active: false, volume: 1.0, src: 'assets/pages.mp3', label: "Turning Pages", icon: <BookOpen size={20} /> },
+                    ipad: { active: false, volume: 1.0, src: 'assets/ipad.mp3', label: "Writing on iPad", icon: <PenTool size={20} /> },
+                    fireplace: { active: false, volume: 1.0, src: 'assets/fireplace.mp3', label: "Fireplace Crackling", icon: <Flame size={20} /> },
+                    typing: { active: false, volume: 1.0, src: 'assets/typing.mp3', label: "Typing on Keyboard", icon: <Keyboard size={20} /> }
+                }
+            });
+
+            const audioRefs = useRef({});
+
+            useEffect(() => {
+                Object.entries(asmrState.tracks).forEach(([key, track]) => {
+                    if (!audioRefs.current[key]) {
+                        const audio = new Audio(track.src);
+                        audio.loop = true;
+                        audio.volume = track.volume * asmrState.masterVolume;
+                        audioRefs.current[key] = audio;
+                    }
+                });
+            }, []);
+
+            useEffect(() => {
+                Object.entries(asmrState.tracks).forEach(([key, track]) => {
+                    const audio = audioRefs.current[key];
+                    if (audio) {
+                        audio.volume = track.volume * asmrState.masterVolume;
+                        if (track.active && asmrState.isPlaying) {
+                            audio.play().catch(e => console.log("Audio play blocked", e));
+                        } else {
+                            audio.pause();
+                        }
+                    }
+                });
+            }, [asmrState]);
+
+            const toggleAsmrTrack = (key) => {
+                setAsmrState(prev => {
+                    const newTracks = { ...prev.tracks, [key]: { ...prev.tracks[key], active: !prev.tracks[key].active } };
+                    const newlyActive = !prev.tracks[key].active;
+                    let newIsPlaying = prev.isPlaying;
+
+                    if (newlyActive && !prev.isPlaying) newIsPlaying = true;
+
+                    const anyActive = Object.values(newTracks).some(t => t.active);
+                    if (!anyActive) newIsPlaying = false;
+
+                    return { ...prev, tracks: newTracks, isPlaying: newIsPlaying };
+                });
+            };
+
+            const toggleAsmrPlay = () => setAsmrState(prev => ({ ...prev, isPlaying: !prev.isPlaying }));
+            const handleAsmrVolume = (e) => setAsmrState(prev => ({ ...prev, masterVolume: parseFloat(e.target.value) }));
+
+            // --- GEMINI API INTEGRATION ---
+            const callGemini = async (prompt, schema) => {
+                if (!userApiKey) throw new Error("No API Key");
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${userApiKey}`;
+
+                const payload = { contents: [{ parts: [{ text: prompt }] }] };
+                if (schema) {
+                    payload.generationConfig = { responseMimeType: "application/json", responseSchema: schema };
+                }
+
+                const fetchWithRetry = async (retries = 3, delay = 1000) => {
+                    try {
+                        const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                        const data = await response.json();
+                        const textResponse = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] ? data.candidates[0].content.parts[0].text : null;
+                        if (!textResponse) throw new Error("No text response from Gemini");
+                        return schema ? JSON.parse(textResponse) : textResponse;
+                    } catch (error) {
+                        if (retries > 0) {
+                            await new Promise(res => setTimeout(res, delay));
+                            return fetchWithRetry(retries - 1, delay * 2);
+                        }
+                        throw error;
+                    }
+                };
+                return fetchWithRetry();
+            };
+
+            const [isPrioritizing, setIsPrioritizing] = useState(false);
+            const handlePrioritizeTasks = async () => {
+                if (!userApiKey) { setShowApiKeyModal(true); return; }
+
+                const unplanned = todos.filter(t => t.section === 'unplanned' && !t.priority);
+                if (unplanned.length < 2) return;
+
+                setIsPrioritizing(true);
+                try {
+                    const taskList = unplanned.map(t => ({ id: t.id, text: t.text }));
+                    const schema = { type: "OBJECT", properties: { prioritizedId: { type: "NUMBER" }, reason: { type: "STRING" } }, required: ["prioritizedId", "reason"] };
+                    const prompt = `You are an expert productivity assistant. Review these tasks and identify the single most impactful task to do next. Return its id and a brief 1-sentence motivational reason.\nTasks: ${JSON.stringify(taskList)}`;
+                    const result = await callGemini(prompt, schema);
+
+                    if (result && result.prioritizedId) {
+                        setTodos(prev => {
+                            const updated = prev.map(t => t.id === result.prioritizedId ? { ...t, priority: true, aiReason: result.reason } : t);
+                            return updated.sort((a, b) => (a.priority === b.priority ? 0 : a.priority ? -1 : 1));
+                        });
+                    }
+                } catch (e) { console.error("Gemini Priority Failed", e); } finally { setIsPrioritizing(false); }
+            };
+
+            const [breakingDownId, setBreakingDownId] = useState(null);
+            const handleBreakdownTask = async (id, text) => {
+                if (!userApiKey) { setShowApiKeyModal(true); return; }
+
+                setBreakingDownId(id);
+                try {
+                    const schema = { type: "OBJECT", properties: { subtasks: { type: "ARRAY", items: { type: "STRING" } } }, required: ["subtasks"] };
+                    const prompt = `Act as an expert project manager. Break down the following task into 3 small, highly actionable step-by-step subtasks: "${text}"`;
+                    const result = await callGemini(prompt, schema);
+
+                    if (result && result.subtasks) {
+                        setTodos(prev => prev.map(t => t.id === id ? { ...t, subtasks: result.subtasks } : t));
+                    }
+                } catch (e) { console.error("Gemini Breakdown Failed", e); } finally { setBreakingDownId(null); }
+            };
+
+            const [isAutoScheduling, setIsAutoScheduling] = useState(false);
+            const handleAutoSchedule = async () => {
+                if (!userApiKey) { setShowApiKeyModal(true); return; }
+
+                const unscheduled = todos.filter(t => t.section !== 'done' && (!t.dueDate || !t.hoursLeft));
+                if (unscheduled.length === 0) return;
+
+                setIsAutoScheduling(true);
+                try {
+                    const taskList = unscheduled.map(t => ({ id: t.id, text: t.text }));
+                    const schema = {
+                        type: "ARRAY",
+                        items: { type: "OBJECT", properties: { id: { type: "NUMBER" }, estimatedHours: { type: "NUMBER" }, recommendedDate: { type: "STRING", description: "ISO Datetime string YYYY-MM-DDTHH:MM" } }, required: ["id", "estimatedHours", "recommendedDate"] }
+                    };
+                    const prompt = `Act as an AI project planner. Estimate realistic hours needed and assign a specific due date (format YYYY-MM-DDTHH:MM, start from today Feb 22, 2026) for these tasks based on their names. Tasks: ${JSON.stringify(taskList)}`;
+
+                    const results = await callGemini(prompt, schema);
+                    if (results && results.length > 0) {
+                        setTodos(prev => prev.map(t => {
+                            const match = results.find(r => r.id === t.id);
+                            return match ? { ...t, hoursLeft: match.estimatedHours, dueDate: match.recommendedDate, section: 'scheduled' } : t;
+                        }));
+                    }
+                } catch (e) { console.error("Gemini Scheduling Failed", e); } finally { setIsAutoScheduling(false); }
+            };
+
+
+            // --- ACTIONS ---
+            const handleAddTodo = (text, targetSection, priority = false, extraArgs = {}) => {
+                if (text.trim() !== "") {
+                    const newTodo = {
+                        id: Date.now(), text, tag: `T-${Math.floor(Math.random() * 1000)}`,
+                        section: targetSection, prevSection: targetSection, hasPattern: false,
+                        project: targetSection === 'unplanned' ? "Without Project" : extraArgs.folder || null,
+                        priority, dueDate: extraArgs.dueDate || null, hoursLeft: null, folder: extraArgs.folder || null, dismissedAlert: false
+                    };
+                    setTodos([newTodo, ...todos]);
+                }
+            };
+
+            const toggleSection = (section) => setSectionsOpen(prev => ({ ...prev, [section]: !prev[section] }));
+
+            const toggleTodoComplete = (id) => {
+                setTodos(todos.map(todo => {
+                    if (todo.id === id) {
+                        const isDone = todo.section === 'done';
+                        return {
+                            ...todo,
+                            section: isDone ? todo.prevSection : 'done',
+                            prevSection: isDone ? todo.prevSection : todo.section,
+                            completedAt: !isDone ? "Just now" : null,
+                            dismissedAlert: false // Reset alert status if toggled
+                        };
+                    }
+                    return todo;
+                }));
+            };
+
+            const updateTodo = (id, newText, newDueDate) => setTodos(todos.map(t => t.id === id ? { ...t, text: newText, dueDate: newDueDate, section: newDueDate ? 'scheduled' : t.section } : t));
+            const deleteTodo = (id) => setTodos(todos.filter(t => t.id !== id));
+            const togglePriority = (id) => setTodos(todos.map(t => t.id === id ? { ...t, priority: !t.priority } : t));
+            const clearDone = () => setTodos(todos.filter(t => t.section !== 'done'));
+            const dismissNotification = (id) => setTodos(todos.map(t => t.id === id ? { ...t, dismissedAlert: true } : t));
+            const toggleSetting = (key) => setSettings(prev => ({ ...prev, [key]: !prev[key] }));
+
+            // --- DATA ---
+            const filteredTodos = todos.filter(t => t.text.toLowerCase().includes(searchQuery.toLowerCase()) || t.tag.toLowerCase().includes(searchQuery.toLowerCase()));
+            const unplannedTodos = filteredTodos.filter(t => t.section === 'unplanned');
+            const plannedTodos = filteredTodos.filter(t => t.section === 'todos');
+            const scheduledTodos = filteredTodos.filter(t => t.section === 'scheduled');
+            const doneTodos = filteredTodos.filter(t => t.section === 'done');
+
+            // Deeper, Ultra-Aesthetic CSS Variables for Dark Mode
+            const themeStyles = isDarkMode ? {
+                '--bg-base': '#13151a', '--bg-surface': '#1a1d24', '--bg-inset': '#101216',
+                '--shadow-outer-light': '#232730', '--shadow-outer-dark': '#0c0d10',
+                '--shadow-inner-light': '#232730', '--shadow-inner-dark': '#0c0d10',
+                '--text-main': '#e2e8f0', '--text-muted': '#64748b', '--border-color': 'rgba(255,255,255,0.03)',
+                '--accent-bg': '#1e293b', '--accent-text': '#cbd5e1'
+            } : {
+                '--bg-base': '#e8eef3', '--bg-surface': '#eff4f8', '--bg-inset': '#e4ebf1',
+                '--shadow-outer-light': '#ffffff', '--shadow-outer-dark': '#cad3db',
+                '--shadow-inner-light': '#f5fbff', '--shadow-inner-dark': '#d1d7de',
+                '--text-main': '#334155', '--text-muted': '#64748b', '--border-color': 'rgba(255,255,255,0.6)',
+                '--accent-bg': '#e4ebf1', '--accent-text': '#475569'
+            };
+
+            const renderMainContent = () => {
+                const props = { todos, isDarkMode, themeStyles, toggleTodoComplete, deleteTodo, togglePriority, updateTodo };
+                switch (activeTab) {
+                    case 'dashboard': return <DashboardView activePlannerTab={activePlannerTab} setActivePlannerTab={setActivePlannerTab} unplannedTodos={unplannedTodos} plannedTodos={plannedTodos} scheduledTodos={scheduledTodos} doneTodos={doneTodos} sectionsOpen={sectionsOpen} toggleSection={toggleSection} handleAddTodo={handleAddTodo} toggleTodoComplete={toggleTodoComplete} updateTodo={updateTodo} deleteTodo={deleteTodo} togglePriority={togglePriority} clearDone={clearDone} time={time} searchQuery={searchQuery} setSearchQuery={setSearchQuery} handlePrioritizeTasks={handlePrioritizeTasks} isPrioritizing={isPrioritizing} handleBreakdownTask={handleBreakdownTask} breakingDownId={breakingDownId} userApiKey={userApiKey} setShowApiKeyModal={setShowApiKeyModal} />;
+                    case 'notifications': return <NotificationsView {...props} dismissNotification={dismissNotification} />;
+                    case 'tasks': return <TasksMasterView {...props} handleAutoSchedule={handleAutoSchedule} isAutoScheduling={isAutoScheduling} userApiKey={userApiKey} setShowApiKeyModal={setShowApiKeyModal} />;
+                    case 'profile': return <ProfileView userProfile={userProfile} todos={todos} />;
+                    case 'organization': return <OrganizationView organizations={organizations} setOrganizations={setOrganizations} />;
+                    case 'folders': return <TaskFoldersView taskFolders={taskFolders} setTaskFolders={setTaskFolders} todos={todos} handleAddTodo={handleAddTodo} toggleTodoComplete={toggleTodoComplete} updateTodo={updateTodo} deleteTodo={deleteTodo} togglePriority={togglePriority} />;
+                    case 'database': return <DatabaseView />;
+                    case 'settings': return <SettingsView isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} settings={settings} toggleSetting={toggleSetting} />;
+                    default: return null;
+                }
+            };
+
+            return (
+                <div className="min-h-[100dvh] flex items-center justify-center p-0 md:p-4 sm:p-8 font-sans selection:bg-blue-200 transition-colors duration-500 relative" style={{ backgroundColor: 'var(--bg-base)', color: 'var(--text-main)', ...themeStyles }}>
+
+                    {/* API Key Modal */}
+                    {showApiKeyModal && !showProfileModal && (
+                        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-md p-4 transition-all">
+                            <div className="w-full max-w-md p-8 rounded-[32px] shadow-2xl border flex flex-col gap-4 animate-in fade-in zoom-in-95" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-color)', boxShadow: '12px 12px 24px rgba(0,0,0,0.2)' }}>
+                                <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner mb-2" style={{ backgroundColor: 'var(--bg-inset)', color: 'var(--text-main)', boxShadow: 'inset 3px 3px 6px var(--shadow-inner-dark), inset -3px -3px 6px var(--shadow-inner-light)' }}>
+                                    <Sparkles size={24} />
+                                </div>
+                                <h2 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-main)' }}>Enable Gemini AI</h2>
+                                <p className="font-medium text-[14px]" style={{ color: 'var(--text-muted)' }}>Unlock smart prioritization, automatic task breakdowns, and realistic auto-scheduling features.</p>
+
+                                <div className="flex items-center gap-3 mt-4 p-3 rounded-2xl shadow-inner border" style={{ backgroundColor: 'var(--bg-inset)', borderColor: 'var(--border-color)', boxShadow: 'inset 2px 2px 5px var(--shadow-inner-dark), inset -2px -2px 5px var(--shadow-inner-light)' }}>
+                                    <Key size={18} style={{ color: 'var(--text-muted)' }} />
+                                    <input type="password" placeholder="Enter your Gemini API Key..." value={userApiKey} onChange={(e) => setUserApiKey(e.target.value)} className="bg-transparent border-none outline-none flex-1 font-medium text-[15px]" style={{ color: 'var(--text-main)' }} />
+                                </div>
+
+                                <div className="flex gap-3 mt-4">
+                                    <button onClick={handleSkipApiKey} className="flex-1 py-3 rounded-2xl font-bold text-[15px] border hover:opacity-80 transition-opacity" style={{ backgroundColor: 'transparent', borderColor: 'var(--border-color)', color: 'var(--text-muted)' }}>Skip for now</button>
+                                    <button onClick={handleSaveApiKey} className="flex-1 py-3 rounded-2xl font-bold text-[15px] shadow-md hover:scale-[1.02] transition-transform" style={{ backgroundColor: 'var(--text-main)', color: 'var(--bg-base)' }}>Save Key</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Profile Setup Modal */}
+                    {showProfileModal && (
+                        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/40 backdrop-blur-md p-4 transition-all">
+                            <div className="w-full max-w-md p-8 rounded-[32px] shadow-2xl border flex flex-col gap-4 animate-in fade-in zoom-in-95" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-color)', boxShadow: '12px 12px 24px rgba(0,0,0,0.5)' }}>
+                                <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner mb-2" style={{ backgroundColor: 'var(--bg-inset)', color: 'var(--text-main)', boxShadow: 'inset 3px 3px 6px var(--shadow-inner-dark), inset -3px -3px 6px var(--shadow-inner-light)' }}>
+                                    <User size={24} />
+                                </div>
+                                <div>
+                                    <h2 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-main)' }}>Welcome to Dash</h2>
+                                    <p className="font-medium text-[14px] mt-1" style={{ color: 'var(--text-muted)' }}>Set up your profile to personalize your dashboard.</p>
+                                </div>
+
+                                <div className="flex flex-col gap-3 mt-4">
+                                    <div className="flex items-center gap-3 p-3 rounded-xl shadow-inner border" style={{ backgroundColor: 'var(--bg-inset)', borderColor: 'var(--border-color)', boxShadow: 'inset 2px 2px 5px var(--shadow-inner-dark), inset -2px -2px 5px var(--shadow-inner-light)' }}>
+                                        <User size={18} style={{ color: 'var(--text-muted)' }} />
+                                        <input type="text" placeholder="Your Name" value={profileForm.name} onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })} className="bg-transparent border-none outline-none flex-1 font-medium text-[15px]" style={{ color: 'var(--text-main)' }} />
+                                    </div>
+                                    <div className="flex items-center gap-3 p-3 rounded-xl shadow-inner border" style={{ backgroundColor: 'var(--bg-inset)', borderColor: 'var(--border-color)', boxShadow: 'inset 2px 2px 5px var(--shadow-inner-dark), inset -2px -2px 5px var(--shadow-inner-light)' }}>
+                                        <Building2 size={18} style={{ color: 'var(--text-muted)' }} />
+                                        <input type="text" placeholder="Your Role (e.g. Designer, Engineer)" value={profileForm.role} onChange={(e) => setProfileForm({ ...profileForm, role: e.target.value })} className="bg-transparent border-none outline-none flex-1 font-medium text-[15px]" style={{ color: 'var(--text-main)' }} />
+                                    </div>
+                                    <div className="flex items-center gap-3 p-3 rounded-xl shadow-inner border" style={{ backgroundColor: 'var(--bg-inset)', borderColor: 'var(--border-color)', boxShadow: 'inset 2px 2px 5px var(--shadow-inner-dark), inset -2px -2px 5px var(--shadow-inner-light)' }}>
+                                        <Mail size={18} style={{ color: 'var(--text-muted)' }} />
+                                        <input type="email" placeholder="Email Address" value={profileForm.email} onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })} className="bg-transparent border-none outline-none flex-1 font-medium text-[15px]" style={{ color: 'var(--text-main)' }} />
+                                    </div>
+                                    <div className="flex items-center gap-3 p-3 rounded-xl shadow-inner border" style={{ backgroundColor: 'var(--bg-inset)', borderColor: 'var(--border-color)', boxShadow: 'inset 2px 2px 5px var(--shadow-inner-dark), inset -2px -2px 5px var(--shadow-inner-light)' }}>
+                                        <MapPin size={18} style={{ color: 'var(--text-muted)' }} />
+                                        <input type="text" placeholder="Location (e.g. New York, USA)" value={profileForm.location} onChange={(e) => setProfileForm({ ...profileForm, location: e.target.value })} className="bg-transparent border-none outline-none flex-1 font-medium text-[15px]" style={{ color: 'var(--text-main)' }} />
+                                    </div>
+                                </div>
+
+                                <button onClick={handleSaveProfile} disabled={!profileForm.name?.trim()} className="w-full mt-2 py-3 rounded-xl font-bold text-[15px] shadow-md hover:scale-[1.02] transition-transform disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed" style={{ backgroundColor: 'var(--text-main)', color: 'var(--bg-base)' }}>Get Started</button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Main Container */}
+                    <div className="w-full max-w-[1250px] h-[100dvh] md:h-[900px] md:rounded-[40px] flex flex-col md:flex-row overflow-hidden relative transition-all duration-500 md:border" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-color)', boxShadow: '20px 20px 60px var(--shadow-outer-dark), -20px -20px 60px var(--shadow-outer-light)' }}>
+
+                        {/* --- SIDEBAR --- */}
+                        <div className={`flex flex-row md:flex-col items-center justify-between md:justify-start py-3 md:py-8 px-4 gap-2 md:gap-8 border-t md:border-t-0 md:border-r z-20 shrink-0 order-last md:order-first transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] ${isSidebarOpen ? 'md:w-[240px] md:px-6 md:items-start w-full overflow-x-auto no-scrollbar' : 'md:w-[88px] md:px-0 md:items-center w-full overflow-x-auto no-scrollbar'}`} style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-color)' }}>
+                            <div className="hidden md:flex w-12 h-12 bg-[#1b212f] text-white rounded-[14px] items-center justify-center mb-2 shadow-lg cursor-pointer hover:scale-105 transition-transform shrink-0" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+                                <LayoutDashboard size={22} strokeWidth={1.5} />
+                            </div>
+
+                            <div className={`flex flex-row md:flex-col gap-2 md:gap-6 w-full ${isSidebarOpen ? 'md:items-start' : 'items-center'} overflow-x-auto no-scrollbar justify-start md:justify-center`}>
+                                {/* Notifications mapped to Bell with dynamic badge */}
+                                <SidebarIcon icon={<Bell size={22} strokeWidth={1.5} />} label="Notifications" isExpanded={isSidebarOpen} id="notifications" active={activeTab} set={setActiveTab} badge={todos.some(t => t.section !== 'done' && t.dueDate && !t.dismissedAlert)} />
+                                <SidebarIcon icon={<Building2 size={22} strokeWidth={1.5} />} label="Organization" isExpanded={isSidebarOpen} id="organization" active={activeTab} set={setActiveTab} />
+                                <SidebarIcon icon={<User size={22} strokeWidth={1.5} />} label="My Profile" isExpanded={isSidebarOpen} id="profile" active={activeTab} set={setActiveTab} />
+
+                                <SidebarIcon icon={<Home size={22} strokeWidth={1.5} />} label="Dashboard" isExpanded={isSidebarOpen} id="dashboard" active={activeTab} set={setActiveTab} />
+
+                                <SidebarIcon icon={<ListTodo size={22} strokeWidth={1.5} />} label="Tasks" isExpanded={isSidebarOpen} id="tasks" active={activeTab} set={setActiveTab} />
+                                <SidebarIcon icon={<Folder size={22} strokeWidth={1.5} />} label="Folders" isExpanded={isSidebarOpen} id="folders" active={activeTab} set={setActiveTab} />
+                                <SidebarIcon icon={<Settings size={22} strokeWidth={1.5} />} label="Settings" isExpanded={isSidebarOpen} id="settings" active={activeTab} set={setActiveTab} />
+                            </div>
+                        </div>
+
+                        {/* --- MAIN CONTENT AREA --- */}
+                        <div className="flex-1 flex flex-col overflow-hidden relative">
+                            {/* ASMR TOP BAR */}
+                            <div className="w-full min-h-[5rem] h-auto md:h-20 border-b flex flex-col md:flex-row items-center justify-between px-4 md:px-8 py-4 gap-4 md:gap-0 shrink-0 relative transition-all duration-500 z-10 animate-in fade-in slide-in-from-top-4" style={{ backgroundColor: 'var(--bg-inset)', borderColor: 'var(--border-color)' }}>
+                                <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-start">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-inner" style={{ backgroundColor: 'var(--bg-surface)', color: 'var(--text-main)', boxShadow: 'inset 2px 2px 5px var(--shadow-inner-dark), inset -2px -2px 5px var(--shadow-inner-light)' }}>
+                                            <Music size={20} />
+                                        </div>
+                                        <span className="font-bold text-[16px] tracking-tight" style={{ color: 'var(--text-main)' }}>Ambient Audio</span>
+                                    </div>
+                                    <button onClick={toggleAsmrPlay} disabled={!Object.values(asmrState.tracks).some(t => t.active)} className={`md:hidden w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 border shadow-md active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shrink-0`} style={{ backgroundColor: 'var(--text-main)', borderColor: 'var(--border-color)', color: 'var(--bg-base)', boxShadow: '4px 4px 8px var(--shadow-outer-dark), -4px -4px 8px var(--shadow-outer-light)' }}>
+                                        {asmrState.isPlaying ? <Pause size={18} fill={true} /> : <Play size={18} fill={true} />}
+                                    </button>
+                                </div>
+
+                                <div className="flex items-center justify-center gap-2 md:gap-4 flex-wrap flex-1">
+                                    {Object.entries(asmrState.tracks).map(([key, track]) => (
+                                        <button key={key} onClick={() => toggleAsmrTrack(key)} title={track.label}
+                                            className={`w-10 h-10 md:w-12 md:h-12 rounded-2xl flex items-center justify-center transition-all duration-300 ${track.active ? 'shadow-inner border-transparent scale-95' : 'border hover:scale-105 shadow-sm'}`}
+                                            style={track.active ? { backgroundColor: 'var(--bg-surface)', color: 'var(--text-main)', boxShadow: 'inset 3px 3px 6px var(--shadow-inner-dark), inset -3px -3px 6px var(--shadow-inner-light)' } : { borderColor: 'var(--border-color)', color: 'var(--text-muted)' }}>
+                                            {track.icon}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <div className="hidden md:flex items-center gap-6">
+                                    <div className="flex items-center gap-3">
+                                        <Volume2 size={18} style={{ color: 'var(--text-muted)' }} />
+                                        <input type="range" min="0" max="1" step="0.05" value={asmrState.masterVolume} onChange={handleAsmrVolume} className="w-24 accent-slate-500 cursor-pointer opacity-70 hover:opacity-100 transition-opacity" />
+                                    </div>
+
+                                    <button onClick={toggleAsmrPlay} disabled={!Object.values(asmrState.tracks).some(t => t.active)} className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 border shadow-md hover:scale-[1.05] disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed shrink-0`} style={{ backgroundColor: 'var(--text-main)', borderColor: 'var(--border-color)', color: 'var(--bg-base)', boxShadow: '4px 4px 8px var(--shadow-outer-dark), -4px -4px 8px var(--shadow-outer-light)' }}>
+                                        {asmrState.isPlaying ? <Pause size={22} fill={true} /> : <Play size={22} fill={true} />}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="flex-1 flex overflow-hidden relative">
+                                {renderMainContent()}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            );
+        }
+
+        // ==========================================
+        // 1. DASHBOARD VIEW
+        // ==========================================
+        const DashboardView = ({ activePlannerTab, setActivePlannerTab, unplannedTodos, plannedTodos, scheduledTodos, doneTodos, sectionsOpen, toggleSection, handleAddTodo, toggleTodoComplete, updateTodo, deleteTodo, togglePriority, clearDone, time, searchQuery, setSearchQuery, handlePrioritizeTasks, isPrioritizing, handleBreakdownTask, breakingDownId, userApiKey, setShowApiKeyModal }) => {
+            const firstUnplanned = unplannedTodos.filter(t => !t.project);
+            const withoutProject = unplannedTodos.filter(t => t.project === "Without Project");
+            const [globalInput, setGlobalInput] = useState("");
+            const [isHighPriority, setIsHighPriority] = useState(false);
+
+            // Calendar Logic State
+            const [calDate, setCalDate] = useState(new Date());
+            const [calAddModal, setCalAddModal] = useState({ isOpen: false, date: null, text: "" });
+
+            const hours = time.getHours(); const minutes = time.getMinutes();
+            const hourDeg = (hours % 12) * 30 + minutes * 0.5; const minuteDeg = minutes * 6;
+
+            const getDaysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
+            const getFirstDayOfMonth = (year, month) => {
+                let day = new Date(year, month, 1).getDay();
+                return day === 0 ? 6 : day - 1;
+            };
+
+            const currentYear = calDate.getFullYear();
+            const currentMonth = calDate.getMonth();
+            const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+            const firstDayOffset = getFirstDayOfMonth(currentYear, currentMonth);
+
+            const prevMonth = () => setCalDate(new Date(currentYear, currentMonth - 1, 1));
+            const nextMonth = () => setCalDate(new Date(currentYear, currentMonth + 1, 1));
+
+            const handleCalendarDayClick = (dateNum) => {
+                const selectedDate = new Date(currentYear, currentMonth, dateNum);
+                setCalAddModal({ isOpen: true, date: selectedDate, text: "" });
+            };
+
+            const submitCalendarTask = () => {
+                if (calAddModal.text.trim()) {
+                    const formattedDate = `${calAddModal.date.getFullYear()}-${String(calAddModal.date.getMonth() + 1).padStart(2, '0')}-${String(calAddModal.date.getDate()).padStart(2, '0')}T00:00`;
+                    handleAddTodo(calAddModal.text, 'scheduled', false, { dueDate: formattedDate });
+                }
+                setCalAddModal({ isOpen: false, date: null, text: "" });
+            };
+
+            return (
+                <>
+                    {/* Fixed Full-Screen Calender Add Task Modal */}
+                    {calAddModal.isOpen && (
+                        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+                            <div className="w-full max-w-sm p-8 rounded-[32px] shadow-2xl border flex flex-col gap-5 animate-in fade-in zoom-in-95" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-color)', boxShadow: '12px 12px 24px rgba(0,0,0,0.4)' }}>
+                                <div>
+                                    <h3 className="font-bold text-xl" style={{ color: 'var(--text-main)' }}>Schedule Task</h3>
+                                    <p className="text-[14px] mt-1" style={{ color: 'var(--text-muted)' }}>{calAddModal.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                                </div>
+
+                                <input type="text" placeholder="What needs to be done?" value={calAddModal.text} onChange={(e) => setCalAddModal({ ...calAddModal, text: e.target.value })} className="w-full p-4 rounded-xl border shadow-inner bg-transparent outline-none text-[15px]" style={{ borderColor: 'var(--border-color)', color: 'var(--text-main)', backgroundColor: 'var(--bg-inset)' }} autoFocus />
+
+                                <div className="flex gap-3 mt-4">
+                                    <button onClick={() => setCalAddModal({ isOpen: false, date: null, text: "" })} className="flex-1 py-3 rounded-xl font-bold text-[15px] border hover:opacity-80 transition-opacity" style={{ backgroundColor: 'transparent', borderColor: 'var(--border-color)', color: 'var(--text-muted)' }}>Cancel</button>
+                                    <button onClick={submitCalendarTask} className="flex-1 py-3 rounded-xl font-bold text-[15px] shadow-md hover:scale-[1.02] transition-transform" style={{ backgroundColor: 'var(--text-main)', color: 'var(--bg-base)' }}>Schedule</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="flex flex-col md:flex-row w-full h-full overflow-hidden">
+                        <div className="w-full md:w-[48%] md:min-w-[350px] p-6 md:p-10 flex flex-col gap-6 md:gap-8 overflow-y-auto no-scrollbar border-b md:border-b-0 md:border-r shrink-0 md:shrink" style={{ borderColor: 'var(--border-color)' }}>
+                            <h1 className="text-[26px] font-semibold tracking-tight -mt-2" style={{ color: 'var(--text-main)' }}>Planner</h1>
+
+                            <div className="rounded-[24px] p-1.5 flex flex-col gap-1" style={{ backgroundColor: 'var(--bg-inset)', boxShadow: 'inset 2px 2px 5px var(--shadow-inner-dark), inset -2px -2px 5px var(--shadow-inner-light)' }}>
+                                <PlannerTab id="unplanned" active={activePlannerTab} set={setActivePlannerTab} icon={<Download size={20} strokeWidth={1.5} />} title="Unplanned" count={unplannedTodos.length} />
+                                <PlannerTab id="planned" active={activePlannerTab} set={setActivePlannerTab} icon={<CheckCircle2 size={20} strokeWidth={1.5} />} title="Planned" count={plannedTodos.length} />
+                                <PlannerTab id="all" active={activePlannerTab} set={setActivePlannerTab} icon={<Layers size={20} strokeWidth={1.5} />} title="All" count={unplannedTodos.length + plannedTodos.length + scheduledTodos.length} />
+                            </div>
+
+                            <NeumorphWidget className="flex items-center gap-8 p-6">
+                                <div className="relative w-28 h-28 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: 'var(--bg-surface)', boxShadow: 'inset 4px 4px 8px var(--shadow-inner-dark), inset -4px -4px 8px var(--shadow-inner-light)' }}>
+                                    {[...Array(12)].map((_, i) => <div key={i} className={`absolute w-[1.5px] rounded-full ${i % 3 === 0 ? 'h-2' : 'h-1'}`} style={{ backgroundColor: 'var(--text-muted)', transform: `rotate(${i * 30}deg) translateY(-38px)` }} />)}
+                                    <div className="absolute w-[3px] h-7 rounded-full origin-bottom transition-transform duration-1000 ease-in-out" style={{ backgroundColor: 'var(--text-main)', transform: `translateY(-50%) rotate(${hourDeg}deg)` }}></div>
+                                    <div className="absolute w-[2px] h-10 rounded-full origin-bottom transition-transform duration-1000 ease-in-out" style={{ backgroundColor: 'var(--text-muted)', transform: `translateY(-50%) rotate(${minuteDeg}deg)` }}></div>
+                                    <div className="w-2.5 h-2.5 rounded-full z-10 border-[1.5px]" style={{ backgroundColor: 'var(--text-main)', borderColor: 'var(--bg-surface)' }}></div>
+                                </div>
+                                <div className="flex flex-col items-start min-w-0">
+                                    <span className="text-[28px] font-bold leading-tight">{time.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase()}</span>
+                                    <span className="font-medium text-[15px] mt-1" style={{ color: 'var(--text-muted)' }}>{time.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })}</span>
+                                </div>
+                            </NeumorphWidget>
+
+                            <NeumorphWidget className="p-6">
+                                <div className="flex justify-between items-center mb-6 px-2">
+                                    <span className="font-semibold text-[17px]">{calDate.toLocaleString('default', { month: 'long', year: 'numeric' })}</span>
+                                    <div className="flex gap-4" style={{ color: 'var(--text-muted)' }}>
+                                        <ChevronLeft size={20} onClick={prevMonth} className="cursor-pointer hover:opacity-70" />
+                                        <ChevronRight size={20} onClick={nextMonth} className="cursor-pointer hover:opacity-70" />
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-7 text-center gap-y-3 gap-x-1">
+                                    {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => <div key={day} className="text-[13px] font-medium mb-2" style={{ color: 'var(--text-muted)' }}>{day}</div>)}
+                                    {Array.from({ length: firstDayOffset }).map((_, i) => <span key={`empty-${i}`} className="w-9 h-9"></span>)}
+                                    {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(date => {
+                                        const isToday = date === time.getDate() && currentMonth === time.getMonth() && currentYear === time.getFullYear();
+                                        return <span key={date} onClick={() => handleCalendarDayClick(date)} className={`font-medium p-1.5 text-[15px] flex items-center justify-center max-w-full aspect-square mx-auto rounded-[12px] cursor-pointer transition-all ${isToday ? 'bg-[#1b212f] text-white shadow-md hover:scale-105' : 'hover:bg-black/5 dark:hover:bg-white/5'}`}>{date}</span>;
+                                    })}
+                                </div>
+                            </NeumorphWidget>
+                            <div className="pb-8"></div>
+                        </div>
+
+                        <div className="flex-1 p-6 md:p-10 flex flex-col gap-5 overflow-y-auto no-scrollbar relative min-h-[400px]">
+                            <div className="flex flex-col gap-4 mt-2">
+                                <div className="flex items-center justify-between">
+                                    <h2 className="text-[26px] font-semibold tracking-tight">Tasks</h2>
+                                    <div className="flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 w-48 focus-within:w-64" style={{ backgroundColor: 'var(--bg-inset)', boxShadow: 'inset 2px 2px 4px var(--shadow-inner-dark), inset -2px -2px 4px var(--shadow-inner-light)' }}>
+                                        <Search size={16} style={{ color: 'var(--text-muted)' }} />
+                                        <input type="text" placeholder="Search..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="bg-transparent border-none outline-none text-[13px] font-medium w-full" style={{ color: 'var(--text-main)' }} />
+                                    </div>
+                                </div>
+
+                                <NeumorphWidget className="p-2 flex items-center gap-2 mt-2 group focus-within:ring-2 ring-white/20">
+                                    <div className="w-10 h-10 flex items-center justify-center rounded-xl" style={{ backgroundColor: 'var(--bg-inset)', color: 'var(--text-muted)', boxShadow: 'inset 2px 2px 5px var(--shadow-inner-dark), inset -2px -2px 5px var(--shadow-inner-light)' }}>
+                                        <Plus size={20} strokeWidth={2} />
+                                    </div>
+                                    <input type="text" value={globalInput} onChange={(e) => setGlobalInput(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { handleAddTodo(globalInput, 'unplanned', isHighPriority); setGlobalInput(""); } }} placeholder="Quick add to unplanned..." className="bg-transparent border-none outline-none flex-1 font-medium text-[15px] pl-2" style={{ color: 'var(--text-main)' }} />
+                                    <div onClick={() => setIsHighPriority(!isHighPriority)} className={`cursor-pointer p-2 rounded-lg transition-colors flex items-center gap-1.5 mr-1 ${isHighPriority ? 'text-red-500 bg-red-500/10' : ''}`} style={!isHighPriority ? { color: 'var(--text-muted)' } : {}}><Flag size={16} fill={isHighPriority ? "currentColor" : "none"} /></div>
+                                </NeumorphWidget>
+                            </div>
+
+                            <div className="flex flex-col gap-4 mt-4 pb-12">
+                                {activePlannerTab !== 'planned' && (
+                                    <div className="flex flex-col gap-2">
+                                        <AccordionHeader
+                                            title="Unplanned"
+                                            count={unplannedTodos.length}
+                                            isOpen={sectionsOpen.unplanned}
+                                            onClick={() => toggleSection('unplanned')}
+                                            rightAction={unplannedTodos.length > 1 ? {
+                                                icon: isPrioritizing ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />,
+                                                text: isPrioritizing ? "Analyzing..." : "Auto-Prioritize",
+                                                onClick: handlePrioritizeTasks,
+                                                isAi: true,
+                                                isBlurred: !userApiKey
+                                            } : null}
+                                            setShowApiKeyModal={setShowApiKeyModal}
+                                        />
+                                        {sectionsOpen.unplanned && (
+                                            <div className="flex flex-col gap-1 pl-1">
+                                                {firstUnplanned.map((todo) => <TodoItem key={todo.id} todo={todo} onToggle={toggleTodoComplete} onUpdate={updateTodo} onDelete={deleteTodo} onFlag={togglePriority} onBreakdown={handleBreakdownTask} isBreakingDown={breakingDownId === todo.id} userApiKey={userApiKey} setShowApiKeyModal={setShowApiKeyModal} />)}
+                                                {withoutProject.length > 0 && (
+                                                    <><div className="mt-4 mb-1 font-medium text-[14px]" style={{ color: 'var(--text-muted)' }}>Without Project</div>
+                                                        {withoutProject.map((todo) => <TodoItem key={todo.id} todo={todo} onToggle={toggleTodoComplete} onUpdate={updateTodo} onDelete={deleteTodo} onFlag={togglePriority} onBreakdown={handleBreakdownTask} isBreakingDown={breakingDownId === todo.id} userApiKey={userApiKey} setShowApiKeyModal={setShowApiKeyModal} />)}</>
+                                                )}
+                                                <QuietAddButton section="unplanned" onAdd={handleAddTodo} placeholder="Add unplanned..." />
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                {activePlannerTab !== 'unplanned' && (
+                                    <div className="flex flex-col gap-2">
+                                        <AccordionHeader title="Planned Tasks" count={plannedTodos.length} isOpen={sectionsOpen.todos} onClick={() => toggleSection('todos')} />
+                                        {sectionsOpen.todos && (
+                                            <div className="flex flex-col gap-1 pl-1">
+                                                {plannedTodos.map((todo) => <TodoItem key={todo.id} todo={todo} onToggle={toggleTodoComplete} onUpdate={updateTodo} onDelete={deleteTodo} onFlag={togglePriority} onBreakdown={handleBreakdownTask} isBreakingDown={breakingDownId === todo.id} userApiKey={userApiKey} setShowApiKeyModal={setShowApiKeyModal} />)}
+                                                <QuietAddButton section="todos" onAdd={handleAddTodo} placeholder="Add planned..." />
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                <div className="flex flex-col gap-2">
+                                    <AccordionHeader title="Scheduled" count={scheduledTodos.length} isOpen={sectionsOpen.scheduled} onClick={() => toggleSection('scheduled')} />
+                                    {sectionsOpen.scheduled && (
+                                        <div className="flex flex-col gap-1 pl-1">
+                                            {scheduledTodos.map((todo) => <TodoItem key={todo.id} todo={todo} onToggle={toggleTodoComplete} onUpdate={updateTodo} onDelete={deleteTodo} onFlag={togglePriority} onBreakdown={handleBreakdownTask} isBreakingDown={breakingDownId === todo.id} userApiKey={userApiKey} setShowApiKeyModal={setShowApiKeyModal} />)}
+                                            <QuietAddButton section="scheduled" onAdd={handleAddTodo} placeholder="Add scheduled..." />
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="flex flex-col gap-2">
+                                    <AccordionHeader title="Done" count={doneTodos.length} isOpen={sectionsOpen.done} onClick={() => toggleSection('done')} rightAction={doneTodos.length > 0 && sectionsOpen.done ? { icon: <Trash2 size={14} />, text: "Clear", onClick: clearDone, color: "text-red-400" } : null} />
+                                    {sectionsOpen.done && (
+                                        <div className="flex flex-col gap-1 pl-1">
+                                            {doneTodos.map((todo) => <TodoItem key={todo.id} todo={todo} onToggle={toggleTodoComplete} onUpdate={updateTodo} onDelete={deleteTodo} onFlag={togglePriority} />)}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </>
+            );
+        };
+
+
+        // ==========================================
+        // 2. SETTINGS & APPEARANCE VIEW
+        // ==========================================
+        const SettingsView = ({ isDarkMode, setIsDarkMode, settings, toggleSetting }) => (
+            <ViewWrapper title="Settings" icon={<Settings size={28} />}>
+                <div className="grid grid-cols-1 gap-6 w-full max-w-2xl mt-4">
+                    <h3 className="text-lg font-semibold border-b pb-2" style={{ borderColor: 'var(--border-color)', color: 'var(--text-main)' }}>Display</h3>
+                    <SettingToggle title="Dark Mode" description="Switch to a dark neumorphic theme" active={isDarkMode} onToggle={() => setIsDarkMode(!isDarkMode)} icon={isDarkMode ? <Moon size={20} /> : <Sun size={20} />} />
+
+                    <h3 className="text-lg font-semibold border-b pb-2 mt-4" style={{ borderColor: 'var(--border-color)', color: 'var(--text-main)' }}>Preferences</h3>
+                    <SettingToggle title="Desktop Notifications" description="Receive alerts when tasks are due" active={settings.notifications} onToggle={() => toggleSetting('notifications')} icon={<Bell size={20} />} />
+                    <SettingToggle title="Sound Alerts" description="Play a sound on task completion" active={settings.sound} onToggle={() => toggleSetting('sound')} icon={<Mic size={20} />} />
+                    <SettingToggle title="Weekly Reports" description="Email me a summary of completed tasks" active={settings.weeklyReport} onToggle={() => toggleSetting('weeklyReport')} icon={<FileText size={20} />} />
+                </div>
+            </ViewWrapper>
+        );
+
+        const SettingToggle = ({ title, description, active, onToggle, icon }) => (
+            <NeumorphWidget className="p-5 flex items-center justify-between cursor-pointer hover:scale-[1.01] transition-transform" onClick={onToggle}>
+                <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--bg-inset)', color: active ? 'var(--text-main)' : 'var(--text-muted)', boxShadow: 'inset 2px 2px 4px var(--shadow-inner-dark), inset -2px -2px 4px var(--shadow-inner-light)' }}>
+                        {icon}
+                    </div>
+                    <div>
+                        <h4 className="font-semibold text-[16px]">{title}</h4>
+                        <p className="text-[13px]" style={{ color: 'var(--text-muted)' }}>{description}</p>
+                    </div>
+                </div>
+                <div style={{ color: active ? 'var(--text-main)' : 'var(--text-muted)' }}>
+                    {active ? <ToggleRight size={36} strokeWidth={1.5} /> : <ToggleLeft size={36} strokeWidth={1.5} />}
+                </div>
+            </NeumorphWidget>
+        );
+
+        // ==========================================
+        // 3. NOTIFICATIONS VIEW
+        // ==========================================
+        const NotificationsView = ({ todos, dismissNotification }) => {
+            const completed = todos.filter(t => t.section === 'done' && !t.dismissedAlert);
+            const dueSoon = todos.filter(t => t.section !== 'done' && t.dueDate && !t.dismissedAlert);
+
+            return (
+                <ViewWrapper title="Activity & Alerts" icon={<Bell size={28} />}>
+                    <div className="flex flex-col gap-6 w-full max-w-3xl mt-4">
+                        <h3 className="font-semibold" style={{ color: 'var(--text-muted)' }}>Recent Alerts</h3>
+                        {dueSoon.map(t => (
+                            <NeumorphWidget key={`alert-${t.id}`} className="p-4 flex gap-4 border-l-4 border-l-orange-400 relative group">
+                                <button onClick={() => dismissNotification(t.id)} className="absolute top-4 right-4 p-1 rounded-lg hover:bg-black/5 opacity-0 group-hover:opacity-100 transition-all" style={{ color: 'var(--text-muted)' }}><X size={16} /></button>
+                                <div className="mt-1 text-orange-400"><Clock size={20} /></div>
+                                <div>
+                                    <p className="font-semibold text-[15px] pr-8">Task Due Soon: {t.text}</p>
+                                    <p className="text-[13px] mt-1" style={{ color: 'var(--text-muted)' }}>Scheduled for {new Date(t.dueDate).toLocaleString()}</p>
+                                </div>
+                            </NeumorphWidget>
+                        ))}
+                        {completed.slice(0, 5).map(t => (
+                            <NeumorphWidget key={`comp-${t.id}`} className="p-4 flex gap-4 border-l-4 border-l-green-400 relative group">
+                                <button onClick={() => dismissNotification(t.id)} className="absolute top-4 right-4 p-1 rounded-lg hover:bg-black/5 opacity-0 group-hover:opacity-100 transition-all" style={{ color: 'var(--text-muted)' }}><X size={16} /></button>
+                                <div className="mt-1 text-green-500"><CheckCircle size={20} /></div>
+                                <div>
+                                    <p className="font-semibold text-[15px] pr-8">Task Completed: {t.text}</p>
+                                    <p className="text-[13px] mt-1" style={{ color: 'var(--text-muted)' }}>{t.completedAt || 'Recently'}</p>
+                                </div>
+                            </NeumorphWidget>
+                        ))}
+                        {completed.length === 0 && dueSoon.length === 0 && (
+                            <p className="text-center p-10 italic" style={{ color: 'var(--text-muted)' }}>You're all caught up! No recent notifications.</p>
+                        )}
+                    </div>
+                </ViewWrapper>
+            );
+        };
+
+        // ==========================================
+        // 4. TASKS MASTER VIEW (WITH TIMERS & AI)
+        // ==========================================
+        const TasksMasterView = ({ todos, toggleTodoComplete, deleteTodo, handleAutoSchedule, isAutoScheduling, userApiKey, setShowApiKeyModal }) => {
+            const pending = todos.filter(t => t.section !== 'done');
+            return (
+                <ViewWrapper title="Task Tracker" icon={<ListTodo size={28} />}>
+                    <div className="w-full max-w-5xl flex justify-end mb-4">
+                        <NeumorphAiButton
+                            icon={isAutoScheduling ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
+                            text={isAutoScheduling ? "Generating Schedule..." : "AI Auto-Schedule"}
+                            onClick={handleAutoSchedule}
+                            isBlurred={!userApiKey}
+                            setShowApiKeyModal={setShowApiKeyModal}
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl mt-2">
+                        {pending.map(t => (
+                            <NeumorphWidget key={t.id} className="p-5 flex flex-col gap-4 relative overflow-hidden group">
+                                {t.priority && <div className="absolute top-0 right-0 w-16 h-16 bg-red-500/10 rounded-bl-[40px] flex items-top justify-end p-3"><Flag size={14} className="text-red-500" /></div>}
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <span className="text-[12px] px-2 py-1 rounded-md font-bold" style={{ backgroundColor: 'var(--accent-bg)', color: 'var(--accent-text)' }}>{t.tag}</span>
+                                        <h3 className="font-bold text-[18px] mt-2">{t.text}</h3>
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-col gap-2 mt-2">
+                                    <div className="flex justify-between text-[12px] font-semibold" style={{ color: 'var(--text-muted)' }}>
+                                        <span>Progress</span>
+                                        {t.hoursLeft ? <span className="flex items-center gap-1" style={{ color: 'var(--text-main)' }}><Clock size={12} /> {t.hoursLeft}h est.</span> : <span>No deadline set</span>}
+                                    </div>
+                                    <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bg-inset)' }}>
+                                        <div className="h-full rounded-full transition-all duration-1000" style={{ backgroundColor: 'var(--text-main)', width: t.hoursLeft ? `${Math.max(10, 100 - (t.hoursLeft * 2))}%` : '0%' }}></div>
+                                    </div>
+                                    {t.dueDate && <div className="text-[12px] font-medium text-right mt-1" style={{ color: 'var(--text-muted)' }}>Due: {new Date(t.dueDate).toLocaleString()}</div>}
+                                </div>
+
+                                <div className="flex gap-2 mt-2 border-t pt-4" style={{ borderColor: 'var(--border-color)' }}>
+                                    <button onClick={() => toggleTodoComplete(t.id)} className="flex-1 py-2 rounded-xl text-[14px] font-bold text-center transition-all shadow-sm border hover:opacity-80" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-color)', color: 'var(--text-main)' }}>Complete</button>
+                                    <button onClick={() => deleteTodo(t.id)} className="p-2 rounded-xl border hover:opacity-80 transition-opacity" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-color)', color: 'var(--text-muted)' }}><Trash2 size={18} /></button>
+                                </div>
+                            </NeumorphWidget>
+                        ))}
+                    </div>
+                </ViewWrapper>
+            );
+        };
+
+        // ==========================================
+        // 5. PROFILE, ORGANIZATION & TASK FOLDERS VIEWS
+        // ==========================================
+        const ProfileView = ({ userProfile, todos }) => {
+            const completedCount = todos.filter(t => t.section === 'done').length;
+            const pendingCount = todos.filter(t => t.section !== 'done').length;
+
+            return (
+                <ViewWrapper title="My Profile" icon={<User size={28} />}>
+                    <div className="flex flex-col gap-8 w-full max-w-3xl items-center mt-6">
+                        <NeumorphWidget className="w-full p-8 flex flex-col sm:flex-row items-center gap-8 relative overflow-hidden">
+                            <div className="w-32 h-32 rounded-full relative z-10 flex items-center justify-center shadow-inner" style={{ backgroundColor: 'var(--bg-inset)', boxShadow: 'inset 4px 4px 8px var(--shadow-inner-dark), inset -4px -4px 8px var(--shadow-inner-light)' }}>
+                                <User size={48} style={{ color: 'var(--text-muted)' }} />
+                            </div>
+                            <div className="relative z-10 text-center sm:text-left flex-1">
+                                <h1 className="text-3xl font-bold" style={{ color: 'var(--text-main)' }}>{userProfile.name}</h1>
+                                <p className="text-[16px] font-medium mt-1" style={{ color: 'var(--text-muted)' }}>{userProfile.role}</p>
+                                <div className="flex flex-wrap gap-4 mt-4 justify-center sm:justify-start">
+                                    <span className="flex items-center gap-1.5 text-[13px] px-3 py-1.5 rounded-lg shadow-inner" style={{ backgroundColor: 'var(--bg-inset)', color: 'var(--text-muted)', boxShadow: 'inset 2px 2px 4px var(--shadow-inner-dark), inset -2px -2px 4px var(--shadow-inner-light)' }}>
+                                        <Mail size={14} /> {userProfile.email}
+                                    </span>
+                                    <span className="flex items-center gap-1.5 text-[13px] px-3 py-1.5 rounded-lg shadow-inner" style={{ backgroundColor: 'var(--bg-inset)', color: 'var(--text-muted)', boxShadow: 'inset 2px 2px 4px var(--shadow-inner-dark), inset -2px -2px 4px var(--shadow-inner-light)' }}>
+                                        <MapPin size={14} /> {userProfile.location}
+                                    </span>
+                                </div>
+                            </div>
+                        </NeumorphWidget>
+
+                        <div className="grid grid-cols-2 gap-6 w-full">
+                            <NeumorphWidget className="p-6 text-center">
+                                <div className="w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-3 shadow-inner" style={{ backgroundColor: 'var(--bg-inset)', color: 'var(--text-main)', boxShadow: 'inset 3px 3px 6px var(--shadow-inner-dark), inset -3px -3px 6px var(--shadow-inner-light)' }}>
+                                    <CheckCircle size={22} strokeWidth={2} />
+                                </div>
+                                <div className="text-3xl font-bold" style={{ color: 'var(--text-main)' }}>{completedCount}</div>
+                                <div className="text-[14px] font-medium uppercase tracking-wider mt-1" style={{ color: 'var(--text-muted)' }}>Tasks Done</div>
+                            </NeumorphWidget>
+                            <NeumorphWidget className="p-6 text-center">
+                                <div className="w-12 h-12 mx-auto rounded-full flex items-center justify-center mb-3 shadow-inner" style={{ backgroundColor: 'var(--bg-inset)', color: 'var(--text-main)', boxShadow: 'inset 3px 3px 6px var(--shadow-inner-dark), inset -3px -3px 6px var(--shadow-inner-light)' }}>
+                                    <Activity size={22} strokeWidth={2} />
+                                </div>
+                                <div className="text-3xl font-bold" style={{ color: 'var(--text-main)' }}>{pendingCount}</div>
+                                <div className="text-[14px] font-medium uppercase tracking-wider mt-1" style={{ color: 'var(--text-muted)' }}>In Progress</div>
+                            </NeumorphWidget>
+                        </div>
+                    </div>
+                </ViewWrapper>
+            );
+        };
+
+        const OrganizationView = ({ organizations, setOrganizations }) => {
+            const [activeOrg, setActiveOrg] = useState(null);
+            const [newOrgName, setNewOrgName] = useState("");
+
+            const handleAdd = () => {
+                if (newOrgName.trim() && !organizations.includes(newOrgName.trim())) {
+                    setOrganizations([...organizations, newOrgName.trim()]);
+                    setNewOrgName("");
+                }
+            };
+
+            const handleDelete = (org) => setOrganizations(organizations.filter(o => o !== org));
+
+            if (activeOrg) {
+                return (
+                    <ViewWrapper title={activeOrg} icon={<Building2 size={28} />} onBack={() => setActiveOrg(null)}>
+                        <div className="w-full max-w-4xl mt-6 p-8 text-center border rounded-3xl" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-color)', color: 'var(--text-muted)' }}>
+                            <Layers size={48} className="mx-auto mb-4 opacity-50" />
+                            <h2 className="text-xl font-semibold mb-2" style={{ color: 'var(--text-main)' }}>Welcome to {activeOrg}</h2>
+                            <p>This is the detailed workspace. Member directories and projects will appear here.</p>
+                        </div>
+                    </ViewWrapper>
+                );
+            }
+
+            return (
+                <ViewWrapper title="Organization" icon={<Building2 size={28} />}>
+                    <div className="flex gap-4 w-full max-w-4xl mt-6">
+                        <NeumorphWidget className="flex-1 p-4 flex items-center">
+                            <input
+                                value={newOrgName} onChange={e => setNewOrgName(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') handleAdd() }}
+                                placeholder="Add new organization..." className="bg-transparent border-none outline-none w-full font-medium" style={{ color: 'var(--text-main)' }}
+                            />
+                        </NeumorphWidget>
+                        <button onClick={handleAdd} className="px-8 rounded-[32px] font-bold border hover:opacity-80 transition-opacity" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-color)', color: 'var(--text-main)', boxShadow: '8px 8px 16px var(--shadow-outer-dark), -8px -8px 16px var(--shadow-outer-light)' }}>Add</button>
+                    </div>
+
+                    <div className="w-full max-w-4xl grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
+                        {organizations.map(dept => (
+                            <NeumorphWidget key={dept} onClick={() => setActiveOrg(dept)} className="p-6 flex items-center justify-between cursor-pointer hover:scale-[1.02] transition-transform group">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-xl flex items-center justify-center shadow-inner" style={{ backgroundColor: 'var(--bg-inset)', color: 'var(--text-main)', boxShadow: 'inset 2px 2px 4px var(--shadow-inner-dark), inset -2px -2px 4px var(--shadow-inner-light)' }}>
+                                        <Layers size={24} />
+                                    </div>
+                                    <div><h3 className="font-bold text-[18px]">{dept}</h3><p className="text-[13px]" style={{ color: 'var(--text-muted)' }}>Organization</p></div>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <button onClick={(e) => { e.stopPropagation(); handleDelete(dept); }} className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all"><Trash2 size={16} /></button>
+                                    <ChevronRight style={{ color: 'var(--text-muted)' }} />
+                                </div>
+                            </NeumorphWidget>
+                        ))}
+                    </div>
+                </ViewWrapper>
+            );
+        };
+
+        const TaskFoldersView = ({ taskFolders, setTaskFolders, todos, handleAddTodo, toggleTodoComplete, updateTodo, deleteTodo, togglePriority }) => {
+            const [activeFolder, setActiveFolder] = useState(null);
+            const [newFolderName, setNewFolderName] = useState("");
+
+            const handleAddFolder = () => {
+                if (newFolderName.trim() && !taskFolders.includes(newFolderName.trim())) {
+                    setTaskFolders([...taskFolders, newFolderName.trim()]);
+                    setNewFolderName("");
+                }
+            };
+
+            const handleDeleteFolder = (folder) => setTaskFolders(taskFolders.filter(d => d !== folder));
+
+            if (activeFolder) {
+                const folderTasks = todos.filter(t => t.folder === activeFolder);
+                return (
+                    <ViewWrapper title={activeFolder} icon={<Folder size={28} />} onBack={() => setActiveFolder(null)}>
+                        <div className="w-full max-w-4xl flex flex-col gap-1 mt-6">
+                            {folderTasks.length === 0 ? (
+                                <div className="p-10 text-center border rounded-3xl" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-color)', color: 'var(--text-muted)' }}>
+                                    <FolderOpen size={48} className="mx-auto mb-4 opacity-50" />
+                                    <p>This folder is empty. Add tasks directly to this folder below.</p>
+                                </div>
+                            ) : (
+                                folderTasks.map((todo) => <TodoItem key={todo.id} todo={todo} onToggle={toggleTodoComplete} onUpdate={updateTodo} onDelete={deleteTodo} onFlag={togglePriority} />)
+                            )}
+                            <div className="mt-4">
+                                <QuietAddButton section="unplanned" onAdd={(text, section) => handleAddTodo(text, section, false, { folder: activeFolder })} placeholder={`Add task to ${activeFolder}...`} />
+                            </div>
+                        </div>
+                    </ViewWrapper>
+                );
+            }
+
+            return (
+                <ViewWrapper title="Task Folders" icon={<Folder size={28} />}>
+                    <div className="flex gap-4 w-full max-w-4xl mt-6">
+                        <NeumorphWidget className="flex-1 p-4 flex items-center">
+                            <input
+                                value={newFolderName} onChange={e => setNewFolderName(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') handleAddFolder() }}
+                                placeholder="Create new task folder..." className="bg-transparent border-none outline-none w-full font-medium" style={{ color: 'var(--text-main)' }}
+                            />
+                        </NeumorphWidget>
+                        <button onClick={handleAddFolder} className="px-8 rounded-[32px] font-bold border hover:opacity-80 transition-opacity" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-color)', color: 'var(--text-main)', boxShadow: '8px 8px 16px var(--shadow-outer-dark), -8px -8px 16px var(--shadow-outer-light)' }}>Create</button>
+                    </div>
+
+                    <div className="w-full max-w-4xl grid grid-cols-2 sm:grid-cols-4 gap-6 mt-8">
+                        {taskFolders.map(folder => (
+                            <NeumorphWidget key={folder} onClick={() => setActiveFolder(folder)} className="p-6 flex flex-col items-center justify-center text-center gap-3 cursor-pointer hover:scale-[1.03] transition-transform aspect-square relative group">
+                                <button onClick={(e) => { e.stopPropagation(); handleDeleteFolder(folder); }} className="absolute top-3 right-3 p-1.5 text-red-500 hover:bg-red-500/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all"><Trash2 size={14} /></button>
+                                <Folder size={40} style={{ color: 'var(--text-main)' }} strokeWidth={1.5} />
+                                <span className="font-semibold text-[14px] leading-tight">{folder}</span>
+                                <span className="text-[12px] px-2 py-1 rounded-md mt-1" style={{ backgroundColor: 'var(--bg-inset)', color: 'var(--text-muted)' }}>{todos.filter(t => t.folder === folder).length} Tasks</span>
+                            </NeumorphWidget>
+                        ))}
+                    </div>
+                </ViewWrapper>
+            );
+        };
+
+        const DatabaseView = () => (
+            <ViewWrapper title="Data Grid" icon={<Database size={28} />}>
+                <NeumorphWidget className="w-full max-w-5xl mt-6 p-1 overflow-hidden">
+                    <table className="w-full text-left text-[14px]">
+                        <thead style={{ backgroundColor: 'var(--bg-inset)', color: 'var(--text-muted)' }}>
+                            <tr><th className="p-4 rounded-tl-3xl">ID</th><th className="p-4">Name</th><th className="p-4">Status</th><th className="p-4 rounded-tr-3xl">Action</th></tr>
+                        </thead>
+                        <tbody>
+                            {[1, 2, 3, 4].map(i => (
+                                <tr key={i} className="border-b last:border-0" style={{ borderColor: 'var(--border-color)' }}>
+                                    <td className="p-4 font-mono text-[13px]">#DT-{i}00</td><td className="p-4 font-medium">Data Entry {i}</td>
+                                    <td className="p-4">
+                                        <span className="px-2 py-1 rounded-md text-[12px] font-bold shadow-inner" style={{ backgroundColor: 'var(--bg-inset)', color: 'var(--text-main)', boxShadow: 'inset 1px 1px 2px var(--shadow-inner-dark), inset -1px -1px 2px var(--shadow-inner-light)' }}>
+                                            Active
+                                        </span>
+                                    </td>
+                                    <td className="p-4"><MoreHorizontal size={16} className="cursor-pointer hover:opacity-70 transition-opacity" style={{ color: 'var(--text-muted)' }} /></td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </NeumorphWidget>
+            </ViewWrapper>
+        );
+
+        // ==========================================
+        // UTILS & SMALL COMPONENTS
+        // ==========================================
+
+        const ViewWrapper = ({ title, icon, onBack, children }) => (
+            <div className="flex-1 p-6 md:p-10 flex flex-col items-center overflow-y-auto no-scrollbar animation-fade-in w-full relative">
+                <div className="w-full max-w-5xl flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-2 pb-6 border-b relative" style={{ borderColor: 'var(--border-color)' }}>
+                    {onBack && (
+                        <button onClick={onBack} className="absolute -left-16 w-10 h-10 rounded-full flex items-center justify-center border hover:scale-105 transition-all" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-color)', boxShadow: '4px 4px 8px var(--shadow-outer-dark), -4px -4px 8px var(--shadow-outer-light)' }}>
+                            <ArrowLeft size={18} style={{ color: 'var(--text-main)' }} />
+                        </button>
+                    )}
+                    <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner" style={{ backgroundColor: 'var(--bg-inset)', color: 'var(--text-muted)', boxShadow: 'inset 3px 3px 6px var(--shadow-inner-dark), inset -3px -3px 6px var(--shadow-inner-light)' }}>
+                        {icon}
+                    </div>
+                    <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
+                </div>
+                {children}
+            </div>
+        );
+
+        const NeumorphWidget = ({ children, className, onClick }) => (
+            <div onClick={onClick} className={`rounded-[32px] border ${className}`} style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-color)', boxShadow: '8px 8px 16px var(--shadow-outer-dark), -8px -8px 16px var(--shadow-outer-light)' }}>
+                {children}
+            </div>
+        );
+
+        const NeumorphAiButton = ({ onClick, isBlurred, setShowApiKeyModal, icon, text }) => {
+            const handleClick = (e) => {
+                e.stopPropagation();
+                if (isBlurred) setShowApiKeyModal(true);
+                else onClick(e);
+            };
+
+            return (
+                <button onClick={handleClick} className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-[13px] transition-all border shadow-sm hover:scale-[1.02] ${isBlurred ? 'opacity-60' : ''}`} style={{ backgroundColor: 'var(--bg-inset)', borderColor: 'var(--border-color)', color: 'var(--text-main)', boxShadow: '4px 4px 8px var(--shadow-outer-dark), -4px -4px 8px var(--shadow-outer-light)' }}>
+                    {icon} {text}
+                </button>
+            );
+        };
+
+        const SidebarIcon = ({ icon, label, isExpanded, id, active, set, badge }) => {
+            const isActive = active === id;
+            return (
+                <div className={`relative flex items-center w-auto md:w-full shrink-0 ${isExpanded ? 'md:justify-start mt-0 md:mt-1' : 'justify-center'}`}>
+                    <div className={`hidden md:block absolute left-0 w-1 h-8 bg-slate-400 rounded-r-full transition-opacity ${isActive ? 'opacity-100' : 'opacity-0'}`}></div>
+                    <button onClick={() => set(id)} className={`relative flex items-center justify-center gap-4 transition-all duration-300 rounded-2xl border ${isExpanded ? 'md:p-3 md:w-full p-2.5' : 'p-2.5 md:p-3'} ${isActive ? 'shadow-inner' : 'hover:scale-105 border-transparent'}`}
+                        style={isActive ? { backgroundColor: 'var(--bg-inset)', borderColor: 'var(--border-color)', color: 'var(--text-main)', boxShadow: 'inset 3px 3px 6px var(--shadow-inner-dark), inset -3px -3px 6px var(--shadow-inner-light)' } : { color: 'var(--text-muted)' }}>
+                        <div className="shrink-0">{icon}</div>
+                        {isExpanded && <span className="hidden md:block font-semibold text-[15px] whitespace-nowrap animate-in fade-in slide-in-from-left-2">{label}</span>}
+                        {badge && <div className={`absolute ${isExpanded ? 'md:top-3 md:right-3 top-2 right-2' : 'top-2 right-2'} w-2 h-2 bg-[#f46b6b] rounded-full border-2 border-transparent z-10`}></div>}
+                    </button>
+                </div>
+            );
+        };
+
+        const PlannerTab = ({ id, active, set, icon, title, count }) => {
+            const isActive = active === id;
+            return (
+                <div onClick={() => set(id)} className="flex justify-between items-center rounded-[18px] p-3.5 px-4 cursor-pointer transition-all duration-300 border"
+                    style={isActive ? { backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-color)' } : { borderColor: 'transparent', opacity: 0.7 }}>
+                    <div className="flex items-center gap-3" style={{ color: isActive ? 'var(--text-main)' : 'var(--text-muted)' }}>
+                        <div>{icon}</div><span className="font-medium">{title}</span>
+                    </div>
+                    {count !== undefined && (
+                        <div className="flex items-center gap-3">
+                            <span className="px-2.5 py-0.5 rounded-lg text-[13px] font-bold" style={isActive ? { backgroundColor: 'var(--bg-inset)', color: 'var(--text-main)' } : { backgroundColor: 'var(--border-color)', color: 'var(--text-muted)' }}>{count}</span>
+                            {isActive && <ChevronRight size={18} style={{ color: 'var(--text-muted)' }} />}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const AccordionHeader = ({ title, count, isOpen, onClick, rightAction, setShowApiKeyModal }) => (
+            <div className="flex items-center justify-between w-full py-2 group">
+                <div onClick={onClick} className="flex items-center gap-3 font-medium cursor-pointer select-none" style={{ color: 'var(--text-muted)' }}>
+                    <div className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : 'rotate-0'}`}><ChevronDown size={20} strokeWidth={2} /></div>
+                    <span className="text-[15px] hover:opacity-80 transition-opacity" style={{ color: 'var(--text-main)' }}>{title}</span>
+                    <span className="px-2 py-0.5 rounded-md text-[13px] font-bold shadow-inner" style={{ backgroundColor: 'var(--bg-inset)', boxShadow: 'inset 1px 1px 2px var(--shadow-inner-dark), inset -1px -1px 2px var(--shadow-inner-light)' }}>{count}</span>
+                </div>
+                {rightAction && rightAction.isAi ? (
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                        <NeumorphAiButton icon={rightAction.icon} text={rightAction.text} onClick={rightAction.onClick} isBlurred={rightAction.isBlurred} setShowApiKeyModal={setShowApiKeyModal} />
+                    </div>
+                ) : rightAction && (
+                    <button onClick={(e) => { e.stopPropagation(); rightAction.onClick(); }} className={`flex items-center gap-1.5 text-[13px] font-medium transition-colors px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 border ${rightAction.color || 'text-red-400'} hover:bg-black/5 dark:hover:bg-white/5`} style={{ borderColor: 'var(--border-color)' }}>
+                        {rightAction.icon} {rightAction.text}
+                    </button>
+                )}
+            </div>
+        );
+
+        const QuietAddButton = ({ section, onAdd, placeholder }) => {
+            const [isAdding, setIsAdding] = useState(false); const [val, setVal] = useState(""); const inputRef = useRef(null);
+            useEffect(() => { if (isAdding) inputRef.current?.focus(); }, [isAdding]);
+
+            if (!isAdding) return (
+                <div onClick={() => setIsAdding(true)} className="flex items-center gap-2 mt-1 py-2 px-3 rounded-[14px] cursor-pointer hover:bg-black/5 transition-all font-medium text-[14px] group w-max" style={{ color: 'var(--text-muted)' }}>
+                    <Plus size={18} strokeWidth={2} className="group-hover:scale-110 transition-transform" /> New Task
+                </div>
+            );
+
+            return (
+                <div className="flex items-center gap-3 mt-1 p-2 px-3 rounded-[16px] border shadow-sm transition-all duration-300" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-color)' }}>
+                    <Plus size={18} style={{ color: 'var(--text-main)' }} strokeWidth={2.5} />
+                    <input ref={inputRef} type="text" value={val} onChange={(e) => setVal(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { onAdd(val, section); setVal(""); setIsAdding(false); } if (e.key === 'Escape') setIsAdding(false); }} onBlur={() => setIsAdding(false)} placeholder={placeholder} className="bg-transparent border-none outline-none flex-1 font-medium text-[14px]" style={{ color: 'var(--text-main)' }} />
+                </div>
+            );
+        };
+
+        const TodoItem = ({ todo, onToggle, onUpdate, onDelete, onFlag, onBreakdown, isBreakingDown, userApiKey, setShowApiKeyModal }) => {
+            const [isEditing, setIsEditing] = useState(false);
+            const [text, setText] = useState(todo.text);
+            const [dueDate, setDueDate] = useState(todo.dueDate || "");
+            const inputRef = useRef(null);
+
+            useEffect(() => { if (isEditing) inputRef.current?.focus(); }, [isEditing]);
+
+            const isDone = todo.section === 'done';
+
+            const handleSaveEdit = () => {
+                setIsEditing(false);
+                onUpdate(todo.id, text, dueDate || null);
+            };
+
+            return (
+                <div className="group relative flex items-center py-1">
+                    <div className="absolute -left-6 opacity-0 group-hover:opacity-100 cursor-grab hover:scale-110 transition-all px-1" style={{ color: 'var(--text-muted)' }}><GripVertical size={18} /></div>
+                    <div className={`w-full flex flex-col gap-2 p-3 rounded-[18px] border transition-all shadow-sm hover:shadow-md ${isDone ? 'opacity-50' : ''}`} style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-color)', boxShadow: '4px 4px 10px var(--shadow-outer-dark), -4px -4px 10px var(--shadow-outer-light)' }}>
+
+                        {/* Top Row */}
+                        <div className="flex items-center gap-3 w-full relative">
+                            <div onClick={(e) => { e.stopPropagation(); onToggle(todo.id); }} className={`flex items-center justify-center cursor-pointer w-6 h-6 rounded-lg border hover:scale-105 transition-all flex-shrink-0 ${isDone ? 'shadow-inner' : ''}`} style={isDone ? { backgroundColor: 'var(--bg-inset)', borderColor: 'var(--border-color)', boxShadow: 'inset 2px 2px 4px var(--shadow-inner-dark)' } : { backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-color)' }}>
+                                <CheckCircle2 size={16} className={isDone ? 'text-green-500' : 'opacity-30'} strokeWidth={isDone ? 3 : 2} style={!isDone ? { color: 'var(--text-main)' } : {}} />
+                            </div>
+
+                            {todo.priority && !isDone && <div className="w-1.5 h-1.5 rounded-full bg-red-400 -ml-1 flex-shrink-0"></div>}
+
+                            <div className="flex-1 px-1 overflow-hidden">
+                                {isEditing ? (
+                                    <div className="flex flex-col gap-3 w-full my-1 pr-2">
+                                        <input ref={inputRef} type="text" value={text} onChange={(e) => setText(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') handleSaveEdit(); }} className="w-full bg-transparent border-b outline-none font-medium text-[15px] pb-1" style={{ color: 'var(--text-main)', borderColor: 'var(--border-color)' }} />
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <input type="datetime-local" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className="flex-1 min-w-[150px] bg-transparent border rounded-lg px-2 py-1.5 outline-none font-medium text-[13px]" style={{ color: 'var(--text-muted)', borderColor: 'var(--border-color)' }} />
+                                            <button onClick={handleSaveEdit} className="text-sm font-bold px-4 py-1.5 rounded-lg shadow-sm hover:scale-105 transition-transform" style={{ backgroundColor: 'var(--text-main)', color: 'var(--bg-base)' }}>Save</button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <span onClick={() => setIsEditing(true)} className={`cursor-text font-medium text-[15px] truncate block ${isDone ? 'line-through' : ''}`} style={{ color: isDone ? 'var(--text-muted)' : 'var(--text-main)' }}>{text}</span>
+                                )}
+                            </div>
+
+                            <div className="flex items-center gap-2 pr-14 cursor-pointer" onClick={() => setIsEditing(!isEditing)}>
+                                {todo.dueDate && !isDone && !isEditing && <span className="flex items-center gap-1.5 text-[12px] font-medium px-2.5 py-1 rounded-lg shadow-inner hover:scale-105 transition-transform" style={{ backgroundColor: 'var(--bg-inset)', color: 'var(--text-muted)', boxShadow: 'inset 1px 1px 2px var(--shadow-inner-dark), inset -1px -1px 2px var(--shadow-inner-light)' }}><CalendarDays size={12} /> {new Date(todo.dueDate).toLocaleString()}</span>}
+                                {todo.folder && !isDone && !isEditing && <span className="text-[12px] font-medium px-2 py-1 rounded-lg border whitespace-nowrap" style={{ backgroundColor: 'transparent', borderColor: 'var(--border-color)', color: 'var(--text-muted)' }}>{todo.folder}</span>}
+                            </div>
+
+                            <div className="flex items-center gap-1 absolute right-0 opacity-0 group-hover:opacity-100 transition-opacity px-2 py-1 rounded-xl shadow-sm border z-10" style={{ backgroundColor: 'var(--bg-surface)', borderColor: 'var(--border-color)' }}>
+                                {!isDone && onBreakdown && (
+                                    <button onClick={(e) => { e.stopPropagation(); if (!userApiKey) { setShowApiKeyModal(true); return; } onBreakdown(todo.id, todo.text); }} className={`p-1.5 rounded-lg transition-colors ${!userApiKey ? 'opacity-60' : 'hover:bg-black/5 dark:hover:bg-white/5'}`} style={{ color: 'var(--text-main)' }} title="AI Task Breakdown">
+                                        {isBreakingDown ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
+                                    </button>
+                                )}
+                                {!isDone && <button onClick={(e) => { e.stopPropagation(); onFlag(todo.id); }} className={`p-1.5 rounded-lg transition-colors ${todo.priority ? 'text-red-500 bg-red-500/10' : 'hover:bg-black/5 dark:hover:bg-white/5'}`} style={!todo.priority ? { color: 'var(--text-muted)' } : {}}><Flag size={14} fill={todo.priority ? "currentColor" : "none"} /></button>}
+                                <button onClick={(e) => { e.stopPropagation(); onDelete(todo.id); }} className="p-1.5 rounded-lg text-red-400 hover:bg-red-500/10 transition-colors"><Trash2 size={14} /></button>
+                            </div>
+                        </div>
+
+                        {/* AI Insight / Subtasks Row */}
+                        {(todo.aiReason || (todo.subtasks && todo.subtasks.length > 0)) && !isDone && (
+                            <div className="pl-10 pr-2 pb-1 flex flex-col gap-1.5 w-full">
+                                {todo.aiReason && (
+                                    <div className="flex items-start gap-2 text-[12px] p-2 rounded-lg border" style={{ backgroundColor: 'var(--bg-inset)', borderColor: 'var(--border-color)', color: 'var(--text-main)' }}>
+                                        <Sparkles size={12} className="mt-0.5 flex-shrink-0" />
+                                        <span className="italic font-medium">{todo.aiReason}</span>
+                                    </div>
+                                )}
+                                {todo.subtasks && todo.subtasks.map((st, i) => (
+                                    <div key={i} className="flex items-start gap-2 text-[13px] font-medium" style={{ color: 'var(--text-muted)' }}>
+                                        <div className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: 'var(--text-muted)', opacity: 0.5 }}></div>
+                                        <span>{st}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
