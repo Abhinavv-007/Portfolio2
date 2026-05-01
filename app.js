@@ -467,6 +467,17 @@
     });
   }
 
+  const SOCIAL_ICONS = {
+    LinkedIn: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4.98 3.5a2.5 2.5 0 1 1 .02 5 2.5 2.5 0 0 1-.02-5ZM3 9.75h4v11.25H3V9.75ZM10 9.75h3.83v1.55h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.51 4.78 5.78V21H18.6v-5.07c0-1.21-.02-2.77-1.78-2.77-1.78 0-2.05 1.31-2.05 2.67V21H10V9.75Z"/></svg>',
+    GitHub: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.18-3.37-1.18-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1.01.07 1.54 1.04 1.54 1.04.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.03A9.6 9.6 0 0 1 12 6.84c.85 0 1.71.11 2.51.34 1.91-1.3 2.75-1.03 2.75-1.03.55 1.38.2 2.4.1 2.65.64.7 1.03 1.6 1.03 2.69 0 3.84-2.34 4.69-4.57 4.93.36.31.68.92.68 1.86v2.76c0 .26.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>',
+    Instagram: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.2c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.39.9.42.43.68.83.9 1.39.16.43.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.39-.43.42-.83.68-1.39.9-.43.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.74 3.74 0 0 1-1.39-.9 3.74 3.74 0 0 1-.9-1.39c-.16-.43-.36-1.06-.41-2.23C2.21 15.58 2.2 15.2 2.2 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.39.43-.42.83-.68 1.39-.9.43-.16 1.06-.36 2.23-.41C8.42 2.21 8.8 2.2 12 2.2Zm0 2c-3.14 0-3.51.01-4.75.07-1.06.05-1.64.22-2.02.37-.51.2-.87.43-1.25.81a3.4 3.4 0 0 0-.81 1.25c-.15.38-.32.96-.37 2.02C2.74 8.49 2.73 8.86 2.73 12s.01 3.51.07 4.75c.05 1.06.22 1.64.37 2.02.2.51.43.87.81 1.25.38.38.74.61 1.25.81.38.15.96.32 2.02.37 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c1.06-.05 1.64-.22 2.02-.37.51-.2.87-.43 1.25-.81.38-.38.61-.74.81-1.25.15-.38.32-.96.37-2.02.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.05-1.06-.22-1.64-.37-2.02a3.4 3.4 0 0 0-.81-1.25 3.4 3.4 0 0 0-1.25-.81c-.38-.15-.96-.32-2.02-.37-1.24-.06-1.61-.07-4.75-.07Zm0 3.4a4.4 4.4 0 1 1 0 8.8 4.4 4.4 0 0 1 0-8.8Zm0 2a2.4 2.4 0 1 0 0 4.8 2.4 2.4 0 0 0 0-4.8Zm5.05-2.7a1.05 1.05 0 1 1 0 2.1 1.05 1.05 0 0 1 0-2.1Z"/></svg>',
+    X: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17.53 3H20.5l-6.49 7.42L21.5 21h-5.94l-4.66-6.06L5.5 21H2.5l6.95-7.94L2.5 3h6.06l4.21 5.56L17.53 3Zm-1.04 16.2h1.65L7.6 4.7H5.84l10.65 14.5Z"/></svg>'
+  };
+
+  function getSocialIcon(label) {
+    return SOCIAL_ICONS[label] || `<span aria-hidden="true">${esc(label.slice(0, 1))}</span>`;
+  }
+
   function renderSocials() {
     $$("[data-socials]").forEach((target) => {
       target.innerHTML = "";
@@ -480,6 +491,22 @@
         target.appendChild(link);
       });
     });
+
+    $$("[data-social-icons]").forEach((target) => {
+      target.innerHTML = "";
+      target.classList.add("brand-socials");
+      data.socials.forEach((social) => {
+        const link = document.createElement("a");
+        link.className = "brand-social";
+        link.href = social.url;
+        link.target = "_blank";
+        link.rel = "noopener";
+        link.setAttribute("aria-label", social.label);
+        link.title = social.label;
+        link.innerHTML = `${getSocialIcon(social.label)}<span class="brand-social-label">${esc(social.label)}</span>`;
+        target.appendChild(link);
+      });
+    });
   }
 
   function renderMarquees() {
@@ -487,7 +514,7 @@
       const set = data.marquee.map((item, index) => {
         const emphasis = index % 2 === 0 ? "strong" : "span";
         return `<${emphasis}>${item}</${emphasis}>`;
-      }).concat(`<a href="mailto:${data.profile.email}">Email Me</a>`).join('<i aria-hidden="true">✦</i>');
+      }).concat(`<a href="mailto:${data.profile.email}">Email me — I have two</a>`).join('<i aria-hidden="true">✦</i>');
       target.innerHTML = `
         <div class="marquee-track">
           <div class="marquee-set">${set}</div>
@@ -837,12 +864,16 @@
     ).sort((a, b) => a.localeCompare(b));
     if (statTags) statTags.textContent = String(allTags.length);
 
+    const sortByTitle = (a, b) =>
+      String(a.title || "").localeCompare(String(b.title || ""), undefined, { sensitivity: "base" });
+
     const writeCards = (filterTag) => {
       grid.classList.remove("is-empty");
       grid.innerHTML = "";
-      const visible = filterTag === "All"
-        ? list
+      const filtered = filterTag === "All"
+        ? list.slice()
         : list.filter((c) => (c.tags || []).map((t) => String(t)).includes(filterTag));
+      const visible = filtered.sort(sortByTitle);
       if (!visible.length) {
         if (emptyEl) emptyEl.hidden = false;
         return;
@@ -851,22 +882,20 @@
       visible.forEach((cert, index) => {
         const tags = (cert.tags || []).slice(0, 3);
         const card = document.createElement("a");
-        card.className = "cert-card reveal is-revealed";
-        card.style.setProperty("--delay", `${index * 24}ms`);
+        card.className = "cert-row reveal visible";
+        card.style.setProperty("--delay", `${index * 18}ms`);
         if (cert.url) {
           card.href = cert.url;
           card.target = "_blank";
           card.rel = "noopener";
         }
         card.innerHTML = `
-          <div class="cert-issuer">${esc(cert.issuer || "")}${cert.year ? ` &middot; ${esc(cert.year)}` : ""}</div>
-          <h3 class="cert-title">${esc(cert.title || "Untitled certification")}</h3>
-          <div class="cert-foot">
-            <div class="cert-tags">
-              ${tags.map((t) => `<span class="cert-tag">${esc(t)}</span>`).join("")}
-            </div>
-            <span class="cert-verify">${cert.url ? "Verify ↗" : ""}</span>
-          </div>
+          <span class="cert-row-issuer" title="${esc(cert.issuer || "")}">${esc(cert.issuer || "")}${cert.year ? ` &middot; ${esc(cert.year)}` : ""}</span>
+          <span class="cert-row-title" title="${esc(cert.title || "")}">${esc(cert.title || "Untitled credential")}</span>
+          <span class="cert-row-tags" aria-label="Disciplines">
+            ${tags.map((t) => `<span class="cert-tag">${esc(t)}</span>`).join("")}
+          </span>
+          <span class="cert-row-verify">${cert.url ? "Verify ↗" : ""}</span>
         `;
         grid.appendChild(card);
       });
@@ -874,7 +903,7 @@
 
     if (!list.length) {
       grid.classList.add("is-empty");
-      grid.textContent = "Certifications will be reprinted here once links are filed.";
+      grid.textContent = "Credentials will be reprinted here once links are filed.";
       return;
     }
 
