@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,700&display=swap">
   <link rel="icon" href="assets/logo-transparent.png">
-  <link rel="stylesheet" href="styles.css?v=terminal-pass-24">
+  <link rel="stylesheet" href="styles.css?v=pass-15">
 </head>
 <body data-page="contact">
   <div class="grain" aria-hidden="true"></div>
@@ -17,12 +17,19 @@
   <div class="intro" aria-hidden="true">
     <div class="intro-paper">
       <div class="intro-bar"></div>
-      <div class="intro-title">Get In Touch</div>
+      <div class="intro-title">Need a Hand</div>
       <div class="intro-line"></div>
     </div>
   </div>
 
   <div class="menu-curtain" id="menuCurtain" aria-hidden="true">
+    <div class="menu-burn" aria-hidden="true">
+      <div class="menu-burn-paper"></div>
+      <div class="menu-burn-grain"></div>
+      <div class="menu-burn-ember"></div>
+      <div class="menu-burn-edge menu-burn-edge--top"></div>
+      <div class="menu-burn-edge menu-burn-edge--bottom"></div>
+    </div>
     <button class="menu-close" type="button" data-menu-close aria-label="Close navigation">
       <span></span>
       <span></span>
@@ -31,7 +38,7 @@
       <a class="hover-cut" href="index.html" data-menu-close><span>About</span></a>
       <a class="hover-cut" href="work.html" data-menu-close><span>Work</span></a>
       <a class="hover-cut" href="credentials.html" data-menu-close><span>Credentials</span></a>
-      <a class="hover-cut" href="index.html#terminal" data-menu-close><span>Terminal</span></a>
+      <a class="hover-cut" href="terminal.html" data-menu-close><span>Terminal</span></a>
       <a class="hover-cut" href="contact.html" data-menu-close><span>Contact</span></a>
       <div class="menu-socials" data-social-icons></div>
     </nav>
@@ -67,18 +74,18 @@
         <span class="kicker">Correspondence Desk &middot; Open for Business</span>
         <span class="page-headline-rule" aria-hidden="true"></span>
       </div>
-      <h1 id="contactTitle" class="page-headline-title">Send the brief. <span class="page-headline-aside">I will reply.</span></h1>
+      <h1 id="contactTitle" class="page-headline-title">Need a hand <span class="page-headline-aside">I have two</span></h1>
       <div class="page-headline-deck">
-        <p>Use the desk for collaborations, product builds, portfolio requests, AI tools, and full-stack systems. The form sends directly through abhinv.in without exposing any API keys in the frontend.</p>
-        <div class="byline">By <strong>Abhinav Raj</strong> &middot; Replying within 24 hours</div>
+        <p>Drop a brief, a half-formed idea, a stuck deploy, or a feature that&rsquo;s been on the backlog for three months &mdash; I&rsquo;ll write back with the clearest next step. No funnels, no auto-replies.</p>
+        <div class="byline">By <strong>Abhinav Raj</strong> &middot; Usually replies within 24 hours</div>
       </div>
     </section>
 
     <section class="contact-page contact-page--redesign" aria-labelledby="contactTitle">
       <div class="contact-dispatch reveal">
         <div class="contact-dispatch-copy">
-          <h2>Send the brief.<br>Send the mess.<br>I will make it work.</h2>
-          <p>Tell me what you are building, what is stuck, and what a good outcome looks like. I will respond with the clearest next step, not a vague follow-up.</p>
+          <h2>Send the brief<br>Send the mess<br>I&rsquo;ll make it work</h2>
+          <p>Tell me what you&rsquo;re building, what&rsquo;s stuck, and what a good outcome looks like. You&rsquo;ll get back the clearest next step &mdash; not a vague follow-up.</p>
         </div>
         <img class="stamp-image contact-stamp" src="assets/Untitled design (2).webp" alt="Abhinav Raj builder stamp">
       </div>
@@ -87,17 +94,17 @@
         <article>
           <span>01</span>
           <h2>Project Builds</h2>
-          <p>Landing pages, product interfaces, dashboards, AI workflows, and polished web experiences that need to move from idea to shipped.</p>
+          <p>Landing pages, product interfaces, dashboards, AI workflows, and polished web experiences that need to move from idea to shipped</p>
         </article>
         <article>
           <span>02</span>
           <h2>Technical Help</h2>
-          <p>Frontend bugs, deployment issues, Cloudflare setup, API wiring, and product systems that need clean implementation.</p>
+          <p>Frontend bugs, deployment issues, Cloudflare setup, API wiring, and product systems that need clean implementation</p>
         </article>
         <article>
           <span>03</span>
           <h2>Collaboration</h2>
-          <p>Freelance work, internships, full-time roles, research pages, or experiments where design and engineering both matter.</p>
+          <p>Freelance work, internships, full-time roles, research pages, or experiments where design and engineering both matter</p>
         </article>
       </div>
 
@@ -105,33 +112,42 @@
         <article class="contact-column contact-column--email reveal">
           <div class="section-kicker">Direct Line</div>
           <a class="email-link hover-cut" href="mailto:hello@abhinv.in"><span>hello@abhinv.in</span></a>
-          <p>Open to collaborations worldwide, freelance work, product builds, research-backed pages, and full-time opportunities.</p>
-        </article>
-        <article class="contact-column contact-column--social reveal">
-          <div class="section-kicker">Elsewhere</div>
-          <div class="contact-socials" data-social-icons></div>
+          <p>Open to collaborations worldwide &mdash; freelance work, product builds, research-backed pages, and full-time opportunities.</p>
+          <div class="contact-elsewhere">
+            <div class="section-kicker">Elsewhere</div>
+            <div class="contact-socials" data-social-icons></div>
+          </div>
         </article>
         <article class="contact-column contact-form-column reveal">
-          <div class="section-kicker">Quick Note</div>
-          <form class="contact-form" id="contactForm" data-resend-ready>
-            <label>
-              <span>Name</span>
-              <input type="text" name="name" autocomplete="name" placeholder="Your name" required>
-            </label>
-            <label>
-              <span>Email</span>
-              <input type="email" name="email" autocomplete="email" placeholder="you@example.com" required>
-            </label>
-            <label>
+          <div class="section-kicker">Quick Note &middot; Direct to Inbox</div>
+          <h3 class="contact-form-title">Drop a brief</h3>
+          <p class="contact-form-helper">Sends straight to <strong>hello@abhinv.in</strong>. No tracking, no auto-reply &mdash; you get a real response.</p>
+          <form class="contact-form" id="contactForm" novalidate data-resend-ready>
+            <div class="contact-form-row">
+              <label class="contact-field">
+                <span>Name</span>
+                <input type="text" name="name" autocomplete="name" placeholder="Your name" required>
+              </label>
+              <label class="contact-field">
+                <span>Email</span>
+                <input type="email" name="email" autocomplete="email" placeholder="you@example.com" required>
+              </label>
+            </div>
+            <label class="contact-field">
               <span>Message</span>
-              <textarea name="message" rows="5" placeholder="Tell me what we are building" required></textarea>
+              <textarea name="message" rows="7" placeholder="Tell me what we&rsquo;re building, what&rsquo;s stuck, and what a good outcome looks like." required></textarea>
             </label>
             <label class="form-honeypot" aria-hidden="true">
               <span>Website</span>
               <input type="text" name="website" tabindex="-1" autocomplete="off">
             </label>
-            <button type="submit">Send Message</button>
-            <p class="contact-form-status" id="contactFormStatus" aria-live="polite"></p>
+            <div class="contact-form-actions">
+              <button type="submit" class="contact-send-button">
+                <span class="contact-send-label">Send message</span>
+                <span class="contact-send-arrow" aria-hidden="true">→</span>
+              </button>
+              <p class="contact-form-status" id="contactFormStatus" aria-live="polite"></p>
+            </div>
           </form>
         </article>
       </div>
@@ -143,7 +159,7 @@
     </footer>
   </main>
 
-  <script src="data.js?v=terminal-pass-24"></script>
-  <script src="app.js?v=terminal-pass-24"></script>
+  <script src="data.js?v=pass-15"></script>
+  <script src="app.js?v=pass-15"></script>
 </body>
 </html>
