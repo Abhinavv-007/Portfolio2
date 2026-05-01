@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Selected work by Abhinav Raj across AI products, research, privacy tools, utilities, and intelligent web systems.">
-  <title>Work - The Digital Journal</title>
+  <meta name="description" content="Certifications earned by Abhinav Raj across AI, cryptography, blockchain, cybersecurity, and the humanities, issued by Google, Stanford, Harvard, IBM, Yale, Wharton, and others.">
+  <title>Certifications - The Digital Journal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,700&display=swap">
   <link rel="icon" href="assets/logo-transparent.png">
   <link rel="stylesheet" href="styles.css?v=polish-pass-13">
 </head>
-<body data-page="work">
+<body data-page="certifications">
   <div class="grain" aria-hidden="true"></div>
 
   <div class="intro" aria-hidden="true">
     <div class="intro-paper">
       <div class="intro-bar"></div>
-      <div class="intro-title">All Work</div>
+      <div class="intro-title">Credentials</div>
       <div class="intro-line"></div>
     </div>
   </div>
@@ -57,43 +57,50 @@
     </nav>
 
     <div class="folio-strip" aria-hidden="true">
-      <span class="folio-section">Work Desk</span>
-      <span class="volume-mark">Vol. 1 &middot; Special Edition</span>
-      <span class="folio-page">Features</span>
+      <span class="folio-section">Records Office</span>
+      <span class="volume-mark">Vol. 1 &middot; Credentials Edition</span>
+      <span class="folio-page">Certifications</span>
     </div>
 
-    <div class="section-banner">All Work &middot; Five Products &middot; One Operator</div>
+    <div class="section-banner">Earned &middot; Verified &middot; On the Record</div>
 
-    <section class="page-lede work-lede" aria-labelledby="workPageTitle">
+    <section class="page-lede certs-lede" aria-labelledby="certsPageTitle">
       <div class="black-title">
-        <h1 id="workPageTitle">All Work</h1>
+        <h1 id="certsPageTitle">Certifications</h1>
       </div>
       <div class="lede-copy">
-        <p>A focused set of shipped products and deep technical builds across privacy, AI infrastructure, finance utilities, race intelligence, and edge-native mail systems.</p>
-        <a class="text-link hover-cut" href="contact.html"><span>Start a project</span></a>
+        <p>A running ledger of certifications earned across artificial intelligence, cryptography, blockchain, cybersecurity, finance, diplomacy, and the humanities. Every entry links to its public verification.</p>
+        <a class="text-link hover-cut" href="contact.html"><span>Get in touch</span></a>
       </div>
     </section>
 
-    <section class="work-board" aria-label="Detailed project posters">
-      <div class="work-board-intro">
-        <p>Detailed editions</p>
-        <strong>Scroll / Explore</strong>
-      </div>
-      <div class="work-page-grid" id="workPageGrid"></div>
-    </section>
+    <section class="certs-page" aria-label="All certifications">
+      <aside class="certs-stats" aria-label="Summary">
+        <div class="certs-stat">
+          <span class="certs-stat-num" id="certsStatTotal">0</span>
+          <span class="certs-stat-label">On file</span>
+        </div>
+        <div class="certs-stat">
+          <span class="certs-stat-num" id="certsStatIssuers">0</span>
+          <span class="certs-stat-label">Institutions</span>
+        </div>
+        <div class="certs-stat">
+          <span class="certs-stat-num" id="certsStatTags">0</span>
+          <span class="certs-stat-label">Disciplines</span>
+        </div>
+      </aside>
 
-    <section class="work-board research-board" aria-label="Research papers">
-      <div class="work-board-intro">
-        <p>Research Papers</p>
-        <strong>Read / Explore</strong>
-      </div>
-      <div class="work-page-grid research-page-grid" id="researchPageGrid"></div>
+      <div class="certs-toolbar" role="tablist" aria-label="Filter by discipline" id="certsFilters"></div>
+
+      <div class="certs-grid certs-grid--page" id="certsGrid" aria-live="polite"></div>
+
+      <p class="certs-empty" id="certsEmpty" hidden>No certifications match this filter yet.</p>
     </section>
 
     <footer class="footer">
       <div class="marquee" data-marquee></div>
       <div class="footer-row">
-        <a class="hover-cut" href="about.html"><span>About</span></a>
+        <a class="hover-cut" href="work.html"><span>All Work</span></a>
         <a class="hover-cut" href="contact.html"><span>Email Me</span></a>
       </div>
     </footer>
