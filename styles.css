@@ -1879,6 +1879,39 @@ textarea {
   outline: none;
 }
 
+.contact-form button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+  transform: none;
+}
+
+.form-honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.contact-form-status {
+  min-height: 1.25rem;
+  margin: -0.25rem 0 0;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  line-height: 1.35;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+}
+
+.contact-form-status[data-state="success"] {
+  color: var(--green);
+}
+
+.contact-form-status[data-state="error"] {
+  color: var(--red);
+}
+
 .footer {
   padding-top: 0;
   padding-bottom: 0;
@@ -5928,6 +5961,49 @@ body.menu-open .masthead > .menu-button:focus-visible {
   filter: drop-shadow(0 1rem 1.2rem rgba(26, 25, 22, 0.16));
 }
 
+.contact-brief-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-bottom: 1px solid var(--rule-strong);
+  border-left: 1px solid var(--rule);
+  background:
+    repeating-linear-gradient(180deg, rgba(26, 25, 22, 0.035) 0 1px, transparent 1px 7px),
+    rgba(255, 251, 235, 0.18);
+}
+
+.contact-brief-grid article {
+  min-height: 15rem;
+  display: grid;
+  align-content: start;
+  gap: 0.8rem;
+  padding: clamp(1.1rem, 2.2vw, 1.75rem);
+  border-right: 1px solid var(--rule);
+}
+
+.contact-brief-grid span {
+  width: max-content;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--red);
+  color: var(--red);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+}
+
+.contact-brief-grid h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(1.65rem, 2.7vw, 2.65rem);
+  line-height: 0.94;
+  text-transform: uppercase;
+}
+
+.contact-brief-grid p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 1rem;
+  line-height: 1.38;
+}
+
 .contact-columns--redesign {
   grid-template-columns: minmax(18rem, 1.05fr) minmax(14rem, 0.7fr) minmax(20rem, 1fr);
 }
@@ -6007,6 +6083,7 @@ body.menu-open .masthead > .menu-button:focus-visible {
   }
 
   .contact-dispatch,
+  .contact-brief-grid,
   .contact-columns--redesign {
     grid-template-columns: 1fr;
   }
@@ -6016,6 +6093,12 @@ body.menu-open .masthead > .menu-button:focus-visible {
   }
 
   .contact-columns--redesign .contact-column {
+    min-height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .contact-brief-grid article {
     min-height: auto;
     border-right: 0;
     border-bottom: 1px solid var(--rule);

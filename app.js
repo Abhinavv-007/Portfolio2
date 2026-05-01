@@ -833,20 +833,50 @@
       event.preventDefault();
       igniteSubmit();
       const formData = new FormData(form);
-      const name = formData.get("name") || "Portfolio visitor";
-      const email = formData.get("email") || "";
-      const message = formData.get("message") || "";
-      const subject = encodeURIComponent(`Portfolio enquiry from ${name}`);
-      const body = encodeURIComponent([
-        `Name: ${name}`,
-        email ? `Email: ${email}` : "",
-        "",
-        message
-      ].filter(Boolean).join("\n"));
-      // Slight delay so the burn animation is visible before the mail client takes focus.
-      window.setTimeout(() => {
-        window.location.href = `mailto:${data.profile.email}?subject=${subject}&body=${body}`;
-      }, 280);
+      const status = $("#contactFormStatus");
+      const payload = {
+        name: String(formData.get("name") || "").trim(),
+        email: String(formData.get("email") || "").trim(),
+        message: String(formData.get("message") || "").trim(),
+        website: String(formData.get("website") || "").trim()
+      };
+
+      if (status) {
+        status.textContent = "Sending through abhinv.in...";
+        status.dataset.state = "pending";
+      }
+      if (submit) {
+        submit.disabled = true;
+        submit.textContent = "Sending...";
+      }
+
+      window.setTimeout(async () => {
+        try {
+          const response = await fetch("/api/contact", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          const result = await response.json().catch(() => ({}));
+          if (!response.ok || result.ok === false) {
+            throw new Error(result.error || "Message failed. Please email me directly.");
+          }
+          form.reset();
+          if (status) {
+            status.textContent = "Sent. I will reply soon.";
+            status.dataset.state = "success";
+          }
+          if (submit) submit.textContent = "Sent";
+        } catch (error) {
+          if (status) {
+            status.textContent = error.message || "Message failed. Please email me directly.";
+            status.dataset.state = "error";
+          }
+          if (submit) submit.textContent = "Try Again";
+        } finally {
+          if (submit) submit.disabled = false;
+        }
+      }, 260);
     });
   }
 

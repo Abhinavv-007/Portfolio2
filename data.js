@@ -2,7 +2,7 @@ window.PORTFOLIO = {
   profile: {
     name: "Abhinav Raj",
     publication: "The Digital Journal",
-    email: "hello@abhnv.in",
+    email: "hello@abhinv.in",
     summary: "AI builder and full-stack developer creating sharp digital experiences through code, design, and intelligent systems."
   },
   marquee: [
@@ -98,7 +98,7 @@ window.PORTFOLIO = {
       shortImage: "assets/projects/short/data-for-sale.webp",
       detailedImage: "assets/projects/detailed/data-for-sale.webp",
       logo: "assets/logos/data-for-sale.svg",
-      url: "https://www.abhnv.in/research/paper",
+      url: "https://www.abhinv.in/research/paper",
       type: "Research on data markets",
       description: "A research paper on personal data markets, hidden incentives, and the economy built from user behavior.",
       tags: ["Research", "Privacy", "Writing"]
@@ -109,7 +109,7 @@ window.PORTFOLIO = {
       shortImage: "assets/projects/short/glass-ballot.webp",
       detailedImage: "assets/projects/detailed/glass-ballot.webp",
       logo: "assets/logos/glass-ballot.svg",
-      url: "https://www.abhnv.in/research/paper3",
+      url: "https://www.abhinv.in/research/paper3",
       type: "Research on digital voting",
       description: "The Glass Ballot explores transparency, privacy, and trust in digital voting.",
       tags: ["Research", "Civic Tech", "Trust"]

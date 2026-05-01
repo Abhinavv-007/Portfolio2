@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,700&display=swap">
   <link rel="icon" href="assets/logo-transparent.png">
-  <link rel="stylesheet" href="styles.css?v=credentials-pass-19">
+  <link rel="stylesheet" href="styles.css?v=credentials-pass-23">
 </head>
 <body data-page="contact">
   <div class="grain" aria-hidden="true"></div>
@@ -66,9 +66,9 @@
         <span class="kicker">Correspondence Desk &middot; Open for Business</span>
         <span class="page-headline-rule" aria-hidden="true"></span>
       </div>
-      <h1 id="contactTitle" class="page-headline-title">Need a helping hand? <span class="page-headline-aside">I have two.</span></h1>
+      <h1 id="contactTitle" class="page-headline-title">Send the brief. <span class="page-headline-aside">I will reply.</span></h1>
       <div class="page-headline-deck">
-        <p>Send the brief, the messy idea, or the half-built thing. I will help turn it into something sharp enough to ship.</p>
+        <p>Use the desk for collaborations, product builds, portfolio requests, AI tools, and full-stack systems. The form sends directly through abhinv.in without exposing any API keys in the frontend.</p>
         <div class="byline">By <strong>Abhinav Raj</strong> &middot; Replying within 24 hours</div>
       </div>
     </section>
@@ -77,16 +77,34 @@
       <div class="contact-dispatch reveal">
         <div class="contact-dispatch-copy">
           <h2>Send the brief.<br>Send the mess.<br>I will make it work.</h2>
-          <p>Use this page for collaborations, product builds, portfolio requests, AI tools, full-stack systems, and ideas that need a sharper execution plan.</p>
+          <p>Tell me what you are building, what is stuck, and what a good outcome looks like. I will respond with the clearest next step, not a vague follow-up.</p>
         </div>
         <img class="stamp-image contact-stamp" src="assets/Untitled design (2).webp" alt="Abhinav Raj builder stamp">
+      </div>
+
+      <div class="contact-brief-grid reveal" aria-label="What to send">
+        <article>
+          <span>01</span>
+          <h2>Project Builds</h2>
+          <p>Landing pages, product interfaces, dashboards, AI workflows, and polished web experiences that need to move from idea to shipped.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <h2>Technical Help</h2>
+          <p>Frontend bugs, deployment issues, Cloudflare setup, API wiring, and product systems that need clean implementation.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <h2>Collaboration</h2>
+          <p>Freelance work, internships, full-time roles, research pages, or experiments where design and engineering both matter.</p>
+        </article>
       </div>
 
       <div class="contact-columns contact-columns--redesign">
         <article class="contact-column contact-column--email reveal">
           <div class="section-kicker">Direct Line</div>
-          <a class="email-link hover-cut" href="mailto:hello@abhnv.in"><span>hello@abhnv.in</span></a>
-          <p>Open to collaborations worldwide, freelance work, product builds, and full-time opportunities.</p>
+          <a class="email-link hover-cut" href="mailto:hello@abhinv.in"><span>hello@abhinv.in</span></a>
+          <p>Open to collaborations worldwide, freelance work, product builds, research-backed pages, and full-time opportunities.</p>
         </article>
         <article class="contact-column contact-column--social reveal">
           <div class="section-kicker">Elsewhere</div>
@@ -97,17 +115,22 @@
           <form class="contact-form" id="contactForm" data-resend-ready>
             <label>
               <span>Name</span>
-              <input type="text" name="name" autocomplete="name" placeholder="Your name">
+              <input type="text" name="name" autocomplete="name" placeholder="Your name" required>
             </label>
             <label>
               <span>Email</span>
-              <input type="email" name="email" autocomplete="email" placeholder="you@example.com">
+              <input type="email" name="email" autocomplete="email" placeholder="you@example.com" required>
             </label>
             <label>
               <span>Message</span>
-              <textarea name="message" rows="5" placeholder="Tell me what we are building"></textarea>
+              <textarea name="message" rows="5" placeholder="Tell me what we are building" required></textarea>
             </label>
-            <button type="submit">Open Mail Draft</button>
+            <label class="form-honeypot" aria-hidden="true">
+              <span>Website</span>
+              <input type="text" name="website" tabindex="-1" autocomplete="off">
+            </label>
+            <button type="submit">Send Message</button>
+            <p class="contact-form-status" id="contactFormStatus" aria-live="polite"></p>
           </form>
         </article>
       </div>
@@ -116,14 +139,10 @@
     <footer class="footer">
       <div class="marquee" data-marquee></div>
       <div class="footer-socials" data-social-icons aria-label="Social links"></div>
-      <div class="footer-row">
-        <a class="hover-cut" href="index.html"><span>About</span></a>
-        <a class="hover-cut" href="work.html"><span>All Work</span></a>
-      </div>
     </footer>
   </main>
 
-  <script src="data.js?v=credentials-pass-19"></script>
-  <script src="app.js?v=credentials-pass-19"></script>
+  <script src="data.js?v=credentials-pass-23"></script>
+  <script src="app.js?v=credentials-pass-23"></script>
 </body>
 </html>
