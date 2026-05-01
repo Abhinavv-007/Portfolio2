@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,700&display=swap">
   <link rel="icon" href="assets/logo-transparent.png">
-  <link rel="stylesheet" href="styles.css?v=polish-pass-13">
+  <link rel="stylesheet" href="styles.css?v=credentials-pass-15">
 </head>
 <body data-page="work">
   <div class="grain" aria-hidden="true"></div>
@@ -31,9 +31,9 @@
       <a class="hover-cut" href="index.html" data-menu-close><span>Index</span></a>
       <a class="hover-cut" href="work.html" data-menu-close><span>Work</span></a>
       <a class="hover-cut" href="about.html" data-menu-close><span>About</span></a>
-      <a class="hover-cut" href="certifications.html" data-menu-close><span>Certifications</span></a>
+      <a class="hover-cut" href="credentials.html" data-menu-close><span>Credentials</span></a>
       <a class="hover-cut" href="contact.html" data-menu-close><span>Contact</span></a>
-      <div class="menu-socials" data-socials></div>
+      <div class="menu-socials" data-social-icons></div>
     </nav>
   </div>
 
@@ -44,8 +44,9 @@
   </button>
 
   <main class="site-shell">
-    <header class="topline" aria-label="Current time">
+    <header class="topline" aria-label="Current time and socials">
       <div id="clock">IST</div>
+      <div class="topline-socials" data-social-icons aria-label="Social links"></div>
     </header>
 
     <nav class="masthead" aria-label="Primary navigation">
@@ -62,13 +63,13 @@
       <span class="folio-page">Features</span>
     </div>
 
-    <div class="section-banner">All Work &middot; Five Products &middot; One Operator</div>
-
-    <section class="page-lede work-lede" aria-labelledby="workPageTitle">
-      <div class="black-title">
-        <h1 id="workPageTitle">All Work</h1>
+    <section class="page-headline page-headline--work" aria-labelledby="workPageTitle">
+      <div class="page-headline-meta">
+        <span class="kicker">Five Products &middot; One Operator</span>
+        <span class="page-headline-rule" aria-hidden="true"></span>
       </div>
-      <div class="lede-copy">
+      <h1 id="workPageTitle" class="page-headline-title">All Work</h1>
+      <div class="page-headline-deck">
         <p>A focused set of shipped products and deep technical builds across privacy, AI infrastructure, finance utilities, race intelligence, and edge-native mail systems.</p>
         <a class="text-link hover-cut" href="contact.html"><span>Start a project</span></a>
       </div>
@@ -94,12 +95,12 @@
       <div class="marquee" data-marquee></div>
       <div class="footer-row">
         <a class="hover-cut" href="about.html"><span>About</span></a>
-        <a class="hover-cut" href="contact.html"><span>Email Me</span></a>
+        <a class="hover-cut" href="contact.html"><span>Email me — I have two</span></a>
       </div>
     </footer>
   </main>
 
-  <script src="data.js?v=polish-pass-13"></script>
-  <script src="app.js?v=polish-pass-13"></script>
+  <script src="data.js?v=credentials-pass-15"></script>
+  <script src="app.js?v=credentials-pass-15"></script>
 </body>
 </html>

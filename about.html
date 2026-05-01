@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,700&display=swap">
   <link rel="icon" href="assets/logo-transparent.png">
-  <link rel="stylesheet" href="styles.css?v=polish-pass-13">
+  <link rel="stylesheet" href="styles.css?v=credentials-pass-15">
 </head>
 <body data-page="about">
   <div class="grain" aria-hidden="true"></div>
@@ -31,9 +31,9 @@
       <a class="hover-cut" href="index.html" data-menu-close><span>Index</span></a>
       <a class="hover-cut" href="work.html" data-menu-close><span>Work</span></a>
       <a class="hover-cut" href="about.html" data-menu-close><span>About</span></a>
-      <a class="hover-cut" href="certifications.html" data-menu-close><span>Certifications</span></a>
+      <a class="hover-cut" href="credentials.html" data-menu-close><span>Credentials</span></a>
       <a class="hover-cut" href="contact.html" data-menu-close><span>Contact</span></a>
-      <div class="menu-socials" data-socials></div>
+      <div class="menu-socials" data-social-icons></div>
     </nav>
   </div>
 
@@ -44,8 +44,9 @@
   </button>
 
   <main class="site-shell">
-    <header class="topline" aria-label="Current time">
+    <header class="topline" aria-label="Current time and socials">
       <div id="clock">IST</div>
+      <div class="topline-socials" data-social-icons aria-label="Social links"></div>
     </header>
 
     <nav class="masthead" aria-label="Primary navigation">
@@ -62,20 +63,25 @@
       <span class="folio-page">About</span>
     </div>
 
-    <div class="section-banner">Builder Notes &middot; From the Editor</div>
+    <section class="page-headline page-headline--about" aria-labelledby="aboutPageTitle">
+      <div class="page-headline-meta">
+        <span class="kicker">Field Report &middot; From the Editor</span>
+        <span class="page-headline-rule" aria-hidden="true"></span>
+      </div>
+      <h1 id="aboutPageTitle" class="page-headline-title">About Me</h1>
+      <div class="page-headline-deck">
+        <p>I mix code with curiosity, AI with intention, and design with clarity. I like building products that feel useful before they feel loud.</p>
+        <div class="byline">By <strong>Abhinav Raj</strong> &middot; Product Engineer</div>
+      </div>
+    </section>
 
     <section class="about-page" aria-labelledby="aboutPageTitle">
       <div class="about-cover">
         <figure class="newspaper-cutting reveal">
           <img src="assets/avatar-star-newspaper.webp" alt="Editorial portrait of Abhinav Raj">
+          <div class="portrait-socials" data-social-icons aria-label="Social links"></div>
           <figcaption class="editorial-caption"><span class="caption-number">Fig. 1</span> Editor-in-Chief, The Digital Journal</figcaption>
         </figure>
-        <div class="about-headline reveal">
-          <div class="kicker">Field Report</div>
-          <h1 id="aboutPageTitle">About Me</h1>
-          <p>I mix code with curiosity, AI with intention, and design with clarity. I like building products that feel useful before they feel loud.</p>
-          <div class="byline">By <strong>Abhinav Raj</strong> &middot; Product Engineer</div>
-        </div>
         <img class="stamp-image about-stamp reveal" src="assets/Untitled design (2).webp" alt="Abhinav Raj builder stamp">
       </div>
 
@@ -107,12 +113,12 @@
       <div class="marquee" data-marquee></div>
       <div class="footer-row">
         <a class="hover-cut" href="work.html"><span>All Work</span></a>
-        <a class="hover-cut" href="contact.html"><span>Email Me</span></a>
+        <a class="hover-cut" href="contact.html"><span>Email me — I have two</span></a>
       </div>
     </footer>
   </main>
 
-  <script src="data.js?v=polish-pass-13"></script>
-  <script src="app.js?v=polish-pass-13"></script>
+  <script src="data.js?v=credentials-pass-15"></script>
+  <script src="app.js?v=credentials-pass-15"></script>
 </body>
 </html>

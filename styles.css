@@ -4677,13 +4677,18 @@ body.menu-open .masthead > .menu-button:focus-visible {
 /* Grid */
 .certs-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
   gap: 1rem;
   min-width: 0;
+  max-width: 100%;
 }
 
 .certs-grid--page {
   gap: 1.1rem;
+}
+
+.certs-grid > * {
+  min-width: 0;
 }
 
 /* Card — paper stock with foil VERIFIED ribbon and shimmer sweep */
@@ -4771,12 +4776,14 @@ body.menu-open .masthead > .menu-button:focus-visible {
 
 .cert-issuer {
   font-family: var(--mono);
-  font-size: 0.66rem;
+  font-size: 0.64rem;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   color: var(--red);
   position: relative;
   z-index: 2;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
 }
 
 .cert-title {
@@ -4786,6 +4793,7 @@ body.menu-open .masthead > .menu-button:focus-visible {
   line-height: 1.1;
   letter-spacing: -0.01em;
   text-wrap: balance;
+  overflow-wrap: anywhere;
   color: var(--ink);
   position: relative;
   z-index: 2;
@@ -4871,4 +4879,596 @@ body.menu-open .masthead > .menu-button:focus-visible {
   .certs-filter {
     flex: 0 0 auto;
   }
+}
+
+/* =========================================================
+   Polish pass 14 — Credentials rename, page-headline,
+   brand socials, list-view credentials, folio safety
+   ========================================================= */
+
+/* ---- Topline gets socials on the right; menu now lives in masthead. ---- */
+.topline {
+  padding-right: 2.5rem;
+  gap: 1rem;
+}
+
+.topline-socials {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.topline-socials .brand-social-label {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .topline {
+    padding-right: 1rem;
+  }
+  .topline-socials {
+    gap: 0.35rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .topline-socials {
+    display: none;
+  }
+}
+
+/* ---- Brand socials (LinkedIn / GitHub / Instagram / X) ---- */
+.brand-socials {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.brand-social {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: 2.4rem;
+  height: 2.4rem;
+  padding: 0.45rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: 0.18rem;
+  background: rgba(255, 251, 235, 0.78);
+  color: var(--ink);
+  text-decoration: none;
+  transition:
+    transform 320ms var(--ease),
+    background 240ms ease,
+    border-color 240ms ease,
+    color 240ms ease,
+    box-shadow 320ms ease;
+  box-shadow: 0 0.12rem 0 rgba(26, 25, 22, 0.14);
+}
+
+.brand-social svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: currentColor;
+  display: block;
+  pointer-events: none;
+}
+
+.brand-social-label {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.brand-social:hover,
+.brand-social:focus-visible {
+  outline: none;
+  transform: translateY(-2px) rotate(-1.5deg);
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper-light);
+  box-shadow: 0 0.4rem 0.85rem rgba(26, 25, 22, 0.22);
+}
+
+/* ---- Inside the dark menu curtain, brand socials get inverted treatment ---- */
+.menu-curtain .menu-socials.brand-socials {
+  margin-top: 2.2rem;
+  gap: 0.7rem;
+  justify-content: center;
+}
+
+.menu-curtain .brand-social {
+  width: 2.7rem;
+  height: 2.7rem;
+  border-color: rgba(234, 223, 206, 0.42);
+  background: rgba(234, 223, 206, 0.06);
+  color: var(--paper-light);
+  box-shadow: none;
+}
+
+.menu-curtain .brand-social svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.menu-curtain .brand-social-label {
+  display: none;
+}
+
+.menu-curtain .brand-social:hover,
+.menu-curtain .brand-social:focus-visible {
+  background: var(--paper-light);
+  border-color: var(--paper-light);
+  color: var(--ink);
+  transform: translateY(-3px) rotate(1.5deg);
+}
+
+/* ---- Hero-stamp socials on Index ---- */
+.stamp-stack {
+  display: grid;
+  gap: 0.65rem;
+  justify-items: end;
+}
+
+.stamp-stack .stamp-image {
+  margin-left: auto;
+}
+
+.stamp-socials {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  justify-content: flex-end;
+}
+
+.stamp-socials .brand-social-label {
+  display: none;
+}
+
+.stamp-socials .brand-social {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+@media (max-width: 860px) {
+  .stamp-stack {
+    justify-items: start;
+  }
+  .stamp-socials {
+    justify-content: flex-start;
+  }
+}
+
+/* ---- Portrait socials overlaid on the About portrait ---- */
+.newspaper-cutting {
+  position: relative;
+}
+
+.portrait-socials {
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid rgba(255, 251, 235, 0.55);
+  background:
+    linear-gradient(180deg, rgba(26, 25, 22, 0.0), rgba(26, 25, 22, 0.45));
+  backdrop-filter: blur(2px);
+  z-index: 3;
+}
+
+.portrait-socials .brand-social {
+  width: 2.55rem;
+  height: 2.55rem;
+  border-color: rgba(234, 223, 206, 0.85);
+  background: rgba(234, 223, 206, 0.92);
+  color: var(--ink);
+}
+
+.portrait-socials .brand-social-label {
+  display: none;
+}
+
+.portrait-socials .brand-social:hover,
+.portrait-socials .brand-social:focus-visible {
+  background: var(--red);
+  border-color: var(--red);
+  color: var(--paper-light);
+  transform: translateY(-2px) rotate(-2deg);
+}
+
+/* Contact page reuses portrait-socials but underneath the stamp, not overlaid. */
+.contact-hero-photo {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+  justify-items: center;
+}
+
+.portrait-socials--contact {
+  position: relative;
+  inset: auto;
+  border: 0;
+  background: transparent;
+  backdrop-filter: none;
+  padding: 0;
+  justify-content: center;
+}
+
+.portrait-socials--contact .brand-social {
+  background: rgba(255, 251, 235, 0.78);
+  border-color: var(--rule-strong);
+  color: var(--ink);
+}
+
+/* Contact column socials use the icon strip, ditch the old text strip. */
+.contact-socials.brand-socials {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  align-items: flex-start;
+}
+
+.contact-socials .brand-social {
+  width: auto;
+  height: auto;
+  padding: 0.55rem 0.85rem;
+  gap: 0.6rem;
+  justify-content: flex-start;
+}
+
+.contact-socials .brand-social svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.contact-socials .brand-social-label {
+  display: inline-block;
+}
+
+/* ---- Page headline (replaces .black-title slab) ---- */
+.page-headline {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(18rem, 0.95fr);
+  gap: 1.6rem 2.2rem;
+  align-items: end;
+  padding: 1.4rem 0 1.6rem;
+  border-bottom: 3px double var(--ink);
+  margin-bottom: 1.4rem;
+  min-width: 0;
+}
+
+.page-headline-meta {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+
+.page-headline-meta .kicker {
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.page-headline-rule {
+  flex: 1 1 auto;
+  height: 1px;
+  background:
+    linear-gradient(90deg, var(--rule-strong) 0 35%, transparent 35% 50%, var(--rule-strong) 50% 100%);
+}
+
+.page-headline-title {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 900;
+  line-height: 0.86;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+  font-size: clamp(3rem, 7.2vw, 6.8rem);
+}
+
+.page-headline-aside {
+  display: inline-block;
+  margin-left: 0.4em;
+  color: var(--red);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 0.55em;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  vertical-align: 0.16em;
+}
+
+.page-headline-deck {
+  display: grid;
+  align-content: end;
+  gap: 0.85rem;
+  padding-left: 1.5rem;
+  border-left: 1px solid var(--rule);
+}
+
+.page-headline-deck p {
+  margin: 0;
+  max-width: 38rem;
+  font-size: 1.12rem;
+  line-height: 1.4;
+  color: var(--ink-soft);
+  text-align: justify;
+  hyphens: auto;
+}
+
+.page-headline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--red) 30%, var(--red) 70%, transparent);
+  opacity: 0.32;
+  pointer-events: none;
+}
+
+.page-headline--contact .page-headline-title {
+  font-size: clamp(2.4rem, 5.4vw, 4.8rem);
+}
+
+@media (max-width: 980px) {
+  .page-headline {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .page-headline-deck {
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid var(--rule);
+    padding-top: 0.85rem;
+  }
+}
+
+/* Retire the old slab */
+.black-title {
+  display: none !important;
+}
+
+/* About cover now has 2 columns (portrait + stamp) since the headline moved out */
+.about-cover {
+  grid-template-columns: minmax(17rem, 1fr) 12rem;
+}
+
+@media (max-width: 860px) {
+  .about-cover {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Contact hero is now just the avatar/socials block centered above the columns */
+.contact-hero {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  gap: 1rem;
+  padding: 1.2rem 0 1.6rem;
+}
+
+/* ---- Folio strip: never clips, wraps gracefully ---- */
+.folio-strip {
+  flex-wrap: wrap;
+  row-gap: 0.3rem;
+  overflow: visible;
+}
+
+.folio-strip span {
+  min-width: 0;
+  max-width: 100%;
+  flex-shrink: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.folio-strip .folio-section {
+  flex: 0 1 auto;
+}
+
+.folio-strip .volume-mark {
+  flex: 1 1 auto;
+  text-align: center;
+  color: var(--muted);
+}
+
+.folio-strip .folio-page {
+  flex: 0 1 auto;
+  text-align: right;
+}
+
+@media (max-width: 520px) {
+  .folio-strip .volume-mark {
+    flex-basis: 100%;
+    order: 3;
+    text-align: left;
+  }
+}
+
+/* ---- Credentials list view (one row per entry, single line title) ---- */
+.certs-list {
+  display: flex;
+  flex-direction: column;
+  border-top: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  background: rgba(234, 223, 206, 0.32);
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.cert-row {
+  display: grid;
+  grid-template-columns: minmax(0, 14rem) minmax(0, 1fr) minmax(0, 13rem) auto;
+  align-items: center;
+  gap: 1.1rem;
+  padding: 0.85rem 1.1rem;
+  border-bottom: 1px solid var(--rule);
+  background: transparent;
+  color: inherit;
+  text-decoration: none;
+  font-family: var(--mono);
+  transition: background 220ms ease, transform 320ms var(--ease), color 220ms ease;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.cert-row:last-child {
+  border-bottom: 0;
+}
+
+.cert-row:hover,
+.cert-row:focus-visible {
+  background: rgba(255, 251, 235, 0.6);
+  outline: none;
+  transform: translateX(0.18rem);
+}
+
+.cert-row-issuer {
+  font-size: 0.64rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--red);
+  font-weight: 700;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.cert-row-title {
+  font-family: var(--display);
+  font-size: clamp(1.05rem, 1.55vw, 1.28rem);
+  line-height: 1.18;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.cert-row-tags {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.35rem;
+  overflow: hidden;
+  min-width: 0;
+  justify-content: flex-end;
+}
+
+.cert-row-tags .cert-tag {
+  border: 1px solid var(--rule);
+  padding: 0.16rem 0.5rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  background: rgba(255, 251, 235, 0.55);
+  white-space: nowrap;
+  flex-shrink: 0;
+  color: var(--ink-soft);
+}
+
+.cert-row-verify {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--red);
+  white-space: nowrap;
+  transition: transform 220ms var(--ease);
+}
+
+.cert-row:hover .cert-row-verify {
+  transform: translateX(0.25rem);
+}
+
+.cert-row:nth-child(even) {
+  background: rgba(255, 251, 235, 0.32);
+}
+
+.cert-row:nth-child(even):hover,
+.cert-row:nth-child(even):focus-visible {
+  background: rgba(255, 251, 235, 0.78);
+}
+
+@media (max-width: 980px) {
+  .cert-row {
+    grid-template-columns: minmax(0, 9rem) minmax(0, 1fr) auto;
+  }
+  .cert-row-tags {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .cert-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.5rem 0.85rem;
+    padding: 0.75rem 0.85rem;
+  }
+  .cert-row-issuer {
+    grid-column: 1 / -1;
+    font-size: 0.62rem;
+  }
+  .cert-row-title {
+    font-size: 1.02rem;
+  }
+  .cert-row-verify {
+    grid-row: 2;
+    grid-column: 2;
+  }
+}
+
+/* The page padding already provides safe horizontal bounds */
+.certs-page {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* ---- Email link gentle width safety ---- */
+.email-link {
+  font-size: clamp(2.2rem, 4.2vw, 4.2rem);
+}
+
+/* ---- Hide section banner where it became redundant with page-headline ---- */
+.page-headline + .work-board,
+.page-headline + .about-page,
+.page-headline + .certs-page,
+.page-headline + .contact-page {
+  margin-top: 0;
+}
+
+/* Keep the old page-lede animation hook from blocking when not present */
+.page-lede:empty {
+  display: none;
 }
