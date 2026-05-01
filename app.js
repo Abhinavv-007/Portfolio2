@@ -542,21 +542,6 @@
     button.classList.add("menu-toggle");
     button.setAttribute("aria-controls", "menuCurtain");
 
-    if (!curtain.querySelector(".menu-burn")) {
-      const burn = document.createElement("div");
-      burn.className = "menu-burn";
-      burn.setAttribute("aria-hidden", "true");
-      burn.innerHTML = `
-        <div class="menu-burn-paper">
-          <div class="menu-burn-edge menu-burn-edge--top"></div>
-          <div class="menu-burn-edge menu-burn-edge--bottom"></div>
-          <div class="menu-burn-grain"></div>
-        </div>
-        <div class="menu-burn-ember" aria-hidden="true"></div>
-      `;
-      curtain.insertBefore(burn, curtain.firstChild);
-    }
-
     const currentPage = document.body.dataset.page;
     const base = getBasePrefix();
 
@@ -813,6 +798,126 @@
     });
   }
 
+  function setupTerminal() {
+    const form = $("#terminalForm");
+    const input = $("#terminalInput");
+    const output = $("#terminalOutput");
+    if (!form || !input || !output) return;
+
+    const routes = {
+      about: "index.html",
+      home: "index.html",
+      work: "work.html",
+      projects: "work.html",
+      w: "work.html",
+      selected: "index.html#selected-work",
+      portfolio: "index.html#selected-work",
+      credentials: "credentials.html",
+      creds: "credentials.html",
+      cred: "credentials.html",
+      contact: "contact.html",
+      c: "contact.html"
+    };
+
+    const messages = {
+      help: [
+        "Available files: about, work, credentials, contact, terminal.",
+        "Shortcuts: w opens work, c opens contact, email opens mail, socials prints links, clear resets this desk."
+      ],
+      terminal: [
+        "You are already at the command desk.",
+        "Use it like a fast index for the portfolio."
+      ],
+      skills: [
+        "Core stack: HTML, CSS, JavaScript, Cloudflare Pages, APIs, AI workflows, and careful product interfaces."
+      ],
+      socials: data.socials.map((social) => `${social.label}: ${social.url}`),
+      email: [`Opening mail to ${data.profile.email}.`]
+    };
+
+    const print = (kind, text) => {
+      const row = document.createElement("div");
+      row.className = `terminal-line terminal-line--${kind}`;
+      row.textContent = text;
+      output.appendChild(row);
+      output.scrollTop = output.scrollHeight;
+    };
+
+    const printMany = (kind, lines) => lines.forEach((line) => print(kind, line));
+
+    const run = (rawCommand) => {
+      const command = rawCommand.trim().toLowerCase();
+      if (!command) return;
+      print("input", `abhinav@journal:~$ ${command}`);
+
+      if (command === "clear") {
+        output.innerHTML = "";
+        print("system", "Desk cleared. Type help to rebuild the index.");
+        return;
+      }
+
+      if (messages[command]) {
+        printMany("system", messages[command]);
+        if (command === "email") {
+          window.setTimeout(() => {
+            window.location.href = `mailto:${data.profile.email}`;
+          }, 220);
+        }
+        return;
+      }
+
+      if (routes[command]) {
+        print("system", `Opening ${command}.`);
+        window.setTimeout(() => {
+          const destination = routes[command];
+          const hash = destination.includes("#") ? destination.slice(destination.indexOf("#")) : "";
+          const localTarget = !getBasePrefix() && hash ? $(hash) : null;
+          if (localTarget) {
+            localTarget.scrollIntoView({ behavior: "smooth", block: "start" });
+          } else {
+            window.location.href = withBase(destination);
+          }
+        }, 220);
+        return;
+      }
+
+      print("error", `Command not filed: ${command}. Try help.`);
+    };
+
+    output.innerHTML = "";
+    print("system", "The Digital Journal terminal is live.");
+    print("system", "Type help, work, credentials, contact, email, socials, skills, or clear.");
+
+    const executeCurrentCommand = () => {
+      const command = input.value;
+      input.value = "";
+      run(command);
+    };
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      executeCurrentCommand();
+    });
+
+    input.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter") return;
+      event.preventDefault();
+      executeCurrentCommand();
+    });
+
+    form.querySelector('button[type="submit"]')?.addEventListener("click", (event) => {
+      event.preventDefault();
+      executeCurrentCommand();
+    });
+
+    $$(".terminal-command-list button").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        input.value = chip.textContent || "";
+        input.focus();
+      });
+    });
+  }
+
   function setupContactForm() {
     const form = $("#contactForm");
     if (!form) return;
@@ -985,6 +1090,7 @@
   setupClock();
   setupIntro();
   setupNavTransitions();
+  setupTerminal();
   setupContactForm();
   setupHeroSplit();
   setupMagneticButtons();
