@@ -4677,13 +4677,18 @@ body.menu-open .masthead > .menu-button:focus-visible {
 /* Grid */
 .certs-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
   gap: 1rem;
   min-width: 0;
+  max-width: 100%;
 }
 
 .certs-grid--page {
   gap: 1.1rem;
+}
+
+.certs-grid > * {
+  min-width: 0;
 }
 
 /* Card — paper stock with foil VERIFIED ribbon and shimmer sweep */
@@ -4771,12 +4776,14 @@ body.menu-open .masthead > .menu-button:focus-visible {
 
 .cert-issuer {
   font-family: var(--mono);
-  font-size: 0.66rem;
+  font-size: 0.64rem;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   color: var(--red);
   position: relative;
   z-index: 2;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
 }
 
 .cert-title {
@@ -4786,6 +4793,7 @@ body.menu-open .masthead > .menu-button:focus-visible {
   line-height: 1.1;
   letter-spacing: -0.01em;
   text-wrap: balance;
+  overflow-wrap: anywhere;
   color: var(--ink);
   position: relative;
   z-index: 2;
@@ -5445,12 +5453,6 @@ body.menu-open .masthead > .menu-button:focus-visible {
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
-}
-
-/* The old grid card class is no longer used on credentials, but keep its rules
-   from breaking on any leftover usage. */
-.certs-grid--page {
-  display: none;
 }
 
 /* ---- Email link gentle width safety ---- */

@@ -882,20 +882,22 @@
       visible.forEach((cert, index) => {
         const tags = (cert.tags || []).slice(0, 3);
         const card = document.createElement("a");
-        card.className = "cert-row reveal visible";
-        card.style.setProperty("--delay", `${index * 18}ms`);
+        card.className = "cert-card reveal visible";
+        card.style.setProperty("--delay", `${index * 24}ms`);
         if (cert.url) {
           card.href = cert.url;
           card.target = "_blank";
           card.rel = "noopener";
         }
         card.innerHTML = `
-          <span class="cert-row-issuer" title="${esc(cert.issuer || "")}">${esc(cert.issuer || "")}${cert.year ? ` &middot; ${esc(cert.year)}` : ""}</span>
-          <span class="cert-row-title" title="${esc(cert.title || "")}">${esc(cert.title || "Untitled credential")}</span>
-          <span class="cert-row-tags" aria-label="Disciplines">
-            ${tags.map((t) => `<span class="cert-tag">${esc(t)}</span>`).join("")}
-          </span>
-          <span class="cert-row-verify">${cert.url ? "Verify ↗" : ""}</span>
+          <span class="cert-issuer">${esc(cert.issuer || "")}${cert.year ? ` &middot; ${esc(cert.year)}` : ""}</span>
+          <h3 class="cert-title">${esc(cert.title || "Untitled credential")}</h3>
+          <div class="cert-foot">
+            <div class="cert-tags" aria-label="Disciplines">
+              ${tags.map((t) => `<span class="cert-tag">${esc(t)}</span>`).join("")}
+            </div>
+            <span class="cert-verify">${cert.url ? "Verify ↗" : ""}</span>
+          </div>
         `;
         grid.appendChild(card);
       });
