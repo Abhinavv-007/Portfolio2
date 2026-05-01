@@ -6,10 +6,7 @@ window.PORTFOLIO = {
     summary: "AI builder and full-stack developer creating sharp digital experiences through code, design, and intelligent systems."
   },
   marquee: [
-    "Need a helping hand? Email me — I have two.",
-    "Half-built thing? Send it. Let's get it shipping.",
-    "Open to collaborations worldwide.",
-    "Built with stubbornness and good coffee."
+    "Need a helping hand? Email me. I have two."
   ],
   socials: [
     { label: "LinkedIn", url: "https://www.linkedin.com/in/abhnv07/" },
