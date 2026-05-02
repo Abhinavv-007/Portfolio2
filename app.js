@@ -695,6 +695,7 @@
   function setupRail() {
     const rail = $("#projectRail");
     if (!rail) return;
+    const section = rail.closest(".home-work") || rail;
 
     let isDown = false;
     let startX = 0;
@@ -766,7 +767,8 @@
     rail.addEventListener("focusin", pauseAuto);
     rail.addEventListener("focusout", resumeAuto);
 
-    rail.addEventListener("wheel", (event) => {
+    const handleWheel = (event) => {
+      if (event.defaultPrevented) return;
       // Horizontal trackpad swipe: route deltaX into the rail.
       const isHorizontalSwipe = Math.abs(event.deltaX) > Math.abs(event.deltaY);
       // Vertical wheel + shift: classic horizontal-scroll modifier.
@@ -774,21 +776,25 @@
       // Vertical mouse wheel over the rail: only convert to horizontal
       // when the rail still has room to scroll, so the page can take over
       // at the ends.
+      const wheelDelta = isHorizontalSwipe ? event.deltaX : event.deltaY;
       const canScrollRailX =
-        (event.deltaY > 0 && rail.scrollLeft < rail.scrollWidth - rail.clientWidth - 1) ||
-        (event.deltaY < 0 && rail.scrollLeft > 0);
+        (wheelDelta > 0 && rail.scrollLeft < rail.scrollWidth - rail.clientWidth - 1) ||
+        (wheelDelta < 0 && rail.scrollLeft > 0);
       const isVerticalWheel =
         !isHorizontalSwipe &&
         !isShiftScroll &&
         Math.abs(event.deltaY) > 0 &&
+        rail.contains(event.target) &&
         canScrollRailX;
       if (!isHorizontalSwipe && !isShiftScroll && !isVerticalWheel) return;
+      if (!canScrollRailX && !isShiftScroll) return;
       event.preventDefault();
       pauseAuto();
-      const delta = isHorizontalSwipe ? event.deltaX : event.deltaY;
-      rail.scrollLeft += delta;
+      rail.scrollLeft += wheelDelta;
       resumeAuto();
-    }, { passive: false });
+    };
+
+    section.addEventListener("wheel", handleWheel, { passive: false });
 
     $("[data-rail-prev]")?.addEventListener("click", () => {
       pauseAuto();

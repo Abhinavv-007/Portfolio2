@@ -7834,3 +7834,223 @@ body[data-page="contact"] .contact-page {
     grid-template-columns: 1fr;
   }
 }
+
+/* Pass 27 EOF overrides: these intentionally sit after all older polish passes. */
+body[data-page="index"] .profile-spread {
+  grid-template-columns: minmax(26rem, 1fr) minmax(0, 1.32fr);
+  gap: clamp(1.8rem, 4vw, 4rem);
+  padding: clamp(2rem, 4vw, 4.1rem);
+  align-items: start;
+}
+
+body[data-page="index"] .profile-portrait {
+  width: 100%;
+  max-width: 44rem;
+  justify-self: stretch;
+  margin: 0;
+}
+
+body[data-page="index"] .profile-portrait-link,
+body[data-page="index"] .profile-portrait-link img {
+  width: 100%;
+}
+
+body[data-page="index"] .profile-portrait-link img {
+  display: block;
+  max-height: none;
+}
+
+.site-shell::after,
+.work-strip::before,
+.work-strip::after,
+.home-work::before,
+.home-work::after {
+  display: none !important;
+  opacity: 0 !important;
+}
+
+.section-tabs,
+.portrait-socials {
+  backdrop-filter: none !important;
+}
+
+.home-work .project-rail {
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  cursor: grab;
+}
+
+.home-work .project-rail.dragging {
+  cursor: grabbing;
+}
+
+.home-work .project-card {
+  scroll-snap-align: start;
+}
+
+.marquee .marquee-email {
+  font-size: 0.64em;
+  line-height: 1.1;
+  vertical-align: 0.16em;
+  padding: 0.18rem 0.58rem;
+  letter-spacing: 0.08em;
+}
+
+.footer-socials.brand-socials {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: 100%;
+  max-width: none;
+  gap: clamp(0.7rem, 1.4vw, 1.1rem);
+}
+
+.footer-socials .brand-social,
+.footer-socials .brand-social:hover,
+.footer-socials .brand-social:focus-visible {
+  width: 100%;
+  height: clamp(3.25rem, 5vw, 4.15rem);
+  padding: 0 1.2rem;
+  justify-content: center;
+  border-radius: 999px;
+  transform: none;
+  filter: none;
+}
+
+.footer-socials .brand-social::after {
+  display: none;
+}
+
+.menu-curtain {
+  --burn-x: var(--menu-iris-x, 88%);
+  --burn-y: var(--menu-iris-y, 8%);
+  clip-path: circle(0 at var(--burn-x) var(--burn-y));
+  transform: scale(1);
+}
+
+.menu-curtain.active {
+  clip-path: circle(150% at var(--burn-x) var(--burn-y));
+}
+
+.menu-curtain .menu-burn {
+  display: block !important;
+}
+
+.menu-curtain.active::before {
+  animation: menuHeatWashFinal 980ms ease-out both;
+}
+
+.menu-curtain.active .menu-burn-paper {
+  animation: menuPaperFlashFinal 980ms cubic-bezier(0.18, 0.86, 0.18, 1) both;
+}
+
+.menu-curtain.active .menu-burn-ember {
+  animation: menuEmberBloomFinal 980ms cubic-bezier(0.18, 0.86, 0.18, 1) both;
+}
+
+body[data-page="contact"] .contact-page--redesign {
+  display: grid;
+  gap: clamp(1.2rem, 2.5vw, 2.1rem);
+  padding-top: clamp(1rem, 2.5vw, 2rem);
+  padding-bottom: clamp(2rem, 4vw, 3.4rem);
+}
+
+body[data-page="contact"] .contact-dispatch,
+body[data-page="contact"] .contact-column,
+body[data-page="contact"] .contact-brief-grid article {
+  border: 1px solid rgba(26, 25, 22, 0.26);
+  border-radius: 8px;
+  box-shadow:
+    0 0.22rem 0 rgba(26, 25, 22, 0.12),
+    0 0.8rem 1.7rem rgba(26, 25, 22, 0.08);
+}
+
+body[data-page="contact"] .contact-dispatch {
+  padding: clamp(1.15rem, 2.6vw, 2rem);
+  background:
+    linear-gradient(90deg, rgba(26, 25, 22, 0.035) 1px, transparent 1px) 0 0 / 4rem 100%,
+    rgba(255, 251, 235, 0.36);
+}
+
+body[data-page="contact"] .contact-dispatch-copy {
+  min-height: auto;
+  border: 0;
+  padding: clamp(1rem, 2vw, 1.7rem);
+  background: transparent;
+}
+
+body[data-page="contact"] .contact-brief-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.85rem, 1.8vw, 1.35rem);
+  border: 0;
+  background: transparent;
+}
+
+body[data-page="contact"] .contact-brief-grid article {
+  min-height: clamp(13rem, 18vw, 16rem);
+  padding: clamp(1.05rem, 2vw, 1.55rem);
+  background:
+    radial-gradient(circle at 92% 0%, rgba(255, 188, 88, 0.14), transparent 8rem),
+    linear-gradient(180deg, rgba(255, 251, 235, 0.72), rgba(234, 223, 206, 0.45));
+}
+
+body[data-page="contact"] .contact-brief-grid span {
+  display: inline-grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  padding: 0;
+  border: 1px solid rgba(163, 49, 40, 0.45);
+  border-radius: 999px;
+  background: rgba(255, 251, 235, 0.6);
+}
+
+body[data-page="contact"] .contact-columns--redesign {
+  grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1.2fr);
+  gap: clamp(1rem, 2.2vw, 1.65rem);
+  align-items: stretch;
+  margin-top: clamp(0.45rem, 1.2vw, 1rem);
+}
+
+body[data-page="contact"] .contact-column {
+  min-height: auto;
+  background:
+    linear-gradient(90deg, rgba(26, 25, 22, 0.03) 1px, transparent 1px) 0 0 / 4rem 100%,
+    rgba(255, 251, 235, 0.38);
+}
+
+body[data-page="contact"] .contact-form-title {
+  max-width: 16ch;
+  font-size: clamp(2.5rem, 4.6vw, 5rem);
+}
+
+body[data-page="contact"] .contact-form input[type="text"],
+body[data-page="contact"] .contact-form input[type="email"],
+body[data-page="contact"] .contact-form textarea {
+  border-radius: 6px;
+}
+
+@media (max-width: 1100px) {
+  body[data-page="index"] .profile-spread,
+  body[data-page="contact"] .contact-brief-grid,
+  body[data-page="contact"] .contact-columns--redesign {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-page="index"] .profile-spread {
+    grid-template-areas:
+      "portrait"
+      "head"
+      "copy"
+      "roles";
+  }
+}
+
+@media (max-width: 700px) {
+  .footer-socials.brand-socials {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.marquee .marquee-email {
+  font-size: clamp(0.78rem, 0.9vw, 0.95rem) !important;
+}
