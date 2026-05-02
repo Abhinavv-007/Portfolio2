@@ -699,9 +699,48 @@
     let isDown = false;
     let startX = 0;
     let scrollLeft = 0;
+    let autoTimer = 0;
+    let isAutoPaused = false;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const scrollStep = () => Math.max(320, Math.min(rail.clientWidth * 0.82, 620));
+
+    const scrollRail = (direction = 1) => {
+      const maxScroll = rail.scrollWidth - rail.clientWidth;
+      if (maxScroll <= 0) return;
+      const step = scrollStep() * direction;
+      const nextLeft = rail.scrollLeft + step;
+      const atEnd = direction > 0 && nextLeft >= maxScroll - 12;
+      const atStart = direction < 0 && nextLeft <= 12;
+      rail.scrollTo({
+        left: atEnd ? 0 : atStart ? maxScroll : nextLeft,
+        behavior: prefersReducedMotion ? "auto" : "smooth"
+      });
+    };
+
+    const stopAuto = () => {
+      if (!autoTimer) return;
+      window.clearInterval(autoTimer);
+      autoTimer = 0;
+    };
+
+    const startAuto = () => {
+      if (prefersReducedMotion || isAutoPaused || autoTimer || rail.scrollWidth <= rail.clientWidth) return;
+      autoTimer = window.setInterval(() => scrollRail(1), 3600);
+    };
+
+    const pauseAuto = () => {
+      isAutoPaused = true;
+      stopAuto();
+    };
+
+    const resumeAuto = () => {
+      isAutoPaused = false;
+      window.setTimeout(startAuto, 900);
+    };
 
     rail.addEventListener("pointerdown", (event) => {
       isDown = true;
+      pauseAuto();
       startX = event.clientX;
       scrollLeft = rail.scrollLeft;
       rail.setPointerCapture(event.pointerId);
@@ -718,8 +757,14 @@
       rail.addEventListener(name, () => {
         isDown = false;
         rail.classList.remove("dragging");
+        resumeAuto();
       });
     });
+
+    rail.addEventListener("mouseenter", pauseAuto);
+    rail.addEventListener("mouseleave", resumeAuto);
+    rail.addEventListener("focusin", pauseAuto);
+    rail.addEventListener("focusout", resumeAuto);
 
     rail.addEventListener("wheel", (event) => {
       // Horizontal trackpad swipe: route deltaX into the rail.
@@ -739,13 +784,28 @@
         canScrollRailX;
       if (!isHorizontalSwipe && !isShiftScroll && !isVerticalWheel) return;
       event.preventDefault();
+      pauseAuto();
       const delta = isHorizontalSwipe ? event.deltaX : event.deltaY;
       rail.scrollLeft += delta;
+      resumeAuto();
     }, { passive: false });
 
-    const scrollStep = () => Math.max(320, Math.min(rail.clientWidth * 0.82, 620));
-    $("[data-rail-prev]")?.addEventListener("click", () => rail.scrollBy({ left: -scrollStep(), behavior: "smooth" }));
-    $("[data-rail-next]")?.addEventListener("click", () => rail.scrollBy({ left: scrollStep(), behavior: "smooth" }));
+    $("[data-rail-prev]")?.addEventListener("click", () => {
+      pauseAuto();
+      scrollRail(-1);
+      resumeAuto();
+    });
+    $("[data-rail-next]")?.addEventListener("click", () => {
+      pauseAuto();
+      scrollRail(1);
+      resumeAuto();
+    });
+
+    window.addEventListener("resize", () => {
+      stopAuto();
+      startAuto();
+    });
+    startAuto();
   }
 
   function setupReveal() {
