@@ -205,7 +205,7 @@ window.CASE_STUDIES = [
     title: "TRGT",
     label: "THE GRID REPORT",
     headline: "Target every lap.",
-    subtitle: "Live telemetry, brutal AI insights, and race predictions for obsessed fans.",
+    subtitle: "Live telemetry, AI race context, and prediction flows for engaged fans.",
     liveUrl: "https://trgt.in",
     repoUrl: "https://github.com/Abhinavv-007/f1",
     issue: "F1 / Prediction / Race Intel",
@@ -308,7 +308,7 @@ window.CASE_STUDIES = [
     ],
     deepDive: [
       "MODIH Mail turns disposable email into a polished, owner-controlled mailroom. Fast inbox creation, OTP extraction, expiry controls, and developer API access — all built on a Cloudflare-native architecture from inbound routing to storage, cleanup, Turnstile protection, and API access.",
-      "Owner tokens and scoped sessions provide inbox sovereignty without killing the instant-use flow. Turnstile, quota thinking, API keys, and cleanup jobs keep free-tier abuse from owning the product. The architecture is edge-native: Cloudflare Pages for UI, Workers for API, D1 for metadata, KV for sessions.",
+      "Owner tokens and scoped sessions provide inbox control without killing the instant-use flow. Turnstile, quota thinking, API keys, and cleanup jobs keep free-tier abuse from overwhelming the product. The architecture is edge-native: Cloudflare Pages for UI, Workers for API, D1 for metadata, KV for sessions.",
       "Cloudflare Email Routing receives messages and Workers parse, sanitize, classify, and store the inbox record. D1 stores message metadata and inbox records while KV supports short-lived access and owner-token flows. Resend is ready for outbound contact and product mail when needed."
     ],
     blueprint: {
@@ -319,7 +319,7 @@ window.CASE_STUDIES = [
     anatomy: [
       { title: "Inbound mail", body: "Cloudflare Email Routing receives messages and Workers parse, sanitize, classify, and store the inbox record." },
       { title: "Storage", body: "D1 stores message metadata and inbox records while KV supports short-lived access and owner-token flows." },
-      { title: "Security", body: "Turnstile, owner tokens, Firebase verification, and aggressive cleanup keep free-tier abuse from owning the product." },
+      { title: "Security", body: "Turnstile, owner tokens, Firebase verification, and aggressive cleanup keep free-tier abuse from overwhelming the product." },
       { title: "Delivery", body: "Cloudflare Pages serves the UI, Workers power the API, and Resend is ready for outbound contact/product mail." }
     ],
     challenges: [

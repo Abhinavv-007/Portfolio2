@@ -240,7 +240,7 @@
               <h1>${esc(study.title)}</h1>
               <h2>${esc(study.headline)}</h2>
               <p class="deck">${esc(study.subtitle)}</p>
-              <div class="byline">By <strong>Abhinav Raj</strong> &middot; Product Engineer &amp; Founder</div>
+              <div class="byline">By <strong>Abhinav Raj</strong> &middot; Product Engineer</div>
               <div class="dateline">Filed under ${esc(study.issue)} &middot; Compiled April 2026</div>
             </div>
             <aside>
@@ -272,8 +272,8 @@
         </aside>
 
         ${extras.vision ? `
-        <section class="case-section case-vision reveal" aria-label="Founder vision">
-          <div class="case-section-label">Founder Vision</div>
+        <section class="case-section case-vision reveal" aria-label="Product direction">
+          <div class="case-section-label">Product Direction</div>
           <div class="case-vision-copy">
             <p class="dropcap">${esc(extras.vision)}</p>
             ${extras.longTerm ? `<p class="long-term">${esc(extras.longTerm)}</p>` : ""}
@@ -436,7 +436,7 @@
           <div class="end-card-cta">
             <a href="${study.liveUrl}" ${linkAttrs(study.liveUrl)}>Visit ${esc(study.title)}</a>
             ${study.repoUrl ? `<a href="${study.repoUrl}" ${linkAttrs(study.repoUrl)}>Source on GitHub</a>` : ""}
-            <a href="../../contact.html">Talk to Abhinav</a>
+            <a href="../../contact.html">Start a conversation</a>
           </div>
         </section>
 
@@ -512,17 +512,19 @@
   function renderMarquees() {
     const phrases = Array.isArray(data.marquee) && data.marquee.length
       ? data.marquee
-      : ["Need a hand? I have two — email me at hello@abhinv.in"];
+      : ["Available for thoughtful product builds and technical collaboration"];
     const sep = '<i aria-hidden="true">&nbsp;&nbsp;✕&nbsp;&nbsp;</i>';
     $$("[data-marquee]").forEach((target) => {
       const renderSet = (linkFirst) => {
         return phrases.map((phrase, i) => {
-          const safe = esc(phrase);
-          if (i === 0 && linkFirst) {
-            return `<a href="mailto:${data.profile.email}">${safe}</a>${sep}`;
+          const text = String(phrase);
+          const email = data.profile.email;
+          if (text.includes(email)) {
+            const [before, after] = text.split(email);
+            return `<span>${esc(before)}<a class="marquee-email" href="mailto:${email}">${esc(email)}</a>${esc(after)}</span>${sep}`;
           }
           const tail = i < phrases.length - 1 ? sep : "";
-          return `<span>${safe}</span>${tail}`;
+          return `<span>${esc(text)}</span>${tail}`;
         }).join("");
       };
       target.innerHTML = `
@@ -741,8 +743,9 @@
       rail.scrollLeft += delta;
     }, { passive: false });
 
-    $("[data-rail-prev]")?.addEventListener("click", () => rail.scrollBy({ left: -430, behavior: "smooth" }));
-    $("[data-rail-next]")?.addEventListener("click", () => rail.scrollBy({ left: 430, behavior: "smooth" }));
+    const scrollStep = () => Math.max(320, Math.min(rail.clientWidth * 0.82, 620));
+    $("[data-rail-prev]")?.addEventListener("click", () => rail.scrollBy({ left: -scrollStep(), behavior: "smooth" }));
+    $("[data-rail-next]")?.addEventListener("click", () => rail.scrollBy({ left: scrollStep(), behavior: "smooth" }));
   }
 
   function setupReveal() {
@@ -856,36 +859,78 @@
     const messages = {
       help: [
         "Available files: about, work, credentials, terminal, contact.",
-        "Shortcuts: w opens work, c opens contact, t opens terminal, email opens mail, socials prints links, skills lists the toolbox, clear resets this desk."
+        "Shortcuts: w opens work, c opens contact, t opens terminal, email opens mail, socials prints links, skills lists the toolbox, clear resets the desk."
       ],
       skills: skillsLines,
       socials: data.socials.map((social) => `${social.label}: ${social.url}`),
       email: [`Opening mail to ${data.profile.email}.`]
     };
 
-    const print = (kind, text) => {
-      const row = document.createElement("div");
-      row.className = `terminal-line terminal-line--${kind}`;
-      row.textContent = text;
-      output.appendChild(row);
-      output.scrollTop = output.scrollHeight;
+    const sleep = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let audioContext = null;
+    let commandQueue = Promise.resolve();
+
+    const typeTick = () => {
+      if (reducedMotion) return;
+      try {
+        audioContext = audioContext || new (window.AudioContext || window.webkitAudioContext)();
+        if (audioContext.state === "suspended") audioContext.resume();
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        oscillator.type = "square";
+        oscillator.frequency.value = 980 + Math.random() * 260;
+        gain.gain.setValueAtTime(0.0001, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.022, audioContext.currentTime + 0.004);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.032);
+        oscillator.connect(gain);
+        gain.connect(audioContext.destination);
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + 0.036);
+      } catch (_) {
+        // Audio is a progressive enhancement; typing should still work if blocked.
+      }
     };
 
-    const printMany = (kind, lines) => lines.forEach((line) => print(kind, line));
+    const print = async (kind, text, options = {}) => {
+      const row = document.createElement("div");
+      row.className = `terminal-line terminal-line--${kind}`;
+      output.appendChild(row);
+      output.scrollTop = output.scrollHeight;
+      if (!options.typed || reducedMotion) {
+        row.textContent = text;
+        return;
+      }
+      row.classList.add("is-typing");
+      const pieces = String(text).match(/\S+\s*/g) || [String(text)];
+      for (const piece of pieces) {
+        row.textContent += piece;
+        output.scrollTop = output.scrollHeight;
+        typeTick();
+        await sleep(Math.min(95, 34 + piece.length * 5));
+      }
+      row.classList.remove("is-typing");
+    };
 
-    const run = (rawCommand) => {
+    const printMany = async (kind, lines) => {
+      for (const line of lines) {
+        await print(kind, line, { typed: true });
+      }
+    };
+
+    const run = async (rawCommand) => {
       const command = rawCommand.trim().toLowerCase();
       if (!command) return;
-      print("input", `abhinav@journal:~$ ${command}`);
+      await print("input", `abhinav@journal:~$ ${command}`, { typed: true });
 
       if (command === "clear") {
         output.innerHTML = "";
-        print("system", "Desk cleared. Type help to rebuild the index.");
+        await print("system", "Desk cleared. Type help to rebuild the index.", { typed: true });
         return;
       }
 
       if (messages[command]) {
-        printMany("system", messages[command]);
+        await printMany("system", messages[command]);
         if (command === "email") {
           window.setTimeout(() => {
             window.location.href = `mailto:${data.profile.email}`;
@@ -895,7 +940,7 @@
       }
 
       if (routes[command]) {
-        print("system", `Opening ${command}.`);
+        await print("system", `Opening ${command}.`, { typed: true });
         window.setTimeout(() => {
           const destination = routes[command];
           const hash = destination.includes("#") ? destination.slice(destination.indexOf("#")) : "";
@@ -909,17 +954,18 @@
         return;
       }
 
-      print("error", `Command not filed: ${command}. Try help.`);
+      await print("error", `Command not filed: ${command}. Try help.`, { typed: true });
     };
 
     output.innerHTML = "";
-    print("system", "The Digital Journal terminal is live.");
-    print("system", "Type help, work, credentials, contact, email, socials, skills, or clear.");
+    commandQueue = commandQueue
+      .then(() => print("system", "The Digital Journal terminal is live.", { typed: true }))
+      .then(() => print("system", "Type help, work, credentials, contact, email, socials, skills, or clear.", { typed: true }));
 
     const executeCurrentCommand = () => {
       const command = input.value;
       input.value = "";
-      run(command);
+      commandQueue = commandQueue.then(() => run(command));
     };
 
     form.addEventListener("submit", (event) => {
@@ -928,6 +974,7 @@
     });
 
     input.addEventListener("keydown", (event) => {
+      if (event.key.length === 1 || event.key === "Backspace") typeTick();
       if (event.key !== "Enter") return;
       event.preventDefault();
       executeCurrentCommand();
@@ -942,6 +989,7 @@
       chip.addEventListener("click", () => {
         input.value = chip.textContent || "";
         input.focus();
+        typeTick();
       });
     });
   }
@@ -998,7 +1046,7 @@
       };
 
       if (!payload.name || !payload.email || !payload.message) {
-        writeStatus("Add your name, email, and message — then I will reply.", "error");
+        writeStatus("Add your name, email, and message so I can reply.", "error");
         return;
       }
       if (!isEmail(payload.email)) {
@@ -1007,7 +1055,7 @@
       }
 
       pulseSubmit();
-      writeStatus("Sending through abhinv.in…", "pending");
+      writeStatus("Sending through abhnv.in…", "pending");
       if (submit) submit.disabled = true;
       writeLabel("Sending…");
 
@@ -1023,12 +1071,12 @@
           throw new Error(error);
         }
         form.reset();
-        writeStatus("Sent — I will write back within 24 hours.", "success");
+        writeStatus("Sent — thanks, I will reply within 24 hours.", "success");
         writeLabel("Sent");
         window.setTimeout(() => writeLabel(idleLabel), 3200);
       } catch (error) {
         const message = error?.message ||
-          "Message failed. Email me directly at hello@abhinv.in.";
+          "Message failed. Email me directly at hello@abhnv.in.";
         writeStatus(message, "error");
         writeLabel("Try again");
       } finally {

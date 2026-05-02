@@ -1,142 +1,142 @@
 window.CASE_STUDY_EXTRAS = {
   "clex": {
-    "vision": "Cloud storage costs collapsed; cloud *trust* did not. Sharing a 200 MB PSD through Google Drive means signing into Google. Compressing a PDF through ILovePDF means handing the document to a third party. Compressing a portrait through Squoosh works — but you still have to leave the page to share it. The browser is now powerful enough (WebRTC, WebCodecs, WASM, IndexedDB, Web Crypto) that none of this needs to leave the device. Nobody is shipping that browser-native experience as a unified product. Clex does.",
+    "vision": "CLEX started from a practical trust problem: people often need to send, compress, merge, or protect files without turning every step into a cloud upload. Modern browsers already support much of the required work through WebRTC, WebCodecs, WASM, IndexedDB, and Web Crypto, so the product explores how much of the workflow can stay local by default.",
     "differentiators": [
-      "WeTransfer / Smash / Filemail: all server-storage products with a free tier. They are CDN companies. Clex is a transport.",
-      "Snapdrop / PairDrop: great LAN-only WebRTC tools with no productisation around them — no vault, no tools, no chain, no mobile-native parity, no relay fallback.",
-      "AirDrop / Quick Share: locked to single ecosystems. Cross-platform is impossible."
+      "WeTransfer / Smash / Filemail: useful upload-and-link products, but centered on server storage rather than local-first transfer.",
+      "Snapdrop / PairDrop: strong lightweight WebRTC tools, but without the broader workspace, vault, chain, mobile parity, or fallback paths CLEX is testing.",
+      "AirDrop / Quick Share: excellent inside their ecosystems, but limited for cross-platform sharing."
     ],
-    "longTerm": "Clex becomes the neutral L4 of consumer file movement. The Workspace is the wedge. The Vault is the retention. The Chain is the moat — once verifiable transfer becomes a compliance primitive (legal e-discovery, journalist source protection, KYC document handoff), Clex owns the rail.",
+    "longTerm": "The long-term direction is a neutral file-movement layer: prepare files locally, choose the most appropriate route, and keep a verifiable handoff record when proof matters.",
     "lessons": [
       {
         "category": "Product",
-        "body": "The route picker is the product. Hide the routing logic and you become \"magic\"; expose it and you become \"trustworthy.\" For a privacy product, trustworthy wins."
+        "body": "The route picker is a trust surface. Showing how a file moves can be more useful than making the transfer feel mysterious."
       },
       {
         "category": "Engineering",
-        "body": "Back-pressure is not a \"nice-to-have\" on long-running data channels; it's the difference between a working product and a tab crash. Tune the watermark on real devices, not in theory."
+        "body": "Back-pressure matters on long-running data channels. Real-device testing exposed limits that were not obvious in smaller local demos."
       },
       {
         "category": "Design",
-        "body": "Brutalist + Glass works as a dual-system: brutalist on landing/marketing for confidence, glass on app surfaces for focus. Mixing them in a single screen kills both. Keep them on separate routes."
+        "body": "The strongest visual system separates marketing confidence from app focus. Landing pages can be expressive; task surfaces need restraint."
       },
       {
-        "category": "Founder",
-        "body": "A privacy product's only currency is verifiability. Marketing copy is depreciation; the public Chain is durable. Build the proof layer early; it will be the moat."
+        "category": "Product",
+        "body": "A privacy product benefits from proof layers. Architecture and verifiable behavior carry more weight than broad privacy claims."
       }
     ],
-    "pullQuote": "A privacy-first browser workspace shipping on web, Android, and iOS. WebRTC peer-to-peer transfer. On-device tooling. End-to-end encrypted Vault. A public Chain that proves the transfer happened — and never sees what moved."
+    "pullQuote": "A privacy-first browser workspace for web, Android, and iOS, combining peer-to-peer transfer, on-device tools, encrypted Vault flows, and a public Chain for transfer proof."
   },
   "clex-ai": {
-    "vision": "Model proliferation is a developer-experience disaster. Every new state-of-the-art model adds another integration surface. The cost of trying a new model should be zero — change a string, ship. Today it's a half-day of integration work plus a vendor signup. Clex AI exists to make model access fungible.",
+    "vision": "CLEX AI addresses a common developer problem: model choice changes faster than application code should. The product keeps the familiar OpenAI-shaped request flow while routing to multiple providers behind one endpoint.",
     "differentiators": [
-      "OpenRouter: the closest comparable. Clex AI differentiates on (a) zero retention, (b) NVIDIA NIM as a generous free tier so developers can start at $0, (c) tighter playground UX with isolated COOP/COEP headers for cross-origin demos.",
-      "Direct provider SDKs: Clex AI gives one bill, one key, model swappability — and a free tier nobody else offers via NIM.",
-      "Hugging Face Inference Endpoints: different category — HF is hosting; Clex AI is routing."
+      "OpenRouter: the closest comparison. CLEX AI focuses on zero-retention routing, a practical free starting path through NVIDIA NIM, and a tighter playground for testing provider behavior.",
+      "Direct provider SDKs: direct integration is still useful, but a gateway reduces rewrite work when teams want to compare models or providers.",
+      "Hugging Face Inference Endpoints: a different category. HF hosts models; CLEX AI focuses on routing and request compatibility."
     ],
-    "longTerm": "Become the default abstraction layer between application code and model providers. Build the analytics surface — per-model latency, per-model cost, A/B test framework, prompt-versioned analytics — that turns the gateway into a *model operations* product, not just a billing aggregator.",
+    "longTerm": "The next stage is a model-operations surface: latency, cost, reliability, prompt versions, and A/B testing visible enough to help developers choose the right model for each workload.",
     "lessons": [
       {
         "category": "Product",
-        "body": "Compatibility beats novelty. The OpenAI shape isn't perfect — it's just won. Build on the standard, not against it."
+        "body": "Compatibility reduces adoption friction. Building around a familiar API shape lets developers test the gateway without rewriting the rest of their app."
       },
       {
         "category": "Engineering",
-        "body": "SSE pass-through is the only correct streaming pattern for a proxy. The moment you buffer, you break first-token latency. The moment you re-parse, you introduce a chance of corruption."
+        "body": "Streaming proxies need to stay simple. Passing SSE through directly protects first-token latency and avoids unnecessary parsing risk."
       },
       {
         "category": "Design",
-        "body": "Pricing transparency is a feature, not a marketing exercise. A `pricing.html` page with a real calculator converts better than a \"contact us\" CTA."
+        "body": "Pricing transparency is part of the product experience. A visible calculator is more useful than vague enterprise-style copy."
       },
       {
-        "category": "Founder",
-        "body": "Privacy posture has to be visible in the architecture, not the marketing copy. \"Zero retention\" only means something when the proxy literally cannot log the body."
+        "category": "Privacy",
+        "body": "A zero-retention posture has to be reflected in the system design. The gateway should avoid storing prompts and outputs by default."
       }
     ],
-    "pullQuote": "A unified AI gateway that routes any OpenAI-shaped request to the right provider in real time — streaming, abortable, and stateless. The Stripe-of-AI thesis, shipped as production code."
+    "pullQuote": "An OpenAI-compatible AI gateway that routes requests across providers with streaming support, abort handling, usage visibility, and a zero-retention posture."
   },
   "driped": {
-    "vision": "A consumer's inbox is the single most accurate ledger of their financial life — more accurate than bank statements (which miss app-store charges), more accurate than credit-card aggregators (which miss UPI), and more universal than either. The product that mines that ledger correctly wins the category.",
+    "vision": "DRIPED is built around a simple observation: subscription receipts already live in the inbox. Reading those receipts can give users useful recurring-spend visibility without requiring bank access as the first step.",
     "differentiators": [
-      "Truebill / Rocket Money: US-only, bank-linked, doesn't see UPI / app-store / prepaid charges, expensive.",
-      "Bobby / Subby: manual entry. Useless because nobody enters subscriptions; the entire problem is that nobody remembers them.",
-      "Indian fintechs (Cred, Slice): card-data products, miss UPI auto-debit and digital wallets."
+      "Truebill / Rocket Money: strong products in supported markets, but bank-linking and regional coverage do not fit every user.",
+      "Bobby / Subby: useful for manual tracking, but manual entry breaks down when users forget what renews.",
+      "Card-data products: helpful for some payments, but they can miss UPI, app-store, wallet, or prepaid charges."
     ],
-    "longTerm": "Subscription detection → category insights → forecast → savings recommendations → one-tap cancellation through merchant deep-links → renewal reminders with calendar integration. The endgame is a full **financial drip control plane** — not just visibility, but action.",
+    "longTerm": "The roadmap moves from detection to action: category insight, forecasts, renewal reminders, merchant links, and correction loops that make future extraction better.",
     "lessons": [
       {
         "category": "Product",
-        "body": "\"On-device AI\" is a marketing slogan, not a product requirement. If a 8B cloud model is bigger, faster to ship, and more accurate than your 1B on-device model — switch. The user's privacy floor is \"what content leaves the device,\" not \"what model runs the inference.\""
+        "body": "The privacy boundary is about what content leaves the device, not only where a model runs. A lighter app with selective cloud fallback can be the more usable product."
       },
       {
         "category": "Engineering",
-        "body": "Two-tier pipelines beat single-tier for any extraction problem. The deterministic layer handles the 85% you can predict; the LLM handles the long tail you can't."
+        "body": "Two-tier extraction works well for messy receipt data. Deterministic parsing handles the known cases, while an LLM can handle unusual templates when confidence is low."
       },
       {
         "category": "Design",
-        "body": "Cross-platform parity needs cross-platform code reuse where possible (the parser logic) and cross-platform language where not (the same screen names, the same gesture vocabulary)."
+        "body": "Cross-platform parity depends on shared language as much as shared code: the same screen names, same gestures, and same correction model."
       },
       {
-        "category": "Founder",
-        "body": "The category Truebill cannot serve is bigger than the category Truebill serves. India + the rest of the non-US world is the prize."
+        "category": "Market",
+        "body": "Non-US payment behavior deserves first-class design. UPI, app-store billing, wallets, and multi-currency receipts change the product requirements."
       }
     ],
-    "pullQuote": "AI-powered subscription manager built on a two-tier email-extraction pipeline. On-device parser handles the predictable 85%; a Llama 3.1 8B fallback handles the long tail. Multi-currency, multi-locale, native + web. Designed for the world Truebill cannot reach."
+    "pullQuote": "A subscription manager that reads receipt evidence first, uses AI fallback only when needed, and gives users bank-free visibility into recurring spend."
   },
   "trgt": {
-    "vision": "The official F1 app is a broadcast partner, not a fan tool. The fantasy products are spreadsheet-like. The Reddit-and-Twitter loop is unstructured. There is room for a high-fidelity, opinionated, prediction-game-centric F1 product — and the moment is now while the audience is still expanding.",
+    "vision": "TRGT explores a richer F1 fan workflow: prediction, race context, live state, and post-session feedback in one focused product. The goal is to make race weekends more interactive without turning the experience into a spreadsheet.",
     "differentiators": [
-      "Official F1 app: broadcast-tier; gated content; not fan-built.",
-      "F1 Fantasy: spreadsheet experience, no live narrative.",
-      "r/formula1: unstructured, no game layer."
+      "Official F1 app: excellent for broadcast and official content, but not designed around fan prediction loops.",
+      "F1 Fantasy: strong game layer, but more spreadsheet-like than narrative-driven.",
+      "r/formula1 and social feeds: valuable conversation, but fragmented and hard to turn into a repeatable game."
     ],
-    "longTerm": "Per-driver strategy commentary, real-time pit-wall mind (\"what would Toto do?\"), tire-compound delta predictions, sprint-race specific game modes, multi-season historical accuracy badges. Eventually: micro-leagues for friends, premium tiers for tier-1 fans.",
+    "longTerm": "Future work includes driver strategy notes, tire-compound deltas, sprint-specific modes, historical accuracy badges, friend leagues, and deeper race-weekend explainability.",
     "lessons": [
       {
         "category": "Product",
-        "body": "The lockout timer is the entire game. Get it server-authoritative, get it cached for reads but never cached for writes."
+        "body": "The lockout timer defines the game boundary. It has to be enforced server-side and communicated clearly."
       },
       {
         "category": "Engineering",
-        "body": "Snapshot mode shouldn't be an error path; it should be the default fallback at every fetch boundary. The product gets more reliable, not less."
+        "body": "Snapshot mode should be a normal reliability path, not only an error fallback. Race-weekend data can be volatile."
       },
       {
         "category": "Design",
-        "body": "Brand utility classes (`glass`, `btn-angled`, `text-trgt-crimson`) are how you escape the framework-default look. Tailwind defaults are fine for an MVP; for a brand, you have to extend."
+        "body": "A strong sports identity needs restraint. A limited accent color and newspaper structure kept the interface from becoming noisy."
       },
       {
-        "category": "Founder",
-        "body": "The fan tier above the casual viewer is bigger than people think. Build for them; the casuals will follow."
+        "category": "Audience",
+        "body": "The best target user is the engaged fan who wants context before and after a session, not only the final result."
       }
     ],
-    "pullQuote": "A Formula 1 fan platform that combines a server-authoritative lockout-timer prediction game, AI-generated race intelligence, and a seven-badge gamification engine — all on a Cloudflare-edge Next.js 16 stack with a full snapshot-mode fallback so the product never goes down on race day."
+    "pullQuote": "A Formula 1 fan platform combining prediction lockouts, race intelligence, AI-generated context, badges, and leaderboard mechanics on a Cloudflare-edge stack."
   },
   "modih-mail": {
-    "vision": "Every other disposable email product is hostile to look at — interstitial ads, third-party trackers, no design opinion, no API. Yet the use case is mass-market and unsolved at the premium tier. Modih fills the entire surface: cinematic web app, secure-by-architecture backend, paid plans with real features, developer API for integration.",
+    "vision": "MODIH Mail takes a familiar utility, disposable email, and gives it a cleaner product surface: fast inbox creation, OTP extraction, expiry controls, and API access on a Cloudflare-native backend.",
     "differentiators": [
-      "TempMail / Mailinator / 10MinuteMail: ad-supported, no premium tier, no API.",
-      "SimpleLogin / AnonAddy: alias products, not disposable inboxes — different category.",
-      "ProtonMail / Hey: primary mail products, not throwaways."
+      "TempMail / Mailinator / 10MinuteMail: useful and familiar, but often ad-heavy and limited for developer use.",
+      "SimpleLogin / AnonAddy: strong alias products, but different from disposable inbox workflows.",
+      "ProtonMail / Hey: primary mail products, not temporary inbox utilities."
     ],
-    "longTerm": "Become the default \"I don't want to be tracked\" inbox for the world. Add reply-from (sometimes you have to confirm; you should be able to without breaking anonymity), aliases, custom-domain support, team accounts for QA pipelines.",
+    "longTerm": "The product can grow through reply-from support, aliases, custom domains, team accounts, QA workflows, and better API analytics for developers.",
     "lessons": [
       {
         "category": "Product",
-        "body": "The first feature in a disposable-email product is OTP extraction. Everything else is table stakes. Build it first, market it loudest."
+        "body": "OTP extraction is central to the disposable-email use case. It should be visible and fast, not hidden inside a generic message view."
       },
       {
         "category": "Engineering",
-        "body": "Cloudflare-native is the right pattern for serverless mail in 2026. Email Routing + Email Workers + D1 + KV + Pages + Functions is one stack, one auth model, one billing line."
+        "body": "Cloudflare's mail stack fits this category well: Email Routing, Workers, D1, KV, Pages, and Functions can share one deployment model."
       },
       {
         "category": "Design",
-        "body": "Vanilla JS + CSS is a feature, not a constraint, when the first-paint is the product. No framework cost = the cinematic background loads in the same RTT as the HTML."
+        "body": "A lightweight frontend can be a product advantage when first paint and perceived speed matter."
       },
       {
-        "category": "Founder",
-        "body": "Premium positioning in commodity categories is a real wedge. The disposable-email category is solved as utility; nobody has shipped it as a brand."
+        "category": "Positioning",
+        "body": "Commodity utilities can still feel considered. The product should make the temporary workflow feel safe, clear, and controlled."
       }
     ],
-    "pullQuote": "Cloudflare-native disposable email with three tiers, OTP auto-extraction, HMAC-hashed owner tokens, edge-verified Firebase JWTs, and a cinematic vanilla-JS UI. The premium answer to a category that's been ad-supported for fifteen years."
+    "pullQuote": "A Cloudflare-native disposable email product with OTP extraction, owner-token controls, API access, automatic cleanup, and a cleaner interface for temporary inboxes."
   }
 };

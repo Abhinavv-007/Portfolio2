@@ -4051,7 +4051,7 @@ body.menu-open .menu-button:hover {
   50% { opacity: 0.35; }
 }
 
-/* ---- Founder Vision section ---- */
+/* ---- Product direction section ---- */
 .case-vision .case-vision-copy {
   display: grid;
   gap: 1.2rem;
@@ -6361,8 +6361,8 @@ body.menu-open .masthead > .menu-button:focus-visible {
 .profile-copy h2 {
   margin: 0;
   font-family: var(--display);
-  font-size: clamp(2.75rem, 4.3vw, 5.8rem);
-  line-height: 0.88;
+  font-size: clamp(2.35rem, 3.55vw, 4.65rem);
+  line-height: 0.94;
   text-transform: uppercase;
   text-wrap: balance;
 }
@@ -7327,7 +7327,7 @@ body.menu-open .masthead > .menu-button:focus-visible {
   margin-top: 0.6rem;
 }
 
-/* ---- Page-headline aside (used on contact's "I have two") ---- */
+/* ---- Page-headline aside ---- */
 .page-headline-aside {
   font-style: italic;
   color: var(--red);
@@ -7354,4 +7354,483 @@ body.menu-open .masthead > .menu-button:focus-visible {
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0.6rem 1rem;
+}
+
+/* =========================================================
+   Polish pass 25 - selected work rail, profile timeline, terminal typing
+   ========================================================= */
+
+/* Home profile: let the portrait lead, then the details. */
+.profile-spread {
+  grid-template-areas:
+    "portrait copy"
+    "head copy"
+    "roles roles";
+  grid-template-columns: minmax(22rem, 0.86fr) minmax(0, 1.14fr);
+}
+
+.profile-head {
+  min-height: auto;
+  align-content: start;
+}
+
+.profile-portrait {
+  width: min(100%, 36rem);
+  transform: none;
+}
+
+.profile-portrait-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  transform: translateY(0);
+  transition: transform 420ms var(--ease), filter 420ms ease;
+}
+
+.profile-portrait-link:hover,
+.profile-portrait-link:focus-visible {
+  transform: translateY(-0.35rem);
+  filter: contrast(1.04);
+  outline: none;
+}
+
+.profile-portrait-link img {
+  border: 1px solid rgba(26, 25, 22, 0.32);
+  box-shadow:
+    0 0.3rem 0 rgba(26, 25, 22, 0.16),
+    0 1.1rem 2rem rgba(26, 25, 22, 0.12);
+}
+
+.profile-copy {
+  gap: clamp(0.95rem, 1.35vw, 1.25rem);
+}
+
+.profile-timeline {
+  display: grid;
+  gap: 0;
+  margin-top: 0.4rem;
+  border-top: 1px solid var(--rule-strong);
+  border-bottom: 1px solid var(--rule);
+  background:
+    repeating-linear-gradient(180deg, rgba(26, 25, 22, 0.045) 0 1px, transparent 1px 6px),
+    rgba(255, 251, 235, 0.38);
+}
+
+.profile-timeline article {
+  display: grid;
+  grid-template-columns: 6rem minmax(0, 1fr);
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid rgba(26, 25, 22, 0.2);
+}
+
+.profile-timeline article:last-child {
+  border-bottom: 0;
+}
+
+.profile-timeline article > span {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.09em;
+  line-height: 1.45;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
+.profile-timeline h3 {
+  margin: 0 0 0.2rem;
+  font-family: var(--display);
+  font-size: clamp(1.12rem, 1.5vw, 1.45rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.profile-timeline p {
+  margin: 0;
+  max-width: 58rem;
+  font-size: clamp(0.92rem, 1vw, 1.02rem);
+  line-height: 1.34;
+}
+
+/* Selected work rail: no right blur, smaller cards, complete artwork. */
+.home-work::before,
+.home-work::after {
+  display: none;
+}
+
+.home-work .project-rail {
+  grid-auto-columns: clamp(18.5rem, 24vw, 24rem);
+  gap: clamp(0.85rem, 1.25vw, 1.1rem);
+  padding: 0.35rem 0 1.1rem;
+  scroll-padding-inline: 0.2rem;
+}
+
+.home-work .project-card {
+  overflow: visible;
+}
+
+.home-work .project-card,
+.home-work .project-card:hover,
+.home-work .project-card:focus-within {
+  transform: translateY(0);
+}
+
+.home-work .project-card:hover,
+.home-work .project-card:focus-within {
+  box-shadow:
+    0 0.18rem 0 rgba(26, 25, 22, 0.2),
+    0 1rem 1.9rem rgba(26, 25, 22, 0.13),
+    inset 0 0 0 1px rgba(255, 248, 226, 0.24);
+}
+
+.home-work .project-card .project-main {
+  gap: 0.68rem;
+}
+
+.home-work .project-card header img,
+.home-work .project-card:hover header img,
+.home-work .project-card:focus-within header img {
+  width: 2.35rem;
+  height: 2.35rem;
+  transform: none;
+}
+
+.home-work .project-card h3 {
+  font-size: clamp(2.45rem, 3.2vw, 3.35rem);
+  line-height: 0.88;
+  max-width: 9.5ch;
+}
+
+.home-work .project-image {
+  aspect-ratio: 1 / 1;
+  min-height: 0;
+  max-height: none;
+  padding: clamp(0.45rem, 0.8vw, 0.7rem);
+  overflow: hidden;
+}
+
+.home-work .project-image img,
+.home-work .project-card:hover .project-image img,
+.home-work .project-card:focus-within .project-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: none;
+}
+
+.home-work .project-card footer p {
+  max-width: 13.5rem;
+  font-size: clamp(0.98rem, 1.25vw, 1.2rem);
+}
+
+.home-work .project-card footer span,
+.home-work .project-card:hover footer span,
+.home-work .project-card:focus-within footer span {
+  width: 2.55rem;
+  height: 2.55rem;
+  flex: 0 0 auto;
+  font-size: 1.05rem;
+  transform: none;
+}
+
+.home-work .card-visit {
+  min-height: 2.85rem;
+  margin-top: 0.1rem;
+  letter-spacing: 0.12em;
+  border-color: rgba(26, 25, 22, 0.86);
+}
+
+.home-work .card-visit:hover,
+.home-work .card-visit:focus-visible {
+  background: var(--ink);
+  color: var(--paper-light);
+  box-shadow:
+    0 0.18rem 0 rgba(26, 25, 22, 0.22),
+    0 0.7rem 1.15rem rgba(26, 25, 22, 0.18);
+}
+
+/* Footer marquee: highlight the email as the real action. */
+.marquee .marquee-email {
+  display: inline-block;
+  margin: 0 0.15rem;
+  padding: 0.16rem 0.62rem;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  color: var(--paper-light);
+  background: var(--ink);
+  text-decoration: none;
+}
+
+.marquee .marquee-email:hover,
+.marquee .marquee-email:focus-visible {
+  color: var(--paper-light);
+  background: var(--red);
+  border-color: var(--red);
+}
+
+/* Footer socials: rounded buttons instead of flat logo text. */
+.footer-socials.brand-socials {
+  grid-template-columns: repeat(4, minmax(8rem, 11rem));
+  justify-content: center;
+  gap: 0.7rem;
+}
+
+.footer-socials .brand-social,
+.footer-socials .brand-social:hover,
+.footer-socials .brand-social:focus-visible {
+  height: 2.85rem;
+  border-radius: 999px;
+  transform: translateY(0);
+}
+
+.footer-socials .brand-social:hover,
+.footer-socials .brand-social:focus-visible {
+  background: var(--ink);
+  color: var(--paper-light);
+  border-color: var(--ink);
+}
+
+.footer-socials .brand-social::before {
+  border-radius: 999px;
+}
+
+/* Terminal typewriter feedback. */
+.terminal-console {
+  background:
+    radial-gradient(circle at 10% 0%, rgba(163, 49, 40, 0.08), transparent 12rem),
+    repeating-linear-gradient(180deg, rgba(26, 25, 22, 0.04) 0 1px, transparent 1px 6px),
+    rgba(234, 223, 206, 0.52);
+}
+
+.terminal-output {
+  gap: 0.55rem;
+}
+
+.terminal-line {
+  position: relative;
+  min-height: 1.45em;
+  white-space: pre-wrap;
+}
+
+.terminal-line.is-typing::after {
+  content: "";
+  display: inline-block;
+  width: 0.55em;
+  height: 1.05em;
+  margin-left: 0.16rem;
+  background: var(--red);
+  vertical-align: -0.18em;
+  animation: terminalCaret 720ms steps(1, end) infinite;
+}
+
+.terminal-line--input {
+  color: var(--red);
+}
+
+.terminal-line--system {
+  color: var(--ink);
+}
+
+.terminal-command-list button {
+  min-height: 2.25rem;
+  border-color: rgba(26, 25, 22, 0.35);
+}
+
+.terminal-form input {
+  caret-color: var(--red);
+}
+
+@keyframes terminalCaret {
+  50% { opacity: 0; }
+}
+
+@media (max-width: 860px) {
+  .profile-spread {
+    grid-template-areas:
+      "portrait"
+      "head"
+      "copy"
+      "roles";
+  }
+
+  .home-work .project-rail {
+    grid-auto-columns: minmax(18rem, 84vw);
+  }
+}
+
+@media (max-width: 560px) {
+  .profile-timeline article {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+
+  .footer-socials.brand-socials {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Contact page: tighter ending, stronger form, stable social buttons. */
+body[data-page="contact"] .site-shell {
+  padding-bottom: 0;
+}
+
+body[data-page="contact"] .contact-page {
+  border-bottom: 0;
+}
+
+.contact-columns--redesign {
+  grid-template-columns: minmax(19rem, 0.82fr) minmax(0, 1.18fr);
+  gap: clamp(1rem, 2vw, 1.55rem);
+  align-items: stretch;
+}
+
+.contact-columns--redesign .contact-column {
+  min-height: 0;
+}
+
+.contact-column {
+  padding: clamp(1.15rem, 2vw, 1.65rem);
+}
+
+.contact-column--email {
+  gap: 1rem;
+}
+
+.email-link {
+  font-size: clamp(2.2rem, 4.5vw, 4.8rem);
+  line-height: 0.95;
+}
+
+.contact-elsewhere {
+  margin-top: 1.2rem;
+}
+
+.contact-socials.brand-socials {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.65rem;
+}
+
+.contact-socials .brand-social,
+.contact-socials .brand-social:hover,
+.contact-socials .brand-social:focus-visible {
+  min-height: 3.15rem;
+  justify-content: flex-start;
+  gap: 0.7rem;
+  padding: 0.72rem 0.9rem;
+  border-radius: 0.42rem;
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.contact-socials .brand-social {
+  background:
+    linear-gradient(135deg, rgba(255, 251, 235, 0.88), rgba(224, 214, 198, 0.74));
+  color: var(--ink);
+  box-shadow:
+    0 0.12rem 0 rgba(26, 25, 22, 0.14),
+    inset 0 0 0 1px rgba(255, 248, 226, 0.18);
+}
+
+.contact-socials .brand-social:hover,
+.contact-socials .brand-social:focus-visible {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper-light);
+  box-shadow:
+    0 0.18rem 0 rgba(26, 25, 22, 0.24),
+    0 0.7rem 1.2rem rgba(26, 25, 22, 0.18);
+}
+
+.contact-socials .brand-social svg,
+.contact-socials .brand-social:hover svg,
+.contact-socials .brand-social:focus-visible svg {
+  opacity: 1;
+  color: currentColor;
+  fill: currentColor;
+}
+
+.contact-socials .brand-social-label {
+  opacity: 1;
+  color: currentColor;
+}
+
+.contact-form-column {
+  gap: 0.8rem;
+  background:
+    radial-gradient(circle at 92% 8%, rgba(255, 188, 88, 0.09), transparent 14rem),
+    repeating-linear-gradient(180deg, rgba(26, 25, 22, 0.035) 0 1px, transparent 1px 7px),
+    rgba(255, 251, 235, 0.44);
+}
+
+.contact-form-title {
+  max-width: 14ch;
+  font-size: clamp(2.35rem, 4.3vw, 4.4rem);
+  letter-spacing: 0;
+}
+
+.contact-form-helper {
+  max-width: 50rem;
+  color: var(--ink-soft);
+  font-size: clamp(1rem, 1.12vw, 1.13rem);
+  line-height: 1.42;
+}
+
+.contact-form {
+  gap: 1rem;
+  margin-top: 0.25rem;
+}
+
+.contact-form-row {
+  gap: 1rem;
+}
+
+.contact-field {
+  gap: 0.42rem;
+}
+
+.contact-field > span {
+  color: var(--red);
+}
+
+.contact-form input[type="text"],
+.contact-form input[type="email"],
+.contact-form textarea {
+  padding: 0.85rem 0.95rem;
+  border-color: rgba(26, 25, 22, 0.5);
+  background:
+    linear-gradient(180deg, rgba(255, 251, 235, 0.96), rgba(246, 239, 225, 0.92));
+  font-family: var(--body);
+  font-size: 1.05rem;
+  box-shadow: inset 0 0 0 1px rgba(255, 248, 226, 0.2);
+}
+
+.contact-form textarea {
+  min-height: clamp(12rem, 24vw, 17rem);
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: var(--ink);
+  background: #fffaf0;
+  box-shadow:
+    0 0 0 3px rgba(163, 49, 40, 0.12),
+    inset 0 0 0 1px rgba(255, 248, 226, 0.28);
+}
+
+.contact-send-button {
+  min-height: 3.3rem;
+  padding-inline: 1.35rem;
+  font-size: 0.82rem;
+}
+
+.contact-form-status {
+  flex-basis: 20rem;
+  line-height: 1.35;
+}
+
+@media (max-width: 980px) {
+  .contact-columns--redesign {
+    grid-template-columns: 1fr;
+  }
 }

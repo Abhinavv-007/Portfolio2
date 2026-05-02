@@ -2,13 +2,13 @@ window.PORTFOLIO = {
   profile: {
     name: "Abhinav Raj",
     publication: "The Digital Journal",
-    email: "hello@abhinv.in",
-    summary: "AI builder and full-stack developer creating sharp digital experiences through code, design, and intelligent systems."
+    email: "hello@abhnv.in",
+    summary: "Full-stack developer focused on AI products, privacy-minded tools, and clear digital experiences."
   },
   marquee: [
-    "Need a hand? I have two — email me at hello@abhinv.in",
-    "Open for AI builds, full-stack systems, and friendly debug sessions",
-    "Replies in less time than a coffee break"
+    "Email hello@abhnv.in for thoughtful product builds",
+    "AI workflows, full-stack systems, and practical web experiences",
+    "Available for focused technical collaboration"
   ],
   skills: [
     {
@@ -42,7 +42,7 @@ window.PORTFOLIO = {
     {
       title: "CLEX",
       slug: "clex",
-      label: "Verified. Secure. Simple.",
+      label: "Private file workflows",
       shortImage: "assets/projects/short/clex.webp",
       detailedImage: "assets/projects/detailed/clex.webp",
       logo: "assets/logos/clex.svg",
@@ -57,7 +57,7 @@ window.PORTFOLIO = {
     {
       title: "CLEX AI",
       slug: "clex-ai",
-      label: "One endpoint. Every model.",
+      label: "One endpoint for models",
       shortImage: "assets/projects/short/clex-ai.webp",
       detailedImage: "assets/projects/detailed/clex-ai.webp",
       logo: "assets/logos/clex.svg",
@@ -72,7 +72,7 @@ window.PORTFOLIO = {
     {
       title: "DRIPED",
       slug: "driped",
-      label: "Track. Scan. Save.",
+      label: "Receipt-based spend clarity",
       shortImage: "assets/projects/short/driped.webp",
       detailedImage: "assets/projects/detailed/driped.webp",
       logo: "assets/logos/driped.svg",
@@ -87,7 +87,7 @@ window.PORTFOLIO = {
     {
       title: "TRGT",
       slug: "trgt",
-      label: "Race data. Real time.",
+      label: "Race context in real time",
       shortImage: "assets/projects/short/trgt.webp",
       detailedImage: "assets/projects/detailed/trgt.webp",
       logo: "assets/logos/trgt.svg",
@@ -102,7 +102,7 @@ window.PORTFOLIO = {
     {
       title: "MODIH Mail",
       slug: "modih-mail",
-      label: "Mail reimagined.",
+      label: "Disposable mail, cleaned up",
       shortImage: "assets/projects/short/modih.webp",
       detailedImage: "assets/projects/detailed/modih.webp",
       logo: "assets/logos/modih.svg",
@@ -122,7 +122,7 @@ window.PORTFOLIO = {
       shortImage: "assets/projects/short/data-for-sale.webp",
       detailedImage: "assets/projects/detailed/data-for-sale.webp",
       logo: "assets/logos/data-for-sale.svg",
-      url: "https://www.abhinv.in/research/paper",
+      url: "https://www.abhnv.in/research/paper",
       type: "Research on data markets",
       description: "A research paper on personal data markets, hidden incentives, and the economy built from user behavior.",
       tags: ["Research", "Privacy", "Writing"]
@@ -133,7 +133,7 @@ window.PORTFOLIO = {
       shortImage: "assets/projects/short/glass-ballot.webp",
       detailedImage: "assets/projects/detailed/glass-ballot.webp",
       logo: "assets/logos/glass-ballot.svg",
-      url: "https://www.abhinv.in/research/paper3",
+      url: "https://www.abhnv.in/research/paper3",
       type: "Research on digital voting",
       description: "The Glass Ballot explores transparency, privacy, and trust in digital voting.",
       tags: ["Research", "Civic Tech", "Trust"]
@@ -307,17 +307,17 @@ window.PORTFOLIO = {
     {
       number: "01",
       title: "AI-powered workflows",
-      body: "Exploring automation, LLMs, and intelligent systems that augment human capability."
+      body: "Building practical automations, LLM workflows, and systems that make repetitive work easier to manage."
     },
     {
       number: "02",
       title: "Research and writing",
-      body: "Deep dives on data, privacy, systems, and the future of digital trust."
+      body: "Writing about data, privacy, product systems, and the trust questions behind everyday technology."
     },
     {
       number: "03",
       title: "Product interfaces",
-      body: "Sharp UI systems with clear flows, fast feedback, and thoughtful motion."
+      body: "Designing interfaces with clear flows, quick feedback, and motion that supports the task."
     }
   ]
 };
