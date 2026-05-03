@@ -821,6 +821,7 @@
 
     const scrollRail = (direction = 1) => {
       if (!cards.length) return;
+      setActiveCard(getClosestIndex());
       const nextIndex = Math.max(0, Math.min(cards.length - 1, activeIndex + direction));
       scrollToIndex(nextIndex);
     };
@@ -889,7 +890,7 @@
       const wheelDelta = isHorizontalSwipe || isShiftScroll ? event.deltaX || event.deltaY : event.deltaY;
       if (Math.abs(wheelDelta) < 8) return;
       const direction = wheelDelta > 0 ? 1 : -1;
-      const currentIndex = activeIndex;
+      const currentIndex = wheelLocked ? activeIndex : getClosestIndex();
       const atStart = currentIndex <= 0 && direction < 0;
       const atEnd = currentIndex >= cards.length - 1 && direction > 0;
       if (atStart || atEnd) {
@@ -898,6 +899,7 @@
         return;
       }
       event.preventDefault();
+      event.stopPropagation();
       if (wheelLocked) return;
       wheelLocked = true;
       pauseAuto();
@@ -905,18 +907,11 @@
       resumeAuto();
     };
 
-    const handleWindowWheel = (event) => {
-      const rect = section.getBoundingClientRect();
-      const insideSection =
-        event.clientX >= rect.left &&
-        event.clientX <= rect.right &&
-        event.clientY >= rect.top &&
-        event.clientY <= rect.bottom;
-      if (!insideSection) return;
+    const handleSectionWheel = (event) => {
       handleWheel(event);
     };
 
-    window.addEventListener("wheel", handleWindowWheel, { passive: false, capture: true });
+    section.addEventListener("wheel", handleSectionWheel, { passive: false, capture: true });
 
     $("[data-rail-prev]")?.addEventListener("click", () => {
       pauseAuto();
