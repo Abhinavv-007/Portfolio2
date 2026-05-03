@@ -893,13 +893,13 @@
       const currentIndex = wheelLocked ? activeIndex : getClosestIndex();
       const atStart = currentIndex <= 0 && direction < 0;
       const atEnd = currentIndex >= cards.length - 1 && direction > 0;
+      event.preventDefault();
+      event.stopPropagation();
       if (atStart || atEnd) {
         rail.classList.remove("wheel-scrolling");
         wheelLocked = false;
         return;
       }
-      event.preventDefault();
-      event.stopPropagation();
       if (wheelLocked) return;
       wheelLocked = true;
       pauseAuto();
@@ -907,11 +907,7 @@
       resumeAuto();
     };
 
-    const handleSectionWheel = (event) => {
-      handleWheel(event);
-    };
-
-    section.addEventListener("wheel", handleSectionWheel, { passive: false, capture: true });
+    rail.addEventListener("wheel", handleWheel, { passive: false, capture: true });
 
     $("[data-rail-prev]")?.addEventListener("click", () => {
       pauseAuto();

@@ -9939,7 +9939,8 @@ body[data-page="index"] .home-work .project-points span:last-child {
 body[data-page="index"] .home-work .project-rail {
   scroll-behavior: smooth !important;
   overscroll-behavior-inline: contain !important;
-  overscroll-behavior-block: auto !important;
+  overscroll-behavior-block: contain !important;
+  overscroll-behavior: contain !important;
 }
 
 body[data-page="index"] .home-work .project-points {
