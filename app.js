@@ -539,6 +539,10 @@
             const [before, after] = text.split(email);
             return `<span>${esc(before)}<a class="marquee-email" href="mailto:${email}">${esc(email)}</a>${esc(after)}</span>${tail}`;
           }
+          if (/\bemail me\b/i.test(text)) {
+            const [before, after] = text.split(/\bemail me\b/i);
+            return `<span class="marquee-help">${esc(before)}<a class="marquee-email" href="mailto:${email}">Email me</a>${esc(after || "")}</span>${tail}`;
+          }
           if (/\bemail\b/i.test(text)) {
             const [before, after] = text.split(/\bemail\b/i);
             return `<span class="marquee-help">${esc(before)}<a class="marquee-email" href="mailto:${email}">email</a>${esc(after || "")}</span>${tail}`;
@@ -758,12 +762,19 @@
       cards.forEach((card, cardIndex) => card.classList.toggle("is-selected", cardIndex === activeIndex));
     };
 
+    const getTargetLeft = (card) => {
+      const railRect = rail.getBoundingClientRect();
+      const cardRect = card.getBoundingClientRect();
+      const rawLeft = rail.scrollLeft + cardRect.left - railRect.left - (rail.clientWidth - cardRect.width) / 2;
+      const maxScroll = Math.max(0, rail.scrollWidth - rail.clientWidth);
+      return Math.max(0, Math.min(maxScroll, rawLeft));
+    };
+
     const scrollToIndex = (index, behavior = "smooth") => {
       if (!cards.length) return;
       setActiveCard(index);
       const card = cards[activeIndex];
-      const maxScroll = Math.max(0, rail.scrollWidth - rail.clientWidth);
-      const left = Math.max(0, Math.min(maxScroll, card.offsetLeft - (rail.clientWidth - card.offsetWidth) / 2));
+      const left = getTargetLeft(card);
       rail.classList.add("wheel-scrolling");
       rail.scrollTo({ left, behavior: prefersReducedMotion ? "auto" : behavior });
       window.clearTimeout(wheelTimer);
@@ -775,7 +786,7 @@
 
     const scrollRail = (direction = 1) => {
       if (!cards.length) return;
-      const nextIndex = Math.max(0, Math.min(cards.length - 1, getClosestIndex() + direction));
+      const nextIndex = Math.max(0, Math.min(cards.length - 1, activeIndex + direction));
       scrollToIndex(nextIndex);
     };
 
@@ -827,6 +838,14 @@
     rail.addEventListener("mouseleave", resumeAuto);
     rail.addEventListener("focusin", pauseAuto);
     rail.addEventListener("focusout", resumeAuto);
+    rail.addEventListener("scroll", () => {
+      window.clearTimeout(wheelTimer);
+      wheelTimer = window.setTimeout(() => {
+        setActiveCard(getClosestIndex());
+        rail.classList.remove("wheel-scrolling");
+        wheelLocked = false;
+      }, 140);
+    }, { passive: true });
 
     const handleWheel = (event) => {
       if (event.defaultPrevented) return;
@@ -835,9 +854,9 @@
       const wheelDelta = isHorizontalSwipe || isShiftScroll ? event.deltaX || event.deltaY : event.deltaY;
       if (Math.abs(wheelDelta) < 8) return;
       const direction = wheelDelta > 0 ? 1 : -1;
-      const currentIndex = getClosestIndex();
-      const atStart = currentIndex <= 0 && rail.scrollLeft <= 8 && direction < 0;
-      const atEnd = currentIndex >= cards.length - 1 && rail.scrollLeft >= rail.scrollWidth - rail.clientWidth - 8 && direction > 0;
+      const currentIndex = activeIndex;
+      const atStart = currentIndex <= 0 && direction < 0;
+      const atEnd = currentIndex >= cards.length - 1 && direction > 0;
       if (atStart || atEnd) {
         rail.classList.remove("wheel-scrolling");
         wheelLocked = false;
@@ -851,7 +870,18 @@
       resumeAuto();
     };
 
-    section.addEventListener("wheel", handleWheel, { passive: false });
+    const handleWindowWheel = (event) => {
+      const rect = section.getBoundingClientRect();
+      const insideSection =
+        event.clientX >= rect.left &&
+        event.clientX <= rect.right &&
+        event.clientY >= rect.top &&
+        event.clientY <= rect.bottom;
+      if (!insideSection) return;
+      handleWheel(event);
+    };
+
+    window.addEventListener("wheel", handleWindowWheel, { passive: false, capture: true });
 
     $("[data-rail-prev]")?.addEventListener("click", () => {
       pauseAuto();

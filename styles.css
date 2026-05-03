@@ -9934,3 +9934,93 @@ body[data-page="index"] .home-work .project-points span:last-child {
     display: none !important;
   }
 }
+
+/* Pass 45: cleaner selected-build stepping, legible notes, and stronger CTA marquee. */
+body[data-page="index"] .home-work .project-rail {
+  scroll-behavior: smooth !important;
+  overscroll-behavior-inline: contain !important;
+  overscroll-behavior-block: auto !important;
+}
+
+body[data-page="index"] .home-work .project-points {
+  background:
+    linear-gradient(180deg, rgba(255, 252, 239, 0.64), rgba(226, 216, 198, 0.24)),
+    repeating-linear-gradient(180deg, rgba(26, 25, 22, 0.055) 0 1px, transparent 1px 7px) !important;
+  color: var(--ink) !important;
+}
+
+body[data-page="index"] .home-work .project-points strong {
+  color: var(--ink) !important;
+  font-size: clamp(1.65rem, 2.25vw, 2.25rem) !important;
+}
+
+body[data-page="index"] .home-work .project-points p {
+  color: rgba(26, 25, 22, 0.92) !important;
+  font-size: clamp(0.86rem, 0.98vw, 1.04rem) !important;
+  line-height: 1.28 !important;
+}
+
+body[data-page="index"] .home-work .project-points .project-detail-note {
+  color: rgba(26, 25, 22, 0.86) !important;
+  font-size: clamp(0.69rem, 0.8vw, 0.86rem) !important;
+  line-height: 1.4 !important;
+}
+
+body[data-page="index"] .home-work .project-points span {
+  color: rgba(26, 25, 22, 0.9) !important;
+  font-size: clamp(0.66rem, 0.76vw, 0.82rem) !important;
+  line-height: 1.3 !important;
+}
+
+.footer .marquee {
+  min-height: clamp(4.9rem, 7vw, 7.4rem) !important;
+}
+
+.marquee .marquee-help {
+  gap: clamp(0.45rem, 1vw, 0.9rem) !important;
+}
+
+.marquee-set span,
+.marquee .marquee-help {
+  color: var(--ink) !important;
+}
+
+.marquee .marquee-email {
+  padding: 0.1em 0.2em 0.12em !important;
+  color: var(--paper-light) !important;
+  background: var(--ink) !important;
+  font-family: var(--display) !important;
+  font-size: 0.92em !important;
+  line-height: 0.95 !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 700px) {
+  body[data-page="index"] .home-work .project-points strong {
+    font-size: clamp(1.85rem, 8.8vw, 2.4rem) !important;
+  }
+
+  body[data-page="index"] .home-work .project-points p {
+    font-size: clamp(0.94rem, 4.35vw, 1.08rem) !important;
+    line-height: 1.28 !important;
+  }
+
+  body[data-page="index"] .home-work .project-points .project-detail-note {
+    font-size: clamp(0.61rem, 3vw, 0.72rem) !important;
+    line-height: 1.36 !important;
+  }
+
+  body[data-page="index"] .home-work .project-points span {
+    font-size: clamp(0.6rem, 2.92vw, 0.68rem) !important;
+    line-height: 1.22 !important;
+  }
+
+  .footer .marquee {
+    min-height: clamp(4.2rem, 18vw, 5.8rem) !important;
+  }
+
+  .marquee .marquee-email {
+    font-size: 0.82em !important;
+  }
+}

@@ -6,7 +6,7 @@ window.PORTFOLIO = {
     summary: "Full-stack developer focused on AI products, privacy-minded tools, and clear digital experiences."
   },
   marquee: [
-    "Need a helping hand? Message me. email"
+    "Let's create something together. Email me"
   ],
   skills: [
     {
