@@ -24,6 +24,12 @@
   function createProjectCard(project, index) {
     const caseUrl = project.caseStudyUrl || project.url;
     const liveUrl = project.liveUrl || project.url;
+    const points = Array.isArray(project.points) && project.points.length
+      ? project.points.slice(0, 6)
+      : [
+        project.description,
+        ...(Array.isArray(project.tags) ? project.tags.slice(0, 3).map((tag) => `${tag} layer`) : [])
+      ].filter(Boolean).slice(0, 6);
     const card = document.createElement("article");
     card.className = "project-card reveal";
     card.style.setProperty("--delay", `${index * 70}ms`);
@@ -35,7 +41,15 @@
         </header>
         <h3>${project.title}</h3>
         <div class="project-image">
-          <img src="${project.shortImage}" alt="${project.description}" loading="lazy">
+          <img src="${project.detailedImage || project.shortImage}" alt="${project.description}" loading="lazy">
+        </div>
+        <div class="project-points" aria-label="${esc(project.title)} highlights">
+          <strong>What it does</strong>
+          <p>${esc(project.description)}</p>
+          ${project.detail ? `<p class="project-detail-note">${esc(project.detail)}</p>` : ""}
+          <div class="project-point-list">
+            ${points.map((point) => `<span>${esc(point)}</span>`).join("")}
+          </div>
         </div>
         <footer>
           <p>${project.type}</p>
@@ -105,6 +119,7 @@
     const rail = $("#projectRail");
     if (rail) {
       rail.innerHTML = "";
+      rail.classList.remove("project-rail--stack");
       data.projects.forEach((project, index) => {
         rail.appendChild(createProjectCard(project, index));
       });
@@ -442,7 +457,7 @@
 
         <nav class="case-next reveal" aria-label="Project navigation">
           <a class="hover-cut" href="../${previous.slug}/"><span>Previous: ${esc(previous.title)}</span></a>
-          <a class="hover-cut" href="../../work.html"><span>All Work</span></a>
+          <a class="hover-cut" href="../../work.html"><span>Build Archive</span></a>
           <a class="hover-cut" href="../${next.slug}/"><span>Next: ${esc(next.title)}</span></a>
         </nav>
       </article>
@@ -519,11 +534,15 @@
         return phrases.map((phrase, i) => {
           const text = String(phrase);
           const email = data.profile.email;
+          const tail = i < phrases.length - 1 ? sep : "";
           if (text.includes(email)) {
             const [before, after] = text.split(email);
-            return `<span>${esc(before)}<a class="marquee-email" href="mailto:${email}">${esc(email)}</a>${esc(after)}</span>${sep}`;
+            return `<span>${esc(before)}<a class="marquee-email" href="mailto:${email}">${esc(email)}</a>${esc(after)}</span>${tail}`;
           }
-          const tail = i < phrases.length - 1 ? sep : "";
+          if (/\bemail\b/i.test(text)) {
+            const [before, after] = text.split(/\bemail\b/i);
+            return `<span class="marquee-help">${esc(before)}<a class="marquee-email" href="mailto:${email}">email</a>${esc(after || "")}</span>${tail}`;
+          }
           return `<span>${esc(text)}</span>${tail}`;
         }).join("");
       };
@@ -589,7 +608,6 @@
     };
 
     let isOpen = false;
-    let igniteTimer = 0;
     const setMenu = (open) => {
       if (open) syncCloseTarget();
       isOpen = open;
@@ -600,10 +618,7 @@
       button.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
       button.classList.toggle("is-open", open);
       document.body.classList.toggle("menu-open", open);
-      // "Ignite" the paper square: short-lived burn pseudo on the button itself.
-      if (igniteTimer) window.clearTimeout(igniteTimer);
-      button.classList.add("igniting");
-      igniteTimer = window.setTimeout(() => button.classList.remove("igniting"), 620);
+      button.classList.remove("igniting");
       if (!open) {
         window.setTimeout(() => curtain.classList.remove("closing"), 520);
       }
@@ -612,6 +627,11 @@
     button.addEventListener("click", (event) => {
       event.preventDefault();
       setMenu(!isOpen);
+    });
+    button.addEventListener("pointermove", (event) => {
+      const rect = button.getBoundingClientRect();
+      button.style.setProperty("--ripple-x", `${event.clientX - rect.left}px`);
+      button.style.setProperty("--ripple-y", `${event.clientY - rect.top}px`);
     });
     $$("[data-menu-close]").forEach((el) => {
       if (el === button) return;
@@ -696,6 +716,23 @@
     const rail = $("#projectRail");
     if (!rail) return;
     const section = rail.closest(".home-work") || rail;
+    const cards = $$(".project-card", rail);
+    const stacked = rail.classList.contains("project-rail--stack");
+    let activeIndex = 0;
+
+    const scrollToCard = (direction = 1) => {
+      if (!cards.length) return;
+      activeIndex = (activeIndex + direction + cards.length) % cards.length;
+      cards[activeIndex].scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+      cards.forEach((card, index) => card.classList.toggle("is-selected", index === activeIndex));
+    };
+
+    if (stacked) {
+      cards[0]?.classList.add("is-selected");
+      $("[data-rail-prev]")?.addEventListener("click", () => scrollToCard(-1));
+      $("[data-rail-next]")?.addEventListener("click", () => scrollToCard(1));
+      return;
+    }
 
     let isDown = false;
     let startX = 0;
@@ -703,19 +740,43 @@
     let autoTimer = 0;
     let isAutoPaused = false;
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const scrollStep = () => Math.max(320, Math.min(rail.clientWidth * 0.82, 620));
+    let wheelTimer = 0;
+    let wheelLocked = false;
+
+    const getClosestIndex = () => {
+      if (!cards.length) return 0;
+      const railCenter = rail.scrollLeft + rail.clientWidth / 2;
+      return cards.reduce((closest, card, index) => {
+        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+        const closestCenter = cards[closest].offsetLeft + cards[closest].offsetWidth / 2;
+        return Math.abs(cardCenter - railCenter) < Math.abs(closestCenter - railCenter) ? index : closest;
+      }, 0);
+    };
+
+    const setActiveCard = (index) => {
+      activeIndex = Math.max(0, Math.min(cards.length - 1, index));
+      cards.forEach((card, cardIndex) => card.classList.toggle("is-selected", cardIndex === activeIndex));
+    };
+
+    const scrollToIndex = (index, behavior = "smooth") => {
+      if (!cards.length) return;
+      setActiveCard(index);
+      const card = cards[activeIndex];
+      const maxScroll = Math.max(0, rail.scrollWidth - rail.clientWidth);
+      const left = Math.max(0, Math.min(maxScroll, card.offsetLeft - (rail.clientWidth - card.offsetWidth) / 2));
+      rail.classList.add("wheel-scrolling");
+      rail.scrollTo({ left, behavior: prefersReducedMotion ? "auto" : behavior });
+      window.clearTimeout(wheelTimer);
+      wheelTimer = window.setTimeout(() => {
+        rail.classList.remove("wheel-scrolling");
+        wheelLocked = false;
+      }, prefersReducedMotion ? 80 : 520);
+    };
 
     const scrollRail = (direction = 1) => {
-      const maxScroll = rail.scrollWidth - rail.clientWidth;
-      if (maxScroll <= 0) return;
-      const step = scrollStep() * direction;
-      const nextLeft = rail.scrollLeft + step;
-      const atEnd = direction > 0 && nextLeft >= maxScroll - 12;
-      const atStart = direction < 0 && nextLeft <= 12;
-      rail.scrollTo({
-        left: atEnd ? 0 : atStart ? maxScroll : nextLeft,
-        behavior: prefersReducedMotion ? "auto" : "smooth"
-      });
+      if (!cards.length) return;
+      const nextIndex = Math.max(0, Math.min(cards.length - 1, getClosestIndex() + direction));
+      scrollToIndex(nextIndex);
     };
 
     const stopAuto = () => {
@@ -725,8 +786,7 @@
     };
 
     const startAuto = () => {
-      if (prefersReducedMotion || isAutoPaused || autoTimer || rail.scrollWidth <= rail.clientWidth) return;
-      autoTimer = window.setInterval(() => scrollRail(1), 3600);
+      return;
     };
 
     const pauseAuto = () => {
@@ -736,8 +796,9 @@
 
     const resumeAuto = () => {
       isAutoPaused = false;
-      window.setTimeout(startAuto, 900);
     };
+
+    setActiveCard(0);
 
     rail.addEventListener("pointerdown", (event) => {
       isDown = true;
@@ -769,28 +830,24 @@
 
     const handleWheel = (event) => {
       if (event.defaultPrevented) return;
-      // Horizontal trackpad swipe: route deltaX into the rail.
       const isHorizontalSwipe = Math.abs(event.deltaX) > Math.abs(event.deltaY);
-      // Vertical wheel + shift: classic horizontal-scroll modifier.
       const isShiftScroll = event.shiftKey && Math.abs(event.deltaY) > 0;
-      // Vertical mouse wheel over the rail: only convert to horizontal
-      // when the rail still has room to scroll, so the page can take over
-      // at the ends.
-      const wheelDelta = isHorizontalSwipe ? event.deltaX : event.deltaY;
-      const canScrollRailX =
-        (wheelDelta > 0 && rail.scrollLeft < rail.scrollWidth - rail.clientWidth - 1) ||
-        (wheelDelta < 0 && rail.scrollLeft > 0);
-      const isVerticalWheel =
-        !isHorizontalSwipe &&
-        !isShiftScroll &&
-        Math.abs(event.deltaY) > 0 &&
-        rail.contains(event.target) &&
-        canScrollRailX;
-      if (!isHorizontalSwipe && !isShiftScroll && !isVerticalWheel) return;
-      if (!canScrollRailX && !isShiftScroll) return;
+      const wheelDelta = isHorizontalSwipe || isShiftScroll ? event.deltaX || event.deltaY : event.deltaY;
+      if (Math.abs(wheelDelta) < 8) return;
+      const direction = wheelDelta > 0 ? 1 : -1;
+      const currentIndex = getClosestIndex();
+      const atStart = currentIndex <= 0 && rail.scrollLeft <= 8 && direction < 0;
+      const atEnd = currentIndex >= cards.length - 1 && rail.scrollLeft >= rail.scrollWidth - rail.clientWidth - 8 && direction > 0;
+      if (atStart || atEnd) {
+        rail.classList.remove("wheel-scrolling");
+        wheelLocked = false;
+        return;
+      }
       event.preventDefault();
+      if (wheelLocked) return;
+      wheelLocked = true;
       pauseAuto();
-      rail.scrollLeft += wheelDelta;
+      scrollToIndex(currentIndex + direction);
       resumeAuto();
     };
 
@@ -899,6 +956,7 @@
     const routes = {
       about: "index.html",
       home: "index.html",
+      builds: "work.html",
       work: "work.html",
       projects: "work.html",
       w: "work.html",
@@ -908,10 +966,7 @@
       creds: "credentials.html",
       cred: "credentials.html",
       contact: "contact.html",
-      c: "contact.html",
-      terminal: "terminal.html",
-      t: "terminal.html",
-      desk: "terminal.html"
+      c: "contact.html"
     };
 
     const skillsLines = (() => {
@@ -924,8 +979,8 @@
 
     const messages = {
       help: [
-        "Available files: about, work, credentials, terminal, contact.",
-        "Shortcuts: w opens work, c opens contact, t opens terminal, email opens mail, socials prints links, skills lists the toolbox, clear resets the desk."
+        "Available files: about, builds, credentials, contact.",
+        "Shortcuts: w opens builds, c opens contact, email opens mail, socials prints links, skills lists the toolbox, clear resets the desk."
       ],
       skills: skillsLines,
       socials: data.socials.map((social) => `${social.label}: ${social.url}`),
@@ -1025,8 +1080,8 @@
 
     output.innerHTML = "";
     commandQueue = commandQueue
-      .then(() => print("system", "The Digital Journal terminal is live.", { typed: true }))
-      .then(() => print("system", "Type help, work, credentials, contact, email, socials, skills, or clear.", { typed: true }));
+      .then(() => print("system", "The Build Journal terminal is live.", { typed: true }))
+      .then(() => print("system", "Type help, builds, credentials, contact, email, socials, skills, or clear.", { typed: true }));
 
     const executeCurrentCommand = () => {
       const command = input.value;
@@ -1302,6 +1357,85 @@
     writeCards("All");
   }
 
+  function setupCardTilt() {
+    if (window.matchMedia("(hover: none), (pointer: coarse)").matches) return;
+    const cards = $$(".home-work .project-rail--stack .project-card");
+    cards.forEach((card) => {
+      card.addEventListener("pointermove", (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        card.style.setProperty("--tilt-x", `${x * 8}deg`);
+        card.style.setProperty("--tilt-y", `${y * -6}deg`);
+      });
+      card.addEventListener("pointerleave", () => {
+        card.style.setProperty("--tilt-x", "0deg");
+        card.style.setProperty("--tilt-y", "0deg");
+      });
+    });
+  }
+
+  function setupStaggerObservers() {
+    if (!("IntersectionObserver" in window)) return;
+    const staggerTargets = [
+      ...$$(".thought-list"),
+      ...$$(".profile-timeline"),
+      ...$$(".footer-socials.brand-socials"),
+      ...$$(".home-work")
+    ];
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible", "visible");
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.15, rootMargin: "0px 0px -40px 0px" });
+    staggerTargets.forEach((el) => observer.observe(el));
+
+    // Enhanced reveals: assign varied animation classes to different sections
+    const sections = $$(".profile-copy.reveal, .scratch-panel.reveal, .notes-panel.reveal");
+    sections.forEach((el, i) => {
+      const types = ["reveal", "reveal-slide-left", "reveal-slide-right", "reveal-scale"];
+      const type = types[i % types.length];
+      if (type !== "reveal") {
+        el.classList.remove("reveal");
+        el.classList.add(type);
+      }
+    });
+
+    // Observe the new reveal types
+    const enhancedReveals = $$(".reveal-slide-left, .reveal-slide-right, .reveal-scale, .reveal-rotate, .reveal-clip");
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("visible");
+        revealObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -32px 0px" });
+    enhancedReveals.forEach((el) => revealObserver.observe(el));
+  }
+
+  function setupPageTransitions() {
+    // Add page transition overlay element
+    const overlay = document.createElement("div");
+    overlay.className = "page-transition";
+    document.body.appendChild(overlay);
+
+    // Intercept internal navigation links for smooth page transition
+    const internalLinks = $$('a[href]:not([href^="http"]):not([href^="mailto:"]):not([href^="#"]):not([target="_blank"])');
+    internalLinks.forEach((link) => {
+      link.addEventListener("click", (e) => {
+        const href = link.getAttribute("href");
+        if (!href || href === "#") return;
+        e.preventDefault();
+        overlay.classList.add("is-entering");
+        window.setTimeout(() => {
+          window.location.href = href;
+        }, 250);
+      });
+    });
+  }
+
   renderProjects();
   renderCaseStudy();
   renderNotes();
@@ -1320,4 +1454,7 @@
   setupHeroSplit();
   setupMagneticButtons();
   setupCountUp();
+  setupCardTilt();
+  setupStaggerObservers();
+  setupPageTransitions();
 })();

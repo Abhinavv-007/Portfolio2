@@ -3226,16 +3226,16 @@ body.menu-open .menu-button:hover {
     radial-gradient(circle at 88% 88%, rgba(37, 63, 84, 0.07), transparent 22rem),
     linear-gradient(180deg, rgba(255, 248, 226, 0.55), rgba(214, 204, 189, 0)),
     var(--paper);
-  clip-path: circle(150% at 50% 50%);
+  clip-path: none;
   opacity: 1;
   transition: clip-path 520ms cubic-bezier(0.42, 0.08, 0.55, 1.0);
 }
 
 .menu-curtain.active .menu-burn-paper {
-  clip-path: circle(0% at var(--menu-iris-x, 50%) var(--menu-iris-y, 50%));
+  clip-path: none;
 }
 .menu-curtain.closing .menu-burn-paper {
-  clip-path: circle(150% at var(--menu-iris-x, 50%) var(--menu-iris-y, 50%));
+  clip-path: none;
   transition: clip-path 360ms cubic-bezier(0.45, 0, 0.55, 1);
 }
 
@@ -7923,16 +7923,27 @@ body[data-page="index"] .profile-portrait-link img {
 .menu-curtain {
   --burn-x: var(--menu-iris-x, 88%);
   --burn-y: var(--menu-iris-y, 8%);
-  clip-path: circle(0 at var(--burn-x) var(--burn-y));
+  clip-path: polygon(100% 0, 100% 0, 100% 0, 100% 0);
   transform: scale(1);
+  filter: saturate(0.92);
+  transition:
+    clip-path 760ms cubic-bezier(0.17, 0.84, 0.24, 1),
+    opacity 260ms ease,
+    filter 760ms ease,
+    visibility 260ms;
 }
 
 .menu-curtain.active {
-  clip-path: circle(150% at var(--burn-x) var(--burn-y));
+  clip-path: polygon(-8% -8%, 108% -8%, 108% 108%, -8% 108%);
+  filter: saturate(1);
 }
 
 .menu-curtain .menu-burn {
   display: block !important;
+}
+
+.menu-burn-edge {
+  display: none !important;
 }
 
 .menu-curtain.active::before {
@@ -7945,6 +7956,39 @@ body[data-page="index"] .profile-portrait-link img {
 
 .menu-curtain.active .menu-burn-ember {
   animation: menuEmberBloomFinal 980ms cubic-bezier(0.18, 0.86, 0.18, 1) both;
+}
+
+.menu-burn-paper {
+  background:
+    repeating-linear-gradient(180deg, rgba(26, 25, 22, 0.07) 0, rgba(26, 25, 22, 0.07) 1px, transparent 1px, transparent 5px),
+    linear-gradient(120deg, rgba(255, 188, 88, 0.28) 0%, rgba(163, 49, 40, 0.22) 18%, transparent 36%),
+    linear-gradient(180deg, rgba(255, 248, 226, 0.54), rgba(214, 204, 189, 0)),
+    var(--paper);
+}
+
+.menu-burn-ember {
+  background:
+    linear-gradient(110deg, transparent 0 35%, rgba(255, 188, 88, 0.0) 38%, rgba(255, 188, 88, 0.5) 48%, rgba(209, 90, 53, 0.34) 55%, transparent 66%),
+    repeating-linear-gradient(110deg, transparent 0 0.75rem, rgba(255, 188, 88, 0.08) 0.8rem 0.9rem, transparent 0.95rem 1.5rem);
+  transform: translate3d(42%, -42%, 0) skewX(-8deg);
+}
+
+@keyframes menuHeatWashFinal {
+  0% { opacity: 0; transform: translate3d(18%, -14%, 0) scale(1.06); }
+  36% { opacity: 0.95; }
+  100% { opacity: 0.38; transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes menuPaperFlashFinal {
+  0% { opacity: 1; transform: translate3d(0, 0, 0); }
+  42% { opacity: 0.72; transform: translate3d(-2.5%, 1.5%, 0); }
+  100% { opacity: 0; transform: translate3d(-10%, 6%, 0); }
+}
+
+@keyframes menuEmberBloomFinal {
+  0% { opacity: 0; transform: translate3d(46%, -42%, 0) skewX(-8deg); }
+  24% { opacity: 1; }
+  100% { opacity: 0; transform: translate3d(-48%, 42%, 0) skewX(-8deg); }
 }
 
 body[data-page="contact"] .contact-page--redesign {
@@ -8053,4 +8097,1639 @@ body[data-page="contact"] .contact-form textarea {
 
 .marquee .marquee-email {
   font-size: clamp(0.78rem, 0.9vw, 0.95rem) !important;
+}
+
+/* Pass 28 final polish: selected builds, footer CTA, menu button hover. */
+.site-shell,
+.footer,
+.home-work,
+.work-strip {
+  overflow: visible !important;
+}
+
+.footer {
+  padding-bottom: clamp(1.25rem, 2.4vw, 2.25rem);
+  filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.footer::before,
+.footer::after,
+.marquee::before,
+.marquee::after {
+  display: none !important;
+  content: none !important;
+}
+
+body[data-page="index"] .home-work {
+  grid-template-columns: minmax(11rem, 15rem) minmax(0, 1fr);
+  gap: clamp(1.15rem, 2.4vw, 2.2rem);
+  align-items: start;
+  padding-bottom: clamp(2rem, 4vw, 3.4rem);
+}
+
+body[data-page="index"] .home-work .strip-intro {
+  position: sticky;
+  top: clamp(1rem, 2vw, 1.5rem);
+  min-height: auto;
+}
+
+body[data-page="index"] .home-work .strip-intro h2 {
+  font-size: clamp(2rem, 3.8vw, 4.1rem);
+  line-height: 0.92;
+}
+
+body[data-page="index"] .home-work .strip-intro p {
+  max-width: 11ch;
+  color: var(--ink-soft);
+  font-size: clamp(1.1rem, 1.65vw, 1.55rem);
+  line-height: 1.1;
+}
+
+.home-work .project-rail.project-rail--stack {
+  display: grid;
+  grid-auto-flow: row;
+  grid-auto-columns: unset;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 1.8vw, 1.45rem);
+  overflow: visible;
+  padding: 0;
+  cursor: default;
+  scroll-snap-type: none;
+  scrollbar-width: none;
+}
+
+.home-work .project-rail.project-rail--stack::-webkit-scrollbar {
+  display: none;
+}
+
+.home-work .project-rail.project-rail--stack .project-card {
+  position: relative;
+  width: 100%;
+  min-height: auto;
+  scroll-snap-align: none;
+  transform: none;
+  clip-path: polygon(0.35% 0.6%, 99.5% 0.2%, 99.1% 99.4%, 0.7% 99%);
+  transition:
+    transform 360ms var(--ease),
+    box-shadow 360ms ease,
+    background 360ms ease;
+}
+
+.home-work .project-rail.project-rail--stack .project-card:first-child {
+  grid-column: 1 / -1;
+}
+
+.home-work .project-rail.project-rail--stack .project-card:nth-child(even) {
+  transform: translateY(0.75rem);
+}
+
+.home-work .project-rail.project-rail--stack .project-card:hover,
+.home-work .project-rail.project-rail--stack .project-card:focus-within,
+.home-work .project-rail.project-rail--stack .project-card.is-selected {
+  transform: translateY(-0.35rem);
+  background: rgba(244, 236, 222, 0.96);
+  box-shadow:
+    0 0.2rem 0 rgba(26, 25, 22, 0.18),
+    0 1.2rem 2.2rem rgba(26, 25, 22, 0.12);
+}
+
+.home-work .project-rail.project-rail--stack .project-card:first-child .project-main {
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  grid-template-areas:
+    "header image"
+    "title image"
+    "footer image";
+  align-items: stretch;
+}
+
+.home-work .project-rail.project-rail--stack .project-card:first-child header {
+  grid-area: header;
+}
+
+.home-work .project-rail.project-rail--stack .project-card:first-child h3 {
+  grid-area: title;
+  align-self: center;
+}
+
+.home-work .project-rail.project-rail--stack .project-card:first-child .project-image {
+  grid-area: image;
+  height: clamp(18rem, 30vw, 30rem);
+  min-height: clamp(18rem, 30vw, 30rem);
+}
+
+.home-work .project-rail.project-rail--stack .project-card:first-child footer {
+  grid-area: footer;
+}
+
+.home-work .project-rail.project-rail--stack .project-image {
+  aspect-ratio: 16 / 10.5;
+  height: clamp(13rem, 20vw, 20rem);
+  min-height: clamp(13rem, 20vw, 20rem);
+  max-height: none;
+}
+
+.home-work .project-rail.project-rail--stack .project-image img {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  transform: none !important;
+  object-fit: contain !important;
+}
+
+.home-work .project-rail.project-rail--stack .card-visit {
+  min-height: 3.2rem;
+  letter-spacing: 0.14em;
+}
+
+body > .menu-button {
+  overflow: hidden;
+  background:
+    linear-gradient(145deg, rgba(255, 251, 235, 0.96), rgba(232, 222, 205, 0.92)),
+    repeating-linear-gradient(180deg, rgba(26, 25, 22, 0.04) 0 1px, transparent 1px 6px) !important;
+  color: var(--ink);
+}
+
+body > .menu-button::after {
+  inset: auto;
+  left: var(--ripple-x, 50%);
+  top: var(--ripple-y, 50%);
+  width: 190%;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: var(--ink) !important;
+  opacity: 1;
+  mix-blend-mode: normal;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 0;
+}
+
+body > .menu-button::before {
+  z-index: 1;
+}
+
+body > .menu-button span {
+  z-index: 2;
+}
+
+body > .menu-button:hover,
+body > .menu-button:focus-visible {
+  border-color: var(--ink);
+  background: var(--ink) !important;
+  transform: translateY(-2px);
+}
+
+body > .menu-button:hover::after,
+body > .menu-button:focus-visible::after {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+body > .menu-button:hover span,
+body > .menu-button:focus-visible span {
+  background: var(--paper-light) !important;
+}
+
+.marquee {
+  border-top: 1px solid var(--rule-strong);
+}
+
+.marquee .marquee-help {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.1rem 0.35rem;
+}
+
+.marquee .marquee-email {
+  margin: 0 0.18rem;
+  padding: 0.16rem 0.62rem !important;
+  border-radius: 0;
+  color: var(--paper-light) !important;
+  background: var(--ink) !important;
+  font-size: 1em !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  vertical-align: baseline !important;
+}
+
+.marquee .marquee-email:hover,
+.marquee .marquee-email:focus-visible {
+  background: var(--red) !important;
+}
+
+@media (max-width: 980px) {
+  body[data-page="index"] .home-work {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-page="index"] .home-work .strip-intro {
+    position: relative;
+    top: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--rule);
+    padding-right: 0;
+    padding-bottom: 1rem;
+  }
+
+  .home-work .project-rail.project-rail--stack,
+  .home-work .project-rail.project-rail--stack .project-card:first-child .project-main {
+    grid-template-columns: 1fr;
+    grid-template-areas: none;
+  }
+
+  .home-work .project-rail.project-rail--stack .project-card:first-child header,
+  .home-work .project-rail.project-rail--stack .project-card:first-child h3,
+  .home-work .project-rail.project-rail--stack .project-card:first-child .project-image,
+  .home-work .project-rail.project-rail--stack .project-card:first-child footer {
+    grid-area: auto;
+  }
+
+  .home-work .project-rail.project-rail--stack .project-card:nth-child(even) {
+    transform: none;
+  }
+}
+
+/* ============================================================
+   ANIMATION OVERHAUL — eye-catching motion, staggered reveals,
+   split-card work section, menu flip, parallax tilt
+   ============================================================ */
+
+/* ---- 1. Enhanced reveal system with varied entrance types ---- */
+.reveal-slide-left {
+  opacity: 0;
+  transform: translateX(-3rem);
+  transition: opacity 820ms var(--ease), transform 820ms var(--ease);
+  transition-delay: var(--delay, 0ms);
+}
+.reveal-slide-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-slide-right {
+  opacity: 0;
+  transform: translateX(3rem);
+  transition: opacity 820ms var(--ease), transform 820ms var(--ease);
+  transition-delay: var(--delay, 0ms);
+}
+.reveal-slide-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.88);
+  transition: opacity 720ms var(--ease), transform 720ms var(--ease);
+  transition-delay: var(--delay, 0ms);
+}
+.reveal-scale.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.reveal-rotate {
+  opacity: 0;
+  transform: translateY(2rem) rotate(3deg);
+  transition: opacity 780ms var(--ease), transform 780ms var(--ease);
+  transition-delay: var(--delay, 0ms);
+}
+.reveal-rotate.visible {
+  opacity: 1;
+  transform: translateY(0) rotate(0deg);
+}
+
+.reveal-clip {
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 900ms cubic-bezier(0.77, 0, 0.175, 1);
+  transition-delay: var(--delay, 0ms);
+}
+.reveal-clip.visible {
+  clip-path: inset(0 0 0 0);
+}
+
+/* ---- 2. Menu flip animation upgrade ---- */
+@keyframes menuFlipIn {
+  0% {
+    opacity: 0;
+    transform: perspective(800px) rotateX(-90deg) translateY(-1rem);
+    filter: blur(4px);
+  }
+  50% {
+    opacity: 0.7;
+    filter: blur(1px);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(800px) rotateX(0deg) translateY(0);
+    filter: blur(0);
+  }
+}
+
+.menu-curtain.active .menu-panel > a {
+  animation: menuFlipIn 680ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  transform-origin: top center;
+}
+
+.menu-curtain.active .menu-panel > a:nth-child(1) { animation-delay: 120ms; }
+.menu-curtain.active .menu-panel > a:nth-child(2) { animation-delay: 200ms; }
+.menu-curtain.active .menu-panel > a:nth-child(3) { animation-delay: 280ms; }
+.menu-curtain.active .menu-panel > a:nth-child(4) { animation-delay: 360ms; }
+
+/* Menu socials stagger in */
+@keyframes menuSocialPop {
+  0% {
+    opacity: 0;
+    transform: translateY(1.5rem) scale(0.7);
+  }
+  70% {
+    transform: translateY(-0.1rem) scale(1.03);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.menu-curtain.active .menu-socials .brand-social {
+  opacity: 0;
+  animation: menuSocialPop 520ms var(--ease) forwards;
+}
+.menu-curtain.active .menu-socials .brand-social:nth-child(1) { animation-delay: 440ms; }
+.menu-curtain.active .menu-socials .brand-social:nth-child(2) { animation-delay: 500ms; }
+.menu-curtain.active .menu-socials .brand-social:nth-child(3) { animation-delay: 560ms; }
+.menu-curtain.active .menu-socials .brand-social:nth-child(4) { animation-delay: 620ms; }
+
+/* Hamburger flip morph — more dramatic rotation */
+body.menu-open .menu-button {
+  transform: rotate(180deg) scale(0.9);
+  transition: transform 520ms cubic-bezier(0.68, -0.55, 0.27, 1.55), background 260ms ease, border-color 260ms ease, box-shadow 260ms ease;
+}
+
+body.menu-open .menu-button:hover {
+  transform: rotate(180deg) scale(1.05);
+}
+
+/* ---- 3. Split-card work section with 3D tilt ---- */
+.home-work .project-rail.project-rail--stack .project-card {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  transition:
+    transform 520ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 520ms ease,
+    background 360ms ease;
+}
+
+.home-work .project-rail.project-rail--stack .project-card .project-main {
+  transition: transform 520ms var(--ease);
+  will-change: transform;
+}
+
+/* 3D tilt on hover — JS will set --tilt-x and --tilt-y */
+.home-work .project-rail.project-rail--stack .project-card[style*="--tilt-x"] .project-main {
+  transform: rotateY(var(--tilt-x, 0deg)) rotateX(var(--tilt-y, 0deg));
+}
+
+/* Enhanced card hover lift */
+.home-work .project-rail.project-rail--stack .project-card:hover,
+.home-work .project-rail.project-rail--stack .project-card:focus-within {
+  transform: translateY(-0.6rem) scale(1.015);
+  box-shadow:
+    0 1.8rem 3.5rem rgba(26, 25, 22, 0.18),
+    0 0.4rem 0 rgba(26, 25, 22, 0.12);
+}
+
+/* Card stagger entrance */
+@keyframes cardSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(3rem) rotate(2deg);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+.home-work .project-rail.project-rail--stack .project-card.visible {
+  animation: cardSlideUp 800ms var(--ease) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+/* First card special: splits wider with featured visual */
+.home-work .project-rail.project-rail--stack .project-card:first-child.visible {
+  animation: cardScaleIn 900ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes cardScaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.92) translateY(2rem);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ---- 4. Button upgrades — shine sweep + press + magnetic ---- */
+.card-visit,
+.drag-arrows button,
+.text-link,
+.contact-form button[type="submit"],
+.detail-actions a,
+.end-card-cta a {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Universal shine sweep on hover */
+.card-visit::after,
+.detail-actions a::after,
+.end-card-cta a::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  transition: left 0s 0.6s;
+  pointer-events: none;
+}
+
+.card-visit:hover::after,
+.detail-actions a:hover::after,
+.end-card-cta a:hover::after {
+  left: 125%;
+  transition: left 0.6s var(--ease);
+}
+
+/* Button press state */
+.card-visit:active,
+.drag-arrows button:active,
+.detail-actions a:active,
+.end-card-cta a:active {
+  transform: scale(0.95) translateY(1px);
+  transition-duration: 100ms;
+}
+
+/* ---- 5. Marquee upgrade — gradient glow + smoother ---- */
+.marquee {
+  position: relative;
+}
+
+.marquee::before,
+.marquee::after {
+  z-index: 2;
+  width: 5rem;
+}
+
+.marquee-track {
+  animation-duration: 20s;
+  animation-timing-function: linear;
+}
+
+/* Marquee glow underline */
+.marquee::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent,
+    var(--red) 20%,
+    var(--red-hot) 50%,
+    var(--red) 80%,
+    transparent
+  );
+  opacity: 0.6;
+  animation: marqueeGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes marqueeGlow {
+  0% { opacity: 0.3; filter: blur(0px); }
+  100% { opacity: 0.7; filter: blur(1px); }
+}
+
+/* Marquee separator pulse */
+.marquee-set i {
+  animation: separatorPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes separatorPulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* ---- 6. Profile hero staggered entrance ---- */
+@keyframes heroHeadIn {
+  0% {
+    opacity: 0;
+    transform: translateY(2.5rem) scale(0.96);
+    filter: blur(3px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes heroPortraitIn {
+  0% {
+    opacity: 0;
+    transform: rotate(-1.5deg) translateX(3rem) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(-1.5deg) translateX(0) scale(1);
+  }
+}
+
+@keyframes heroCopyIn {
+  0% {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(1rem);
+  }
+  100% {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroStatsIn {
+  0% {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroRolesIn {
+  0% {
+    opacity: 0;
+    transform: translateY(2rem) scaleY(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  body.loaded .profile-head {
+    animation: heroHeadIn 920ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: 200ms;
+  }
+
+  body.loaded .profile-portrait {
+    animation: heroPortraitIn 1000ms var(--ease) both;
+    animation-delay: 450ms;
+  }
+
+  body.loaded .profile-copy {
+    animation: heroCopyIn 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: 350ms;
+  }
+
+  body.loaded .profile-stats {
+    animation: heroStatsIn 700ms var(--ease) both;
+    animation-delay: 650ms;
+  }
+
+  body.loaded .profile-stats li {
+    opacity: 0;
+    animation: heroStatsIn 600ms var(--ease) both;
+  }
+  body.loaded .profile-stats li:nth-child(1) { animation-delay: 700ms; }
+  body.loaded .profile-stats li:nth-child(2) { animation-delay: 800ms; }
+  body.loaded .profile-stats li:nth-child(3) { animation-delay: 900ms; }
+
+  body.loaded .profile-roles {
+    animation: heroRolesIn 820ms var(--ease) both;
+    animation-delay: 750ms;
+  }
+
+  body.loaded .profile-roles article {
+    opacity: 0;
+    animation: heroStatsIn 600ms var(--ease) both;
+  }
+  body.loaded .profile-roles article:nth-child(1) { animation-delay: 850ms; }
+  body.loaded .profile-roles article:nth-child(2) { animation-delay: 950ms; }
+  body.loaded .profile-roles article:nth-child(3) { animation-delay: 1050ms; }
+}
+
+/* ---- 7. Section divider animations ---- */
+@keyframes sectionDividerGrow {
+  0% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
+
+.home-work.visible::before,
+.home-about-page.visible::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: var(--content-gutter);
+  right: var(--content-gutter);
+  height: 1px;
+  background: var(--rule-strong);
+  transform-origin: left;
+  animation: sectionDividerGrow 800ms var(--ease) both;
+}
+
+/* ---- 8. Thought-list card stagger ---- */
+.thought-list article {
+  opacity: 0;
+  transform: translateY(1.5rem);
+  transition: opacity 600ms var(--ease), transform 600ms var(--ease);
+}
+
+.thought-list.is-visible article:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0ms; }
+.thought-list.is-visible article:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 120ms; }
+.thought-list.is-visible article:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 240ms; }
+.thought-list.is-visible article:nth-child(4) { opacity: 1; transform: translateY(0); transition-delay: 360ms; }
+
+/* ---- 9. Profile timeline stagger ---- */
+.profile-timeline article {
+  opacity: 0;
+  transform: translateX(-1.5rem);
+  transition: opacity 650ms var(--ease), transform 650ms var(--ease);
+}
+
+.profile-timeline.is-visible article:nth-child(1) { opacity: 1; transform: translateX(0); transition-delay: 0ms; }
+.profile-timeline.is-visible article:nth-child(2) { opacity: 1; transform: translateX(0); transition-delay: 150ms; }
+.profile-timeline.is-visible article:nth-child(3) { opacity: 1; transform: translateX(0); transition-delay: 300ms; }
+.profile-timeline.is-visible article:nth-child(4) { opacity: 1; transform: translateX(0); transition-delay: 450ms; }
+
+/* ---- 10. Notes panel stagger ---- */
+.note-row {
+  opacity: 0;
+  transform: translateY(1rem);
+  transition: opacity 550ms var(--ease), transform 550ms var(--ease);
+}
+
+.notes-panel.visible .note-row:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 100ms; }
+.notes-panel.visible .note-row:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 220ms; }
+.notes-panel.visible .note-row:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 340ms; }
+
+/* ---- 11. Footer social bounce-in on scroll ---- */
+@keyframes footerSocialBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(1.5rem) rotateX(-30deg) scale(0.8);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-0.2rem) rotateX(3deg) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotateX(0deg) scale(1);
+  }
+}
+
+.footer-socials.brand-socials.is-visible .brand-social {
+  animation: footerSocialBounce 650ms var(--ease) both;
+}
+.footer-socials.brand-socials.is-visible .brand-social:nth-child(1) { animation-delay: 0ms; }
+.footer-socials.brand-socials.is-visible .brand-social:nth-child(2) { animation-delay: 100ms; }
+.footer-socials.brand-socials.is-visible .brand-social:nth-child(3) { animation-delay: 200ms; }
+.footer-socials.brand-socials.is-visible .brand-social:nth-child(4) { animation-delay: 300ms; }
+
+/* ---- 12. Strip-intro title animation ---- */
+@keyframes stripTitleReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(1rem) skewY(2deg);
+    clip-path: inset(0 0 100% 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) skewY(0deg);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.home-work .strip-intro h2 {
+  animation: stripTitleReveal 900ms var(--ease) both;
+  animation-delay: 200ms;
+  animation-play-state: paused;
+}
+
+.home-work.visible .strip-intro h2 {
+  animation-play-state: running;
+}
+
+/* ---- 13. Smooth page transition overlay ---- */
+.page-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--ink);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  pointer-events: none;
+}
+
+.page-transition.is-entering {
+  animation: pageWipeIn 500ms cubic-bezier(0.86, 0, 0.07, 1) forwards;
+}
+
+@keyframes pageWipeIn {
+  0% { transform: scaleY(0); transform-origin: bottom; }
+  50% { transform: scaleY(1); transform-origin: bottom; }
+  50.01% { transform-origin: top; }
+  100% { transform: scaleY(0); transform-origin: top; }
+}
+
+/* Pass 29 hard overrides: final selected-build framing and real menu button hover. */
+.home-work .project-rail.project-rail--stack .project-image {
+  --selected-image-pad: clamp(0.55rem, 0.9vw, 0.8rem);
+  position: relative !important;
+  display: block !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+.home-work .project-rail.project-rail--stack .project-image img,
+.home-work .project-rail.project-rail--stack .project-card:hover .project-image img,
+.home-work .project-rail.project-rail--stack .project-card:focus-within .project-image img {
+  position: absolute !important;
+  inset: var(--selected-image-pad) !important;
+  display: block !important;
+  width: calc(100% - (var(--selected-image-pad) * 2)) !important;
+  height: calc(100% - (var(--selected-image-pad) * 2)) !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  transform: none !important;
+}
+
+.masthead > .menu-button,
+body > .menu-button {
+  overflow: hidden !important;
+  background:
+    linear-gradient(145deg, rgba(255, 251, 235, 0.96), rgba(232, 222, 205, 0.92)),
+    repeating-linear-gradient(180deg, rgba(26, 25, 22, 0.04) 0 1px, transparent 1px 6px) !important;
+  color: var(--ink) !important;
+}
+
+.masthead > .menu-button::after,
+body > .menu-button::after {
+  content: "" !important;
+  inset: auto !important;
+  left: var(--ripple-x, 50%) !important;
+  top: var(--ripple-y, 50%) !important;
+  width: 190% !important;
+  height: auto !important;
+  aspect-ratio: 1 !important;
+  border-radius: 999px !important;
+  background: var(--ink) !important;
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
+  transform: translate(-50%, -50%) scale(0) !important;
+  transition: transform 520ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+  z-index: 0 !important;
+}
+
+.masthead > .menu-button:hover,
+.masthead > .menu-button:focus-visible,
+body > .menu-button:hover,
+body > .menu-button:focus-visible {
+  border-color: var(--ink) !important;
+  background: var(--ink) !important;
+  transform: translateY(-2px) !important;
+}
+
+.masthead > .menu-button:hover::after,
+.masthead > .menu-button:focus-visible::after,
+body > .menu-button:hover::after,
+body > .menu-button:focus-visible::after {
+  transform: translate(-50%, -50%) scale(1) !important;
+}
+
+.masthead > .menu-button span,
+body > .menu-button span {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+.masthead > .menu-button:hover span,
+.masthead > .menu-button:focus-visible span,
+body > .menu-button:hover span,
+body > .menu-button:focus-visible span {
+  background: var(--paper-light) !important;
+}
+
+/* Pass 30: restore equal-size sliding selected-build cards and straighten portrait. */
+@keyframes heroPortraitStraightIn {
+  0% {
+    opacity: 0;
+    transform: translateX(2rem) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.profile-portrait,
+body[data-page="index"] .profile-portrait {
+  transform: none !important;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  body.loaded .profile-portrait {
+    animation-name: heroPortraitStraightIn !important;
+  }
+}
+
+body[data-page="index"] .home-work {
+  grid-template-columns: minmax(12rem, 15rem) minmax(0, 1fr) !important;
+  gap: clamp(1rem, 2vw, 1.65rem) !important;
+  overflow: visible !important;
+}
+
+body[data-page="index"] .home-work .strip-intro {
+  position: sticky !important;
+  top: clamp(1rem, 2vw, 1.5rem) !important;
+  z-index: 2 !important;
+  background: transparent !important;
+}
+
+body[data-page="index"] .home-work .strip-intro h2 {
+  max-width: 8ch !important;
+}
+
+body[data-page="index"] .home-work .project-rail {
+  display: grid !important;
+  grid-auto-flow: column !important;
+  grid-template-columns: none !important;
+  grid-auto-columns: clamp(24rem, 30vw, 31rem) !important;
+  align-items: stretch !important;
+  gap: clamp(1rem, 1.5vw, 1.35rem) !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  overscroll-behavior-inline: contain !important;
+  scroll-snap-type: x mandatory !important;
+  scroll-padding-inline: 0.2rem !important;
+  padding: 0.35rem 0 1.15rem !important;
+  cursor: grab !important;
+  scrollbar-gutter: stable !important;
+}
+
+body[data-page="index"] .home-work .project-rail.dragging {
+  cursor: grabbing !important;
+  scroll-snap-type: none !important;
+}
+
+body[data-page="index"] .home-work .project-rail.wheel-scrolling {
+  scroll-snap-type: none !important;
+  scroll-behavior: auto !important;
+}
+
+body[data-page="index"] .home-work .project-card,
+body[data-page="index"] .home-work .project-card:first-child,
+body[data-page="index"] .home-work .project-card:nth-child(even) {
+  width: auto !important;
+  min-height: 100% !important;
+  height: auto !important;
+  grid-column: auto !important;
+  overflow: visible !important;
+  transform: none !important;
+  scroll-snap-align: start !important;
+}
+
+body[data-page="index"] .home-work .project-card:hover,
+body[data-page="index"] .home-work .project-card:focus-within {
+  transform: translateY(-0.18rem) !important;
+}
+
+body[data-page="index"] .home-work .project-card .project-main,
+body[data-page="index"] .home-work .project-card:first-child .project-main {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  grid-template-areas: none !important;
+  grid-template-rows: auto auto auto auto !important;
+  min-height: 0 !important;
+  gap: 0.7rem !important;
+}
+
+body[data-page="index"] .home-work .project-card:first-child header,
+body[data-page="index"] .home-work .project-card:first-child h3,
+body[data-page="index"] .home-work .project-card:first-child .project-image,
+body[data-page="index"] .home-work .project-card:first-child footer {
+  grid-area: auto !important;
+}
+
+body[data-page="index"] .home-work .project-image,
+body[data-page="index"] .home-work .project-card:first-child .project-image {
+  aspect-ratio: 16 / 10 !important;
+  height: auto !important;
+  min-height: 15rem !important;
+  max-height: none !important;
+  position: relative !important;
+  display: block !important;
+  overflow: hidden !important;
+}
+
+body[data-page="index"] .home-work .project-image img,
+body[data-page="index"] .home-work .project-card:hover .project-image img,
+body[data-page="index"] .home-work .project-card:focus-within .project-image img {
+  position: absolute !important;
+  inset: clamp(0.55rem, 0.9vw, 0.8rem) !important;
+  width: calc(100% - (clamp(0.55rem, 0.9vw, 0.8rem) * 2)) !important;
+  height: calc(100% - (clamp(0.55rem, 0.9vw, 0.8rem) * 2)) !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  transform: none !important;
+}
+
+@media (max-width: 980px) {
+  body[data-page="index"] .home-work {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-page="index"] .home-work .strip-intro {
+    position: relative !important;
+    top: auto !important;
+  }
+
+  body[data-page="index"] .home-work .project-rail {
+    grid-auto-columns: minmax(18rem, 84vw) !important;
+  }
+}
+
+/* Pass 31: give the selected-build title its own lane beside the slider. */
+body[data-page="index"] .home-work {
+  grid-template-columns: minmax(18rem, 21rem) minmax(0, 1fr) !important;
+  column-gap: clamp(2rem, 3.6vw, 3.4rem) !important;
+}
+
+body[data-page="index"] .home-work .strip-intro h2 {
+  max-width: 8.5ch !important;
+}
+
+body[data-page="index"] .home-work .project-rail {
+  scroll-behavior: smooth !important;
+}
+
+@media (max-width: 980px) {
+  body[data-page="index"] .home-work {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Pass 33: restore menu glyphs, calm the overlay motion, and fix footer/mobile clipping. */
+.masthead > .menu-button,
+body > .menu-button {
+  isolation: isolate !important;
+  overflow: hidden !important;
+  display: grid !important;
+  place-items: center !important;
+  color: var(--ink) !important;
+}
+
+.masthead > .menu-button span,
+body > .menu-button span {
+  position: absolute !important;
+  left: 50% !important;
+  display: block !important;
+  width: clamp(1.35rem, 1.8vw, 1.85rem) !important;
+  min-width: clamp(1.35rem, 1.8vw, 1.85rem) !important;
+  height: 2.5px !important;
+  min-height: 2px !important;
+  border-radius: 999px !important;
+  background: var(--ink) !important;
+  opacity: 1 !important;
+  z-index: 3 !important;
+  transform-origin: center !important;
+  box-shadow: none !important;
+  transition:
+    transform 340ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 220ms ease,
+    background 220ms ease,
+    width 260ms ease !important;
+}
+
+.masthead > .menu-button span:nth-child(1),
+body > .menu-button span:nth-child(1) {
+  top: calc(50% - 0.45rem) !important;
+  transform: translateX(-50%) !important;
+}
+
+.masthead > .menu-button span:nth-child(2),
+body > .menu-button span:nth-child(2) {
+  top: 50% !important;
+  width: clamp(1.55rem, 2vw, 2.05rem) !important;
+  min-width: clamp(1.55rem, 2vw, 2.05rem) !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.masthead > .menu-button span:nth-child(3),
+body > .menu-button span:nth-child(3) {
+  top: calc(50% + 0.45rem) !important;
+  bottom: auto !important;
+  transform: translateX(-50%) !important;
+}
+
+.masthead > .menu-button:hover span,
+.masthead > .menu-button:focus-visible span,
+body > .menu-button:hover span,
+body > .menu-button:focus-visible span {
+  background: var(--paper-light) !important;
+}
+
+body.menu-open .masthead > .menu-button span,
+body.menu-open > .menu-button span,
+.masthead > .menu-button.is-open span,
+body > .menu-button.is-open span {
+  background: var(--paper-light) !important;
+}
+
+body.menu-open .masthead > .menu-button span:nth-child(1),
+body.menu-open > .menu-button span:nth-child(1),
+.masthead > .menu-button.is-open span:nth-child(1),
+body > .menu-button.is-open span:nth-child(1) {
+  top: 50% !important;
+  width: clamp(1.65rem, 2vw, 2.05rem) !important;
+  min-width: clamp(1.65rem, 2vw, 2.05rem) !important;
+  transform: translate(-50%, -50%) rotate(45deg) !important;
+}
+
+body.menu-open .masthead > .menu-button span:nth-child(2),
+body.menu-open > .menu-button span:nth-child(2),
+.masthead > .menu-button.is-open span:nth-child(2),
+body > .menu-button.is-open span:nth-child(2) {
+  opacity: 0 !important;
+  transform: translate(-50%, -50%) scaleX(0) !important;
+}
+
+body.menu-open .masthead > .menu-button span:nth-child(3),
+body.menu-open > .menu-button span:nth-child(3),
+.masthead > .menu-button.is-open span:nth-child(3),
+body > .menu-button.is-open span:nth-child(3) {
+  top: 50% !important;
+  width: clamp(1.65rem, 2vw, 2.05rem) !important;
+  min-width: clamp(1.65rem, 2vw, 2.05rem) !important;
+  transform: translate(-50%, -50%) rotate(-45deg) !important;
+}
+
+.menu-button.igniting,
+.menu-button.igniting::before,
+.menu-button.igniting::after {
+  animation: none !important;
+}
+
+.menu-curtain {
+  clip-path: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background:
+    linear-gradient(180deg, rgba(34, 31, 26, 0.98), rgba(18, 18, 16, 0.98)),
+    repeating-linear-gradient(180deg, rgba(234, 223, 206, 0.045) 0 1px, transparent 1px 7px) !important;
+  transform: translateY(-0.8rem) scale(0.992) !important;
+  transition:
+    opacity 320ms ease,
+    transform 460ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 320ms ease !important;
+}
+
+.menu-curtain.active {
+  clip-path: none !important;
+  filter: none !important;
+  transform: translateY(0) scale(1) !important;
+}
+
+.menu-curtain::before,
+.menu-curtain::after,
+.menu-curtain.active::before,
+.menu-curtain .menu-burn,
+.menu-curtain.active .menu-burn,
+.menu-curtain.closing .menu-burn,
+.menu-curtain .menu-burn-paper,
+.menu-curtain.active .menu-burn-paper,
+.menu-curtain.closing .menu-burn-paper,
+.menu-curtain .menu-burn-grain,
+.menu-curtain .menu-burn-ember,
+.menu-curtain.active .menu-burn-ember,
+.menu-curtain .menu-burn-edge,
+.menu-curtain.active .menu-burn-edge {
+  display: none !important;
+  animation: none !important;
+  opacity: 0 !important;
+  filter: none !important;
+}
+
+.menu-curtain.active .menu-panel > a {
+  animation: menuSimpleRise 440ms cubic-bezier(0.22, 1, 0.36, 1) both !important;
+}
+
+.menu-curtain.active .menu-panel > a:nth-child(1) { animation-delay: 80ms !important; }
+.menu-curtain.active .menu-panel > a:nth-child(2) { animation-delay: 130ms !important; }
+.menu-curtain.active .menu-panel > a:nth-child(3) { animation-delay: 180ms !important; }
+.menu-curtain.active .menu-panel > a:nth-child(4) { animation-delay: 230ms !important; }
+
+@keyframes menuSimpleRise {
+  from {
+    opacity: 0;
+    transform: translateY(0.8rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+html,
+body,
+.site-shell,
+.footer {
+  overflow-x: clip;
+}
+
+.site-shell {
+  padding-bottom: clamp(2rem, 4vw, 4rem) !important;
+  overflow-y: visible !important;
+}
+
+.site-shell::before,
+.site-shell::after,
+.footer::before,
+.footer::after,
+.marquee::before,
+.marquee::after {
+  display: none !important;
+  content: none !important;
+  opacity: 0 !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  mask-image: none !important;
+  -webkit-mask-image: none !important;
+}
+
+.footer {
+  margin-bottom: clamp(1.5rem, 3vw, 2.75rem) !important;
+  padding-bottom: clamp(2.1rem, 4.2vw, 3.6rem) !important;
+  border-bottom: 1px solid var(--rule-strong) !important;
+}
+
+body[data-page="index"] .home-work .project-rail {
+  grid-auto-columns: clamp(25rem, 30vw, 31rem) !important;
+  align-items: stretch !important;
+}
+
+body[data-page="index"] .home-work .project-card {
+  min-height: 35.5rem !important;
+  height: auto !important;
+}
+
+body[data-page="index"] .home-work .project-image {
+  min-height: 15.4rem !important;
+}
+
+@media (max-width: 760px) {
+  .site-shell {
+    padding-inline: clamp(0.85rem, 4vw, 1.1rem) !important;
+    padding-bottom: 2.8rem !important;
+  }
+
+  .masthead {
+    grid-template-columns: clamp(3.55rem, 16vw, 4.25rem) minmax(0, 1fr) clamp(2.7rem, 11vw, 3rem) !important;
+    min-height: 6.1rem !important;
+    gap: 0.65rem !important;
+  }
+
+  .masthead .journal-name {
+    grid-column: 2 !important;
+    justify-self: start !important;
+    max-width: 100% !important;
+    font-size: clamp(1.95rem, 8.7vw, 2.7rem) !important;
+    line-height: 0.88 !important;
+    white-space: normal !important;
+    text-align: left !important;
+  }
+
+  .masthead-contact {
+    display: none !important;
+  }
+
+  .masthead > .menu-button,
+  body > .menu-button {
+    grid-column: 3 !important;
+    justify-self: end !important;
+    width: clamp(2.65rem, 11vw, 3rem) !important;
+    height: clamp(2.65rem, 11vw, 3rem) !important;
+  }
+
+  .menu-panel {
+    width: min(100%, 23rem) !important;
+    padding-inline: 1rem !important;
+  }
+
+  .menu-panel > a {
+    font-size: clamp(3rem, 17vw, 5rem) !important;
+    line-height: 0.88 !important;
+  }
+
+  .profile-spread {
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem !important;
+    padding-inline: 0 !important;
+  }
+
+  .profile-media,
+  .profile-copy {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .profile-portrait {
+    width: min(100%, 25rem) !important;
+    margin-inline: auto !important;
+  }
+
+  .profile-copy h2 {
+    font-size: clamp(2.6rem, 14vw, 4.5rem) !important;
+    line-height: 0.88 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  body[data-page="index"] .home-work {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  body[data-page="index"] .home-work .strip-intro h2 {
+    max-width: none !important;
+    font-size: clamp(3rem, 15vw, 4.6rem) !important;
+  }
+
+  body[data-page="index"] .home-work .project-rail {
+    grid-auto-columns: minmax(18.25rem, 86vw) !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding-bottom: 1.1rem !important;
+  }
+
+  body[data-page="index"] .home-work .project-card {
+    min-height: 32rem !important;
+  }
+
+  body[data-page="index"] .home-work .project-image {
+    min-height: 13rem !important;
+  }
+
+  .footer .marquee {
+    overflow: hidden !important;
+  }
+
+  .footer-socials.brand-socials {
+    grid-template-columns: 1fr !important;
+    gap: 0.7rem !important;
+  }
+
+  .footer-socials .brand-social {
+    min-height: 3.5rem !important;
+  }
+}
+
+/* Pass 36: footer cleanup and selected-build split cards. */
+.site-shell {
+  padding-bottom: 0 !important;
+}
+
+.footer {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+  border-bottom: 0 !important;
+}
+
+.footer .marquee {
+  border-top: 1px solid var(--rule-strong) !important;
+  border-bottom: 1px solid var(--rule-strong) !important;
+  overflow: hidden !important;
+}
+
+.marquee-set span::after,
+.marquee-set a::after,
+.marquee .marquee-help::after,
+.marquee .marquee-email::after {
+  content: none !important;
+  display: none !important;
+}
+
+.marquee .marquee-help {
+  gap: 0.35rem !important;
+  padding: 0 !important;
+}
+
+.marquee .marquee-email {
+  display: inline-block !important;
+  margin: 0 0.12rem !important;
+  padding: 0.12rem 0.52rem !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: var(--paper-light) !important;
+  background: var(--ink) !important;
+  font-size: 1em !important;
+  line-height: 1 !important;
+}
+
+.footer-socials.brand-socials {
+  padding: clamp(1.2rem, 2vw, 1.6rem) var(--content-gutter) clamp(1.1rem, 2vw, 1.45rem) !important;
+  border-bottom: 0 !important;
+  background: rgba(234, 223, 206, 0.24) !important;
+}
+
+body[data-page="index"] .home-work .project-rail {
+  grid-auto-columns: clamp(40rem, 57vw, 52rem) !important;
+}
+
+body[data-page="index"] .home-work .project-card,
+body[data-page="index"] .home-work .project-card:first-child,
+body[data-page="index"] .home-work .project-card:nth-child(even) {
+  min-height: 37.5rem !important;
+}
+
+body[data-page="index"] .home-work .project-card .project-main,
+body[data-page="index"] .home-work .project-card:first-child .project-main {
+  grid-template-columns: minmax(16rem, 1.08fr) minmax(13rem, 0.92fr) !important;
+  grid-template-rows: auto auto minmax(20rem, 1fr) auto !important;
+  grid-template-areas:
+    "meta meta"
+    "title title"
+    "image points"
+    "footer footer" !important;
+  gap: clamp(0.7rem, 1vw, 1rem) !important;
+  align-items: stretch !important;
+}
+
+body[data-page="index"] .home-work .project-card header {
+  grid-area: meta !important;
+}
+
+body[data-page="index"] .home-work .project-card h3 {
+  grid-area: title !important;
+  min-height: auto !important;
+  margin-bottom: 0.05rem !important;
+  font-size: clamp(3rem, 4.4vw, 5rem) !important;
+}
+
+body[data-page="index"] .home-work .project-image,
+body[data-page="index"] .home-work .project-card:first-child .project-image {
+  grid-area: image !important;
+  aspect-ratio: auto !important;
+  min-height: 20rem !important;
+  height: 100% !important;
+}
+
+body[data-page="index"] .home-work .project-points {
+  grid-area: points;
+  display: grid;
+  align-content: center;
+  gap: 0.68rem;
+  padding: clamp(0.85rem, 1.3vw, 1.1rem);
+  border: 1px solid var(--rule);
+  background:
+    linear-gradient(180deg, rgba(255, 251, 235, 0.36), rgba(214, 204, 189, 0.16)),
+    repeating-linear-gradient(180deg, rgba(26, 25, 22, 0.04) 0 1px, transparent 1px 7px);
+}
+
+body[data-page="index"] .home-work .project-points span {
+  position: relative;
+  padding-left: 1.15rem;
+  font-family: var(--mono);
+  font-size: clamp(0.68rem, 0.82vw, 0.8rem);
+  line-height: 1.35;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+body[data-page="index"] .home-work .project-points span::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.46em;
+  width: 0.38rem;
+  height: 0.38rem;
+  border: 1px solid var(--red);
+  background: rgba(163, 49, 40, 0.12);
+}
+
+body[data-page="index"] .home-work .project-card footer {
+  grid-area: footer !important;
+}
+
+body[data-page="index"] .home-work .project-card .card-visit {
+  min-height: 3rem !important;
+}
+
+@media (max-width: 980px) {
+  body[data-page="index"] .home-work .project-rail {
+    grid-auto-columns: minmax(18.5rem, 86vw) !important;
+  }
+
+  body[data-page="index"] .home-work .project-card,
+  body[data-page="index"] .home-work .project-card:first-child,
+  body[data-page="index"] .home-work .project-card:nth-child(even) {
+    min-height: 35rem !important;
+  }
+
+  body[data-page="index"] .home-work .project-card .project-main,
+  body[data-page="index"] .home-work .project-card:first-child .project-main {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto auto auto auto !important;
+    grid-template-areas:
+      "meta"
+      "title"
+      "image"
+      "points"
+      "footer" !important;
+  }
+
+  body[data-page="index"] .home-work .project-image,
+  body[data-page="index"] .home-work .project-card:first-child .project-image {
+    min-height: 13.25rem !important;
+    aspect-ratio: 16 / 10 !important;
+  }
+
+  body[data-page="index"] .home-work .project-points {
+    gap: 0.5rem !important;
+    padding: 0.75rem !important;
+  }
+
+  body[data-page="index"] .home-work .project-points span {
+    font-size: 0.66rem !important;
+  }
+
+  .footer-socials.brand-socials {
+    padding-inline: 1rem !important;
+  }
+}
+
+/* Pass 40: square selected-build panels and stepped card snapping. */
+body[data-page="index"] .home-work .project-rail {
+  grid-auto-columns: clamp(46rem, 62vw, 58rem) !important;
+  scroll-snap-type: x mandatory !important;
+  scroll-padding-inline: calc((100% - min(100%, clamp(46rem, 62vw, 58rem))) / 2) !important;
+}
+
+body[data-page="index"] .home-work .project-card,
+body[data-page="index"] .home-work .project-card:first-child,
+body[data-page="index"] .home-work .project-card:nth-child(even) {
+  min-height: auto !important;
+  scroll-snap-align: center !important;
+  transition:
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 420ms ease,
+    opacity 320ms ease !important;
+}
+
+body[data-page="index"] .home-work .project-card.is-selected {
+  transform: none !important;
+  box-shadow:
+    0 0.18rem 0 rgba(26, 25, 22, 0.2),
+    0 1.05rem 1.8rem rgba(26, 25, 22, 0.16),
+    inset 0 0 0 1px rgba(163, 49, 40, 0.22) !important;
+}
+
+body[data-page="index"] .home-work .project-card .project-main,
+body[data-page="index"] .home-work .project-card:first-child .project-main {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  grid-template-rows: auto auto auto auto !important;
+  grid-template-areas:
+    "meta meta"
+    "title title"
+    "image points"
+    "footer footer" !important;
+  gap: clamp(0.85rem, 1.15vw, 1.1rem) !important;
+}
+
+body[data-page="index"] .home-work .project-image,
+body[data-page="index"] .home-work .project-card:first-child .project-image,
+body[data-page="index"] .home-work .project-points {
+  aspect-ratio: 1 / 1 !important;
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+body[data-page="index"] .home-work .project-image img,
+body[data-page="index"] .home-work .project-card:hover .project-image img,
+body[data-page="index"] .home-work .project-card:focus-within .project-image img {
+  inset: clamp(0.7rem, 1vw, 0.95rem) !important;
+  width: calc(100% - (clamp(0.7rem, 1vw, 0.95rem) * 2)) !important;
+  height: calc(100% - (clamp(0.7rem, 1vw, 0.95rem) * 2)) !important;
+}
+
+body[data-page="index"] .home-work .project-points {
+  align-content: stretch !important;
+  grid-template-rows: auto auto auto 1fr;
+  gap: clamp(0.46rem, 0.62vw, 0.65rem) !important;
+  padding: clamp(0.85rem, 1.15vw, 1.05rem) !important;
+}
+
+body[data-page="index"] .home-work .project-points strong {
+  font-family: var(--display);
+  font-size: clamp(1.35rem, 2vw, 2rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+body[data-page="index"] .home-work .project-points p {
+  margin: 0;
+  font-family: var(--body);
+  font-size: clamp(0.76rem, 0.86vw, 0.91rem);
+  line-height: 1.24;
+  color: rgba(26, 25, 22, 0.82);
+}
+
+body[data-page="index"] .home-work .project-points .project-detail-note {
+  padding-top: clamp(0.35rem, 0.55vw, 0.5rem);
+  border-top: 1px solid rgba(26, 25, 22, 0.22);
+  font-family: var(--mono);
+  font-size: clamp(0.56rem, 0.66vw, 0.7rem);
+  line-height: 1.36;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: rgba(26, 25, 22, 0.74);
+}
+
+body[data-page="index"] .home-work .project-point-list {
+  display: grid;
+  grid-template-rows: repeat(6, minmax(0, 1fr));
+  align-content: stretch;
+  gap: 0;
+  padding-top: clamp(0.2rem, 0.4vw, 0.35rem);
+  border-top: 1px solid var(--rule);
+}
+
+body[data-page="index"] .home-work .project-points span {
+  display: flex;
+  align-items: center;
+  font-size: clamp(0.54rem, 0.62vw, 0.68rem) !important;
+  line-height: 1.22 !important;
+  border-bottom: 1px solid rgba(26, 25, 22, 0.12);
+}
+
+body[data-page="index"] .home-work .project-points span:last-child {
+  border-bottom: 0;
+}
+
+@media (max-width: 980px) {
+  body[data-page="index"] .home-work .project-rail {
+    grid-auto-columns: minmax(18.5rem, 86vw) !important;
+    scroll-snap-align: start !important;
+  }
+
+  body[data-page="index"] .home-work .project-card .project-main,
+  body[data-page="index"] .home-work .project-card:first-child .project-main {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto auto auto auto !important;
+    grid-template-areas:
+      "meta"
+      "title"
+      "image"
+      "points"
+      "footer" !important;
+  }
+
+  body[data-page="index"] .home-work .project-image,
+  body[data-page="index"] .home-work .project-card:first-child .project-image,
+  body[data-page="index"] .home-work .project-points {
+    aspect-ratio: 16 / 10 !important;
+  }
+
+  body[data-page="index"] .home-work .project-points {
+    min-height: 16rem !important;
+  }
 }

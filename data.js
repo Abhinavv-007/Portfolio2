@@ -1,14 +1,12 @@
 window.PORTFOLIO = {
   profile: {
     name: "Abhinav Raj",
-    publication: "The Digital Journal",
+    publication: "The Build Journal",
     email: "hello@abhnv.in",
     summary: "Full-stack developer focused on AI products, privacy-minded tools, and clear digital experiences."
   },
   marquee: [
-    "Email hello@abhnv.in for thoughtful product builds",
-    "AI workflows, full-stack systems, and practical web experiences",
-    "Available for focused technical collaboration"
+    "Need a helping hand? Message me. email"
   ],
   skills: [
     {
@@ -52,7 +50,9 @@ window.PORTFOLIO = {
       url: "work/clex/",
       type: "Secure file workflows",
       description: "A privacy-first file workspace for moving files between people without default server storage.",
-      tags: ["Privacy", "File Movement", "WebRTC"]
+      detail: "CLEX is built for people who need to move files quickly without turning every transfer into a permanent cloud copy. The workspace keeps the send, fallback, and status flow visible so the handoff stays simple.",
+      tags: ["Privacy", "File Movement", "WebRTC"],
+      points: ["Private transfer flow for direct file movement", "No default server storage for normal handoffs", "Drive fallback when the direct path is not enough", "Simple sender-to-receiver workspace", "Local-first queue handling and packaging", "Clear status for every handoff"]
     },
     {
       title: "CLEX AI",
@@ -67,7 +67,9 @@ window.PORTFOLIO = {
       url: "work/clex-ai/",
       type: "AI model gateway",
       description: "An OpenAI-compatible gateway that routes every model through one clean developer endpoint.",
-      tags: ["AI", "Gateway", "Platform"]
+      detail: "CLEX AI reduces provider switching into one predictable API surface. It is meant for builders who want routing, keys, usage visibility, and quick model testing without rewriting the app each time the model changes.",
+      tags: ["AI", "Gateway", "Platform"],
+      points: ["One endpoint for model providers", "API keys and routing in one place", "Usage visibility for builders and teams", "Playground for quick model tests", "OpenAI-style request shape", "Provider switching without app rewrites"]
     },
     {
       title: "DRIPED",
@@ -82,7 +84,9 @@ window.PORTFOLIO = {
       url: "work/driped/",
       type: "Subscription and spend tracker",
       description: "An AI subscription manager that reads receipts, not bank accounts, to reveal recurring spend.",
-      tags: ["Finance", "Inbox AI", "Flutter"]
+      detail: "DRIPED looks at the inbox trail instead of asking for bank access. It turns scattered renewal receipts into a cleaner spend view, with enough structure to catch subscriptions before they quietly renew.",
+      tags: ["Finance", "Inbox AI", "Flutter"],
+      points: ["Receipt-based spend clarity", "Subscription renewal tracking", "Inbox parsing without bank access", "Cleaner monthly finance view", "Spend categories from real receipts", "Alerts before renewals slip by"]
     },
     {
       title: "TRGT",
@@ -97,7 +101,9 @@ window.PORTFOLIO = {
       url: "work/trgt/",
       type: "F1 intelligence platform",
       description: "Formula 1 race intelligence, prediction lockouts, AI insights, badges, and leaderboard logic.",
-      tags: ["Realtime", "Sports", "AI"]
+      detail: "TRGT brings race context, predictions, and fan competition into one race-weekend surface. The system is tuned for fast sessions, locked picks, explainable signals, and a scoreboard that keeps the product moving.",
+      tags: ["Realtime", "Sports", "AI"],
+      points: ["Race context in real time", "Prediction lockouts and scoring", "AI insight layer for quick context", "Badges and leaderboard logic", "Session data in one view", "Built for race-weekend decisions"]
     },
     {
       title: "MODIH Mail",
@@ -112,7 +118,9 @@ window.PORTFOLIO = {
       url: "work/modih-mail/",
       type: "Premium disposable email",
       description: "A premium disposable email system at @modih.in with OTP extraction, API access, and edge-native mail routing.",
-      tags: ["Mail", "Cloudflare", "Utility"]
+      detail: "MODIH Mail takes the disposable inbox idea and gives it a cleaner product surface. It is built for fast signups, OTP capture, testing flows, and throwaway inboxes that still feel controlled.",
+      tags: ["Mail", "Cloudflare", "Utility"],
+      points: ["Disposable inboxes that feel polished", "OTP extraction and API access", "Edge-native mail routing", "Fast cleanup for throwaway signups", "Short-lived addresses for testing", "Inbox flow without account clutter"]
     }
   ],
   researchPapers: [
