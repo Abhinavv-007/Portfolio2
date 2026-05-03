@@ -10024,3 +10024,120 @@ body[data-page="index"] .home-work .project-points span {
     font-size: 0.82em !important;
   }
 }
+
+/* Pass 46: reuse the hamburger liquid-fill hover across clickable controls. */
+.liquid-link,
+.brand-social.liquid-link,
+.card-visit.liquid-link,
+.detail-actions a.liquid-link,
+.end-card-cta a.liquid-link,
+.case-study-page .text-link.liquid-link,
+.contact-send-button.liquid-link,
+.contact-form button[type="submit"].liquid-link,
+.drag-arrows button.liquid-link {
+  position: relative !important;
+  isolation: isolate !important;
+  overflow: hidden !important;
+  background:
+    linear-gradient(145deg, rgba(255, 251, 235, 0.96), rgba(232, 222, 205, 0.9)),
+    repeating-linear-gradient(180deg, rgba(26, 25, 22, 0.035) 0 1px, transparent 1px 6px) !important;
+  color: var(--ink) !important;
+  border-color: rgba(26, 25, 22, 0.72) !important;
+  transition:
+    transform 320ms var(--ease),
+    color 240ms ease,
+    border-color 240ms ease,
+    box-shadow 320ms ease !important;
+}
+
+.liquid-link::before,
+.brand-social.liquid-link::before,
+.card-visit.liquid-link::before,
+.detail-actions a.liquid-link::before,
+.end-card-cta a.liquid-link::before,
+.case-study-page .text-link.liquid-link::before,
+.contact-send-button.liquid-link::before,
+.contact-form button[type="submit"].liquid-link::before,
+.drag-arrows button.liquid-link::before {
+  content: "" !important;
+  position: absolute !important;
+  left: var(--ripple-x, 50%) !important;
+  top: var(--ripple-y, 50%) !important;
+  width: 210% !important;
+  height: auto !important;
+  aspect-ratio: 1 !important;
+  border-radius: 999px !important;
+  background: var(--ink) !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+  transform: translate(-50%, -50%) scale(0) !important;
+  transform-origin: center !important;
+  transition: transform 560ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+  z-index: 0 !important;
+}
+
+.liquid-link:hover,
+.liquid-link:focus-visible,
+.brand-social.liquid-link:hover,
+.brand-social.liquid-link:focus-visible,
+.card-visit.liquid-link:hover,
+.card-visit.liquid-link:focus-visible,
+.detail-actions a.liquid-link:hover,
+.detail-actions a.liquid-link:focus-visible,
+.end-card-cta a.liquid-link:hover,
+.end-card-cta a.liquid-link:focus-visible,
+.case-study-page .text-link.liquid-link:hover,
+.case-study-page .text-link.liquid-link:focus-visible,
+.contact-send-button.liquid-link:hover,
+.contact-send-button.liquid-link:focus-visible,
+.contact-form button[type="submit"].liquid-link:hover,
+.contact-form button[type="submit"].liquid-link:focus-visible,
+.drag-arrows button.liquid-link:hover,
+.drag-arrows button.liquid-link:focus-visible {
+  color: var(--paper-light) !important;
+  border-color: var(--ink) !important;
+  background:
+    linear-gradient(145deg, rgba(255, 251, 235, 0.96), rgba(232, 222, 205, 0.9)),
+    repeating-linear-gradient(180deg, rgba(26, 25, 22, 0.035) 0 1px, transparent 1px 6px) !important;
+  transform: translateY(-2px) !important;
+  box-shadow:
+    0 0.18rem 0 rgba(26, 25, 22, 0.22),
+    0 0.75rem 1.25rem rgba(26, 25, 22, 0.16) !important;
+}
+
+.liquid-link:hover::before,
+.liquid-link:focus-visible::before,
+.brand-social.liquid-link:hover::before,
+.brand-social.liquid-link:focus-visible::before,
+.card-visit.liquid-link:hover::before,
+.card-visit.liquid-link:focus-visible::before,
+.detail-actions a.liquid-link:hover::before,
+.detail-actions a.liquid-link:focus-visible::before,
+.end-card-cta a.liquid-link:hover::before,
+.end-card-cta a.liquid-link:focus-visible::before,
+.case-study-page .text-link.liquid-link:hover::before,
+.case-study-page .text-link.liquid-link:focus-visible::before,
+.contact-send-button.liquid-link:hover::before,
+.contact-send-button.liquid-link:focus-visible::before,
+.contact-form button[type="submit"].liquid-link:hover::before,
+.contact-form button[type="submit"].liquid-link:focus-visible::before,
+.drag-arrows button.liquid-link:hover::before,
+.drag-arrows button.liquid-link:focus-visible::before {
+  transform: translate(-50%, -50%) scale(1) !important;
+}
+
+.liquid-link svg,
+.liquid-link .liquid-content,
+.liquid-link .brand-social-label,
+.liquid-link .contact-send-label,
+.liquid-link .contact-send-arrow,
+.case-study-page .text-link.liquid-link span {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.card-visit.liquid-link::after,
+.detail-actions a.liquid-link::after,
+.end-card-cta a.liquid-link::after {
+  display: none !important;
+}

@@ -716,6 +716,41 @@
     });
   }
 
+  function setupLiquidButtons() {
+    if (window.matchMedia("(hover: none), (pointer: coarse)").matches) return;
+    const targets = $$([
+      ".brand-social",
+      ".card-visit",
+      ".detail-actions a",
+      ".end-card-cta a",
+      ".case-study-page .text-link",
+      ".contact-send-button",
+      ".contact-form button[type='submit']",
+      ".drag-arrows button"
+    ].join(", "));
+    targets.forEach((target) => {
+      target.classList.add("liquid-link");
+      if (!$(".liquid-content", target)) {
+        Array.from(target.childNodes).forEach((node) => {
+          if (node.nodeType !== Node.TEXT_NODE || !node.textContent.trim()) return;
+          const span = document.createElement("span");
+          span.className = "liquid-content";
+          span.textContent = node.textContent;
+          target.replaceChild(span, node);
+        });
+      }
+      target.addEventListener("pointermove", (event) => {
+        const rect = target.getBoundingClientRect();
+        target.style.setProperty("--ripple-x", `${event.clientX - rect.left}px`);
+        target.style.setProperty("--ripple-y", `${event.clientY - rect.top}px`);
+      });
+      target.addEventListener("pointerleave", () => {
+        target.style.removeProperty("--ripple-x");
+        target.style.removeProperty("--ripple-y");
+      });
+    });
+  }
+
   function setupRail() {
     const rail = $("#projectRail");
     if (!rail) return;
@@ -1483,6 +1518,7 @@
   setupContactForm();
   setupHeroSplit();
   setupMagneticButtons();
+  setupLiquidButtons();
   setupCountUp();
   setupCardTilt();
   setupStaggerObservers();
