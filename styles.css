@@ -9733,3 +9733,204 @@ body[data-page="index"] .home-work .project-points span:last-child {
     min-height: 16rem !important;
   }
 }
+
+/* Pass 44: mobile containment for menu, credentials, and selected-build cards. */
+@media (max-width: 700px) {
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  .site-shell,
+  .site-main,
+  .page-shell,
+  .page-headline,
+  .page-headline--credentials {
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  .page-headline {
+    padding-inline: clamp(1rem, 5vw, 1.25rem) !important;
+  }
+
+  .page-headline-title {
+    max-width: 100% !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+    letter-spacing: 0 !important;
+  }
+
+  body[data-page="credentials"] .page-headline-title {
+    font-size: clamp(2.18rem, 9vw, 3rem) !important;
+    line-height: 0.94 !important;
+  }
+
+  .page-headline-deck,
+  .page-headline-deck p {
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-wrap: break-word !important;
+  }
+
+  body[data-page="credentials"] .page-headline-deck p {
+    font-size: clamp(1.32rem, 5.7vw, 1.95rem) !important;
+    line-height: 1.2 !important;
+  }
+
+  body[data-page="credentials"] .page-headline-meta .kicker {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    font-size: clamp(0.84rem, 3.75vw, 1rem) !important;
+    line-height: 1.25 !important;
+  }
+
+  .menu-curtain {
+    display: grid !important;
+    place-items: center !important;
+    overflow: hidden !important;
+    padding: clamp(0.9rem, 4vw, 1.25rem) !important;
+  }
+
+  .menu-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    justify-items: center !important;
+    align-content: center !important;
+    gap: clamp(0.08rem, 1vh, 0.35rem) !important;
+    padding-inline: 0 !important;
+    transform: none !important;
+  }
+
+  .menu-panel > a {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding-inline: 0.15rem !important;
+    text-align: center !important;
+    font-size: clamp(2.35rem, 13.4vw, 3.95rem) !important;
+    line-height: 0.9 !important;
+    transform: none !important;
+    overflow: visible !important;
+  }
+
+  .menu-panel > a > span {
+    display: inline-block !important;
+    max-width: 100% !important;
+    transform: none !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .menu-socials.brand-socials,
+  .menu-panel .brand-socials {
+    width: min(100%, 20rem) !important;
+    max-width: 100% !important;
+    grid-template-columns: 1fr !important;
+    justify-self: center !important;
+  }
+
+  body[data-page="index"] .home-work {
+    overflow-x: clip !important;
+  }
+
+  body[data-page="index"] .home-work .strip-intro h2 {
+    font-size: clamp(3.15rem, 16vw, 4.8rem) !important;
+    line-height: 0.92 !important;
+  }
+
+  body[data-page="index"] .home-work .project-rail {
+    grid-auto-columns: minmax(17.75rem, 88vw) !important;
+    gap: clamp(1rem, 4vw, 1.35rem) !important;
+    padding-block: 0.35rem 1.4rem !important;
+    scroll-padding-inline: 0 !important;
+  }
+
+  body[data-page="index"] .home-work .project-card,
+  body[data-page="index"] .home-work .project-card:first-child,
+  body[data-page="index"] .home-work .project-card:nth-child(even) {
+    min-height: auto !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  body[data-page="index"] .home-work .project-card .project-main,
+  body[data-page="index"] .home-work .project-card:first-child .project-main {
+    gap: 0.72rem !important;
+    padding: clamp(0.9rem, 4vw, 1.05rem) !important;
+  }
+
+  body[data-page="index"] .home-work .project-card h3 {
+    font-size: clamp(3.15rem, 17vw, 4.85rem) !important;
+    line-height: 0.86 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  body[data-page="index"] .home-work .project-image,
+  body[data-page="index"] .home-work .project-card:first-child .project-image {
+    aspect-ratio: 4 / 3 !important;
+    min-height: 12rem !important;
+    height: auto !important;
+  }
+
+  body[data-page="index"] .home-work .project-points {
+    aspect-ratio: auto !important;
+    min-height: auto !important;
+    height: auto !important;
+    grid-template-rows: none !important;
+    align-content: start !important;
+    gap: 0.5rem !important;
+    padding: 0.9rem !important;
+    overflow: hidden !important;
+  }
+
+  body[data-page="index"] .home-work .project-points strong {
+    font-size: clamp(1.55rem, 8vw, 2.15rem) !important;
+    line-height: 0.95 !important;
+  }
+
+  body[data-page="index"] .home-work .project-points p {
+    font-size: clamp(0.84rem, 4.15vw, 1rem) !important;
+    line-height: 1.23 !important;
+    overflow-wrap: break-word !important;
+  }
+
+  body[data-page="index"] .home-work .project-points .project-detail-note {
+    font-size: clamp(0.55rem, 2.85vw, 0.66rem) !important;
+    line-height: 1.32 !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+  }
+
+  body[data-page="index"] .home-work .project-point-list {
+    grid-template-rows: none !important;
+    gap: 0 !important;
+  }
+
+  body[data-page="index"] .home-work .project-points span {
+    display: block !important;
+    min-width: 0 !important;
+    padding-block: 0.28rem !important;
+    font-size: clamp(0.54rem, 2.75vw, 0.63rem) !important;
+    line-height: 1.18 !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .menu-panel > a {
+    font-size: clamp(2.05rem, 12.8vw, 3.25rem) !important;
+  }
+
+  body[data-page="credentials"] .page-headline-title {
+    font-size: clamp(1.95rem, 8.5vw, 2.6rem) !important;
+  }
+
+  body[data-page="index"] .home-work .project-points .project-detail-note {
+    display: none !important;
+  }
+}
