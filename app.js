@@ -774,8 +774,12 @@
     }
 
     let isDown = false;
+    let isDragging = false;
     let startX = 0;
     let scrollLeft = 0;
+    let activePointerId = null;
+    let suppressNextClick = false;
+    const DRAG_THRESHOLD = 6;
     let autoTimer = 0;
     let isAutoPaused = false;
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -848,27 +852,50 @@
     setActiveCard(0);
 
     rail.addEventListener("pointerdown", (event) => {
+      if (event.pointerType === "mouse" && event.button !== 0) return;
       isDown = true;
+      isDragging = false;
+      activePointerId = event.pointerId;
       pauseAuto();
       startX = event.clientX;
       scrollLeft = rail.scrollLeft;
-      rail.setPointerCapture(event.pointerId);
-      rail.classList.add("dragging");
     });
 
     rail.addEventListener("pointermove", (event) => {
-      if (!isDown) return;
+      if (!isDown || event.pointerId !== activePointerId) return;
       const delta = event.clientX - startX;
-      rail.scrollLeft = scrollLeft - delta;
+      if (!isDragging && Math.abs(delta) >= DRAG_THRESHOLD) {
+        isDragging = true;
+        rail.classList.add("dragging");
+        try { rail.setPointerCapture(event.pointerId); } catch (_) { /* noop */ }
+      }
+      if (isDragging) {
+        rail.scrollLeft = scrollLeft - delta;
+      }
     });
 
     ["pointerup", "pointercancel", "pointerleave"].forEach((name) => {
-      rail.addEventListener(name, () => {
+      rail.addEventListener(name, (event) => {
+        if (event.pointerId !== activePointerId) return;
+        if (isDragging) suppressNextClick = true;
+        if (rail.hasPointerCapture && rail.hasPointerCapture(event.pointerId)) {
+          try { rail.releasePointerCapture(event.pointerId); } catch (_) { /* noop */ }
+        }
         isDown = false;
+        isDragging = false;
+        activePointerId = null;
         rail.classList.remove("dragging");
         resumeAuto();
       });
     });
+
+    rail.addEventListener("click", (event) => {
+      if (suppressNextClick) {
+        event.preventDefault();
+        event.stopPropagation();
+        suppressNextClick = false;
+      }
+    }, true);
 
     rail.addEventListener("mouseenter", pauseAuto);
     rail.addEventListener("mouseleave", resumeAuto);
