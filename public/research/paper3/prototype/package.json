@@ -1,0 +1,14 @@
+{
+  "name": "the-glass-ballot-box",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Verifiable election simulator with append-only logs and hash chain verification",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node server/server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
